@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-RUN apt-get update; apt-get install -y python3-pip; \
+RUN apt-get update; apt-get install mysql-server; apt-get install -y python3-pip; \
     python -m pip install --upgrade pip; \
     pip install virtualenv; mkdir myproject; virtualenv venv; . venv/bin/activate;\
     pip install django; pip install mysqlclient; 

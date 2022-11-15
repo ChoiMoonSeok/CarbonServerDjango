@@ -13,7 +13,7 @@ sudo rm -r CarbonServerDjango
 git clone https://github.com/ChoiMoonSeok/CarbonServerDjango.git
 
 # 디렉토리로 이동
-cd mv db_config.py CarbonServerDjango
+mv db_config.py CarbonServerDjango
 cd CarbonServerDjango
 
 # 도커 빌드 및 실행

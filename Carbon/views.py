@@ -40,27 +40,7 @@ class CompanyQuery(APIView):
         for i in serializer.data:
             i = dict(i)
             i['Children'] = []
-            print(i)
             put_struct(result, i)
-            # if i['depth'] == prev_dep['depth'] + 1:
-            #     if i['upper'] == prev_dep['upper']:
-            #         result['Children'].append(i)
-            #     else:
-            #         prev_dep['upper'] = i['upper']
-            #         for j in result['Children']:
-            #             if j['id'] == i['upper']:
-            #                 j['Children'].append(i)
-            #                 break
-            # else:
-            #     prev_dep['depth'] += 1
-            #     prev_dep['upper'] = i['upper']
-            #     for j in result['Children']:
-            #         if j['id'] == i['upper']:
-            #             j['Children'].append(i)
-            #             break
-
-
-
 
         return Response(result, status=status.HTTP_201_CREATED)
 

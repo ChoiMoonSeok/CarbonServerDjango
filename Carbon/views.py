@@ -24,12 +24,66 @@ class User_EmployeeQuery(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CompanyQuery(APIView):
     '''
     지주회사가 동일한 모든 회사, 부서를 리스트 형태로 반환
     '''
+
     def get(self, request, CompanyName, format=None):
         ComId = Company.objects.get(ComName=CompanyName)
         Departments = Department.objects.filter(Mother=ComId)
         serializer = DepartmentSerializer(Departments, many=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        result = {'DepartmentName': CompanyName, 'depth' : 0, 'Scope1':ComId.Scope1, 'Scope2':ComId.Scope2, 'Scope3':ComId.Scope3, 'Children':[]}
+    
+        for i in serializer.data:
+            i = dict(i)
+            i['Children'] = []
+            print(i)
+            put_struct(result, i)
+            # if i['depth'] == prev_dep['depth'] + 1:
+            #     if i['upper'] == prev_dep['upper']:
+            #         result['Children'].append(i)
+            #     else:
+            #         prev_dep['upper'] = i['upper']
+            #         for j in result['Children']:
+            #             if j['id'] == i['upper']:
+            #                 j['Children'].append(i)
+            #                 break
+            # else:
+            #     prev_dep['depth'] += 1
+            #     prev_dep['upper'] = i['upper']
+            #     for j in result['Children']:
+            #         if j['id'] == i['upper']:
+            #             j['Children'].append(i)
+            #             break
+
+
+
+
+        return Response(result, status=status.HTTP_201_CREATED)
+
+# 조직 구조를 반환하는 함수
+def put_struct(result, Company):
+    if Company['upper'] == None:
+        result['Children'].append(Company)
+        return 0
+    elif result['depth'] == Company['depth'] - 1:
+        print('hi')
+        print(result)
+        if result['id'] == Company['upper']:
+            result['Children'].append(Company)
+        else:
+            return 0
+    else:
+        if len(result['Children']) != 0:
+            for i in range(len(result['Children'])):
+                temp = result['Children'][i]
+                put_struct(temp, Company)
+        else:
+            if result['id'] == Company['upper']:
+                result['Children'].append(Company)
+            else:
+                return 0
+        

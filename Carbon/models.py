@@ -16,7 +16,7 @@ class User_Employee(models.Model):
 # 회원사를 저장하는 테이블
 
 class Company(models.Model):
-    ComName = models.TextField(unique=True) # 사명
+    ComName = models.TextField() # 사명
     Scope1 = models.IntegerField()
     Scope2 = models.IntegerField()
     Scope3 = models.IntegerField()
@@ -45,3 +45,6 @@ class Carbon(models.Model):
     EndDate = models.DateField()   # 활동의 종료일
     location = models.TextField()  # 활동의 위치
     Scope = models.IntegerField()  # 탄소 배출 단계
+    chief = models.ForeignKey('User_Employee', on_delete=models.SET_NULL, null=True) # 관리자
+    upper = models.ForeignKey('Department', on_delete=models.CASCADE, null=True)
+    Mother = models.ForeignKey('Company', on_delete=models.CASCADE, null=True) # root 노드

@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import status
 
+import func
+
 # 사용자에 대한 api 함수
 
 class User_EmployeeQuery(APIView):
@@ -27,43 +29,37 @@ class User_EmployeeQuery(APIView):
 
 class CompanyQuery(APIView):
     '''
-    지주회사가 동일한 모든 회사, 부서를 리스트 형태로 반환
+    회사와 관련된 값들을 다루는 api
     '''
 
     def get(self, request, CompanyName, format=None):
+        '''
+        지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환.\
+        ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
+        '''
         ComId = Company.objects.get(ComName=CompanyName)
         Departments = Department.objects.filter(Mother=ComId)
         serializer = DepartmentSerializer(Departments, many=True)
 
-        result = {'DepartmentName': CompanyName, 'depth' : 0, 'Scope1':ComId.Scope1, 'Scope2':ComId.Scope2, 'Scope3':ComId.Scope3, 'Children':[]}
+        result = {'DepartmentName': CompanyName, 'depth' : 0, 'Scope1':ComId.Scope1,\
+                  'Scope2':ComId.Scope2, 'Scope3':ComId.Scope3, 'Children':[]}
     
         for i in serializer.data:
             i = dict(i)
             i['Children'] = []
-            put_struct(result, i)
+            func.put_struct(result, i)
 
         return Response(result, status=status.HTTP_201_CREATED)
 
-# 조직 구조를 반환하는 함수
-def put_struct(result, Company):
-    if Company['upper'] == None:
-        result['Children'].append(Company)
-        return 0
-    elif result['depth'] == Company['depth'] - 1:
-        print('hi')
-        print(result)
-        if result['id'] == Company['upper']:
-            result['Children'].append(Company)
-        else:
-            return 0
-    else:
-        if len(result['Children']) != 0:
-            for i in range(len(result['Children'])):
-                temp = result['Children'][i]
-                put_struct(temp, Company)
-        else:
-            if result['id'] == Company['upper']:
-                result['Children'].append(Company)
-            else:
-                return 0
+class PreviewQuery(APIView):
+    '''
+    프리뷰와 관련된 내용을 다루는 api
+    '''
+    
+    def get(self, request, root, Department, format=None):
+        '''
+        요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환
+        '''
         
+        departData = Carbon.objects.filter(Mother=root).filter(upper=Department)
+        print(departData)

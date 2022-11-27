@@ -1,10 +1,9 @@
-from django.shortcuts import render
-from Carbon.serializer import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import status
 
+from Carbon.serializer import *
 import func
 
 # 사용자에 대한 api 함수
@@ -13,6 +12,7 @@ class User_EmployeeQuery(APIView):
     '''
     모든 사용자를 리스트 형태로 반환
     '''
+
     def get(self, request, Company, format=None):
         Users = User_Employee.objects.filter(Company=Company)
         serializer = User_EmployeeSerializer(Users, many=True)
@@ -56,10 +56,16 @@ class PreviewQuery(APIView):
     프리뷰와 관련된 내용을 다루는 api
     '''
     
-    def get(self, request, root, Department, format=None):
+    def get(self, request, root, Depart, format=None):
         '''
         요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환
         '''
+
+        # root의 id와 Department의 id 가져오기
+        Root_Id = Company.objects.get(ComName=root)
+        Upper_Id = Department.objects.get(DepartmentName=Depart)
+        Data = Carbon.objects.filter(Mother=Root_Id, upper=Upper_Id)
         
-        departData = Carbon.objects.filter(Mother=root).filter(upper=Department)
-        print(departData)
+        
+
+        return Response(0, status=status.HTTP_201_CREATED)

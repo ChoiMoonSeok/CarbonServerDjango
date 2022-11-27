@@ -48,3 +48,4 @@ class Carbon(models.Model):
     chief = models.ForeignKey('User_Employee', on_delete=models.SET_NULL, null=True) # 관리자
     upper = models.ForeignKey('Department', on_delete=models.CASCADE, null=True)
     Mother = models.ForeignKey('Company', on_delete=models.CASCADE, null=True) # root 노드
+    Category = models.IntegerField(null=True)

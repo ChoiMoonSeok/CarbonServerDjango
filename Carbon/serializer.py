@@ -27,4 +27,4 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class CarbonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carbon
-        fileds = ['id', 'Content', 'Data', 'unit', 'CarbonEmission', 'StartDate', 'EndData', 'location', 'Scope', 'chief', 'upper', 'Mother']
+        fileds = ['id', 'Content', 'Data', 'unit', 'CarbonEmission', 'StartDate', 'EndData', 'location', 'Scope', 'chief', 'upper', 'Mother', 'Category']

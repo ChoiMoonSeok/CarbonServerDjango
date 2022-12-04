@@ -78,12 +78,51 @@ class PreviewTest(TestCase):
             Mother=Carbon.models.Company.objects.get(ComName="삼성"),
             Category=1,
         )
+        Carbon.models.User_Employee.objects.create(
+            Name="노태문",
+            PhoneNum="123456789",
+            Email="1234@naver.com",
+            Company="삼성",
+            JobPos="사장",
+            IdentityNum="2",
+            Authorization=1,
+        )
 
     def testPreviewGet(self):
         response = self.client.get("/Preview/{}/{}".format("삼성", "삼성전자"))
         data = json.loads(response.content)
         self.assertEqual(data["고정연소"], 25.0)
         self.assertEqual(data["이동연소"], 25.0)
+
+    def testPreviewInfoRoot(self):
+        Input = {
+            "DepartName": "(주)삼성",
+            "Classification": "모회사",
+            "chief": "이재용",
+            "Description": "모회사",
+            "admin": "이재용",
+            "location": "busan",
+        }
+        response = self.client.put(
+            "/PreviewInfo/{}".format("삼성"), data=json.dumps(Input)
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data["Description"], "모회사")
+
+    def testPreviewInfoDepart(self):
+        Input = {
+            "DepartName": "(주)삼성전자",
+            "Classification": "계열사",
+            "chief": "노태문",
+            "Description": "자회사",
+            "admin": "노태문",
+            "location": "busan",
+        }
+        response = self.client.put(
+            "/PreviewInfo/{}".format("삼성전자"), data=json.dumps(Input)
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data["Description"], "자회사")
 
 
 class UserTest(TestCase):

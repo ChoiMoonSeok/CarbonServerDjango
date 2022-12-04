@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
@@ -65,9 +67,7 @@ class PreviewQuery(APIView):
     """
 
     def get(self, request, root, Depart, format=None):
-        """
-        요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환
-        """
+        """요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환"""
 
         # root의 id와 Department의 id 가져오기
         Root_Id = Company.objects.get(ComName=root)
@@ -83,3 +83,35 @@ class PreviewQuery(APIView):
                 ans[func.CarbonCategory[i.Category]] = i.CarbonEmission
 
         return Response(ans, status=status.HTTP_201_CREATED)
+
+    def put(self, request, Depart, format=None):
+        """요청한 부서 혹은 회사의 정보를 변경"""
+
+        request = json.loads(request.body)
+
+        # 요청받은 즉 변경할 row 가져오기
+        try:
+            ChangeData = Company.objects.get(ComName=Depart)
+            ChangeData.ComName = request["DepartName"]
+            ChangeData.Classification = request["Classification"]
+            ChangeData.chief = User_Employee.objects.get(Name=request["chief"])
+            ChangeData.Description = request["Description"]
+            ChangeData.admin = User_Employee.objects.get(Name=request["admin"])
+            ChangeData.location = request["location"]
+            ChangeData.save()
+
+            serializer = CompanySerializer(ChangeData)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Company.DoesNotExist:
+            ChangeData = Department.objects.get(DepartmentName=Depart)
+            ChangeData.DepartmentName = request["DepartName"]
+            ChangeData.Classification = request["Classification"]
+            ChangeData.chief = User_Employee.objects.get(Name=request["chief"])
+            ChangeData.Description = request["Description"]
+            ChangeData.admin = User_Employee.objects.get(Name=request["admin"])
+            ChangeData.location = request["location"]
+            ChangeData.save()
+
+            serializer = DepartmentSerializer(ChangeData)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

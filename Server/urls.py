@@ -24,9 +24,7 @@ urlpatterns = [
     path("User/<str:Company>", views.User_EmployeeQuery.as_view(), name="get"),
     path("Organization/<str:CompanyName>", views.CompanyQuery.as_view(), name="get"),
     path("Preview/<str:root>/<str:Depart>", views.PreviewQuery.as_view(), name="get"),
-    path(
-        "Preview/Info/<str:root>/<str:Depart>", views.PreviewQuery.as_view(), name="put"
-    ),
+    path("PreviewInfo/<str:Depart>", views.PreviewQuery.as_view(), name="put"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

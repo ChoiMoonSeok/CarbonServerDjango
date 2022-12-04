@@ -25,7 +25,19 @@ class Company(models.Model):
     Scope1 = models.IntegerField()
     Scope2 = models.IntegerField()
     Scope3 = models.IntegerField()
-    chief = models.ForeignKey("User_Employee", on_delete=models.CASCADE)  # 최고 책임자
+    chief = models.ForeignKey(  # 대표자
+        "User_Employee", related_name="chiefCom", on_delete=models.CASCADE
+    )
+    admin = models.ForeignKey(  # 관리자
+        "User_Employee",
+        related_name="adminCom",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    Classification = models.TextField(null=True, blank=True)
+    Description = models.TextField(null=True, blank=True)
+    location = models.TextField(null=True, blank=True)
 
 
 # 부서명을 저장하는 테이블
@@ -36,7 +48,19 @@ class Department(models.Model):
     Scope1 = models.IntegerField()
     Scope2 = models.IntegerField()
     Scope3 = models.IntegerField()
-    chief = models.ForeignKey("User_Employee", on_delete=models.CASCADE)  # 최고 책임자
+    chief = models.ForeignKey(  # 대표자
+        "User_Employee", related_name="chiefDepart", on_delete=models.CASCADE
+    )
+    admin = models.ForeignKey(  # 관리자
+        "User_Employee",
+        related_name="adminDepart",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    Classification = models.TextField(null=True, blank=True)
+    Description = models.TextField(null=True, blank=True)
+    location = models.TextField(null=True, blank=True)
     depth = models.IntegerField()  # 깊이
     upper = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True

@@ -115,3 +115,11 @@ class PreviewQuery(APIView):
 
             serializer = DepartmentSerializer(ChangeData)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CarbonEmissionQuery(APIView):
+    def get(self, request, Depart, format=None):
+        pass
+
+    def post(self, request, Depart, format=None):
+        pass

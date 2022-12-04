@@ -83,4 +83,5 @@ class CarbonSerializer(serializers.ModelSerializer):
             "upper",
             "Mother",
             "Category",
+            "Division",
         ]

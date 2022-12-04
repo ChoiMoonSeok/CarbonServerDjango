@@ -87,4 +87,7 @@ class Carbon(models.Model):
     Mother = models.ForeignKey(
         "Company", on_delete=models.CASCADE, null=True
     )  # root 노드
-    Category = models.IntegerField(null=True)  # 탄소 배출 원인과 숫자를 매핑
+    Category = models.IntegerField(null=True)  # 탄소 배출 원인과 숫자를 매핑 ex) 고정연소, 이동연소
+    Division = models.TextField(
+        null=True
+    )  # 구분 : 저장 형태 {건물명 : '', 설비명:'', 연료정보:'', 연료량:''}

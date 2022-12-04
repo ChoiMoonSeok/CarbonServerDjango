@@ -165,3 +165,68 @@ class UserTest(TestCase):
         self.assertEqual(data[1]["Name"], "노태문")
         self.assertEqual(data[2]["Name"], "고동진")
         self.assertEqual(data[3]["Name"], "경계현")
+
+
+class CarbonEmissionTest(TestCase):
+    def setUp(self):
+        Carbon.models.Carbon.objects.create(
+            Content="불량 소각",
+            Data=10.0,
+            unit="kg",
+            CarbonEmission=10,
+            StartDate=datetime.datetime.now(),
+            EndDate=datetime.datetime.now(),
+            location="busan",
+            Scope=1,
+            chief=Carbon.models.User_Employee.objects.get(Name="이재용"),
+            upper=Carbon.models.Department.objects.get(DepartmentName="삼성전자"),
+            Mother=Carbon.models.Company.objects.get(ComName="삼성"),
+            Category=0,
+        )
+        Carbon.models.Carbon.objects.create(
+            Content="쓰레기 소각",
+            Data=15.0,
+            unit="kg",
+            CarbonEmission=15,
+            StartDate=datetime.datetime.now(),
+            EndDate=datetime.datetime.now(),
+            location="busan",
+            Scope=1,
+            chief=Carbon.models.User_Employee.objects.get(Name="이재용"),
+            upper=Carbon.models.Department.objects.get(DepartmentName="삼성전자"),
+            Mother=Carbon.models.Company.objects.get(ComName="삼성"),
+            Category=0,
+        )
+        Carbon.models.Carbon.objects.create(
+            Content="불량 소각",
+            Data=10.0,
+            unit="kg",
+            CarbonEmission=10,
+            StartDate=datetime.datetime.now(),
+            EndDate=datetime.datetime.now(),
+            location="busan",
+            Scope=1,
+            chief=Carbon.models.User_Employee.objects.get(Name="이재용"),
+            upper=Carbon.models.Department.objects.get(DepartmentName="삼성전자"),
+            Mother=Carbon.models.Company.objects.get(ComName="삼성"),
+            Category=1,
+        )
+        Carbon.models.Carbon.objects.create(
+            Content="쓰레기 소각",
+            Data=15.0,
+            unit="kg",
+            CarbonEmission=15,
+            StartDate=datetime.datetime.now(),
+            EndDate=datetime.datetime.now(),
+            location="busan",
+            Scope=1,
+            chief=Carbon.models.User_Employee.objects.get(Name="이재용"),
+            upper=Carbon.models.Department.objects.get(DepartmentName="삼성전자"),
+            Mother=Carbon.models.Company.objects.get(ComName="삼성"),
+            Category=1,
+        )
+
+    def testCarbonEmissionGet(self):
+        response = self.client.get("CarbonEmission/{}".format("삼성전자"))
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 2)

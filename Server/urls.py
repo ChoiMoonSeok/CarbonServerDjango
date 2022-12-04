@@ -19,12 +19,14 @@ from Carbon import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    path('admin', admin.site.urls),
-    path('User', views.User_EmployeeQuery.as_view()), 
-    path('User/<str:Company>', views.User_EmployeeQuery.as_view(), name='get'),
-    path('Organization/<str:CompanyName>', views.CompanyQuery.as_view(), name='get'),
-    path('Preview/<str:root>/<str:Depart>', views.PreviewQuery.as_view(), name='get'),
-    path('Preview/<str:root>/<str:Depart>', views.PreviewQuery.as_view(), name='post'),
+    path("admin", admin.site.urls),
+    path("User", views.User_EmployeeQuery.as_view()),
+    path("User/<str:Company>", views.User_EmployeeQuery.as_view(), name="get"),
+    path("Organization/<str:CompanyName>", views.CompanyQuery.as_view(), name="get"),
+    path("Preview/<str:root>/<str:Depart>", views.PreviewQuery.as_view(), name="get"),
+    path(
+        "Preview/Info/<str:root>/<str:Depart>", views.PreviewQuery.as_view(), name="put"
+    ),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

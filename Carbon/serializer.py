@@ -7,17 +7,7 @@ from .models import *
 class User_EmployeeSerializer(serializers.ModelSerializer):  # 모델 전체를 직렬화(json 변환)
     class Meta:
         model = User_Employee
-        fields = [
-            "id",
-            "UID",
-            "PassWd",
-            "Name",
-            "PhoneNum",
-            "Email",
-            "Company",
-            "JobPos",
-            "IdentityNum",
-        ]
+        fields = "__all__"
 
 
 # Company 직렬화(객체를 json으로 변환)
@@ -26,18 +16,7 @@ class User_EmployeeSerializer(serializers.ModelSerializer):  # 모델 전체를 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = [
-            "id",
-            "ComName",
-            "Scope1",
-            "Scope2",
-            "Scope3",
-            "chief",
-            "admin",
-            "Classification",
-            "Description",
-            "location",
-        ]
+        fields = "__all__"
 
 
 # Department 직렬화(객체를 json으로 변환)
@@ -46,21 +25,7 @@ class CompanySerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = [
-            "id",
-            "DepartmentName",
-            "Scope1",
-            "Scope2",
-            "Scope3",
-            "chief",
-            "depth",
-            "upper",
-            "Mother",
-            "admin",
-            "Classification",
-            "Description",
-            "location",
-        ]
+        fields = "__all__"
 
 
 # Carbon 직렬화(객체를 json으로 변환)

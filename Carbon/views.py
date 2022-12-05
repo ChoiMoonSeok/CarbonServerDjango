@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import status
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
 
 from Carbon.serializer import *
 import func
@@ -15,21 +17,21 @@ User_root = "삼성"
 
 class User_EmployeeQuery(APIView):
     """
-    모든 사용자를 리스트 형태로 반환
+    모든 사용자를 리스트 형태로 반환하는 Api
+    ---
+    # 사용자
     """
 
+    @swagger_auto_schema(
+        method="get",
+        operation_id="입력한 회사 및 연결 자회사의 모든 사원 조회",
+        operation_description="입력한 회사와 연결 자회사의 모든 사원들의 정보를 리스트 형태로 반환받습니다.",
+    )
+    @api_view(["GET"])
     def get(self, request, Company, format=None):
         Users = User_Employee.objects.filter(Company=Company)
         serializer = User_EmployeeSerializer(Users, many=True)
         return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = User_EmployeeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CompanyQuery(APIView):
@@ -90,6 +92,8 @@ class PreviewQuery(APIView):
 
         return Response(ans, status=status.HTTP_201_CREATED)
 
+
+class PreviewInfoQuery(APIView):
     def put(self, request, Depart, format=None):
         """요청한 부서 혹은 회사의 정보를 변경"""
 

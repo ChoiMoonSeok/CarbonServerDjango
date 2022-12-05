@@ -10,6 +10,8 @@ import func
 
 # 사용자에 대한 api 함수
 
+User_root = "삼성"
+
 
 class User_EmployeeQuery(APIView):
     """
@@ -66,11 +68,15 @@ class PreviewQuery(APIView):
     프리뷰와 관련된 내용을 다루는 api
     """
 
-    def get(self, request, root, Depart, format=None):
+    def get(self, request, Depart, format=None):
         """요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환"""
 
+        # 요청한 user의 모회사 확인
+        # Mother = User_Employee.objects.get(UID=jwt에서 추출한 id).Mother
+        Mother = User_root
+
         # root의 id와 Department의 id 가져오기
-        Root_Id = Company.objects.get(ComName=root)
+        Root_Id = Company.objects.get(ComName=Mother)
         Upper_Id = Department.objects.get(DepartmentName=Depart)
         Data = Carbon.objects.filter(Mother=Root_Id, upper=Upper_Id)
 
@@ -104,7 +110,9 @@ class PreviewQuery(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Company.DoesNotExist:
-            ChangeData = Department.objects.get(DepartmentName=Depart)
+            Mother_id = Company.objects.get(ComName=User_root)  # user의 모회사 확인
+
+            ChangeData = Department.objects.get(Mother=Mother_id, DepartmentName=Depart)
             ChangeData.DepartmentName = request["DepartName"]
             ChangeData.Classification = request["Classification"]
             ChangeData.chief = User_Employee.objects.get(Name=request["chief"])
@@ -119,7 +127,45 @@ class PreviewQuery(APIView):
 
 class CarbonEmissionQuery(APIView):
     def get(self, request, Depart, format=None):
-        pass
+        """요청받은 부서, 회사의 모든 탄소 배출 반환"""
+        Mother_id = Company.objects.get(ComName=User_root)
+        try:  # 요청 받은 회사가 루트, 모회사인 경우
+            Upper_id = Department.objects.get(DepartmentName=Depart)
+            data = Carbon.objects.filter(Mother=Mother_id, upper=Upper_id)
+        except Department.DoesNotExist:
+            data = Carbon.objects.filter(Mother=Mother_id)
+
+        serializer = CarbonSerializer(data, many=True)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def post(self, request, Depart, format=None):
-        pass
+        """탄소 사용량 데이터 입력"""
+        InputData = json.loads(request.body)
+        Mother_id = User_root
+        chief_id = User_Employee.objects.get(Name=InputData["chief"], Mother=Mother_id)
+        Mother_id_upper = Company.objects.get(ComName=Mother_id)
+        upper_id = Department.objects.get(Mother=Mother_id_upper, DepartmentName=Depart)
+
+        # 요청한 탄소 배출 현황 생성
+        Carbon.objects.create(
+            Content=InputData["Content"],
+            Data=InputData["Data"],
+            unit=InputData["unit"],
+            CarbonEmission=InputData["CarbonEmission"],
+            StartDate=InputData["StartDate"],
+            EndDate=InputData["EndDate"],
+            location=InputData["location"],
+            chief=chief_id,
+            upper=upper_id,
+            Mother=Mother_id_upper,
+            Scope=InputData["Scope"],
+            Category=InputData["Category"],
+            Division=InputData["Division"],
+        )
+
+        # 모회사의 모든 탄소 배출 가져오기
+        data = Carbon.objects.filter(Mother=Mother_id_upper, upper=upper_id)
+        serializer = CarbonSerializer(data, many=True)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

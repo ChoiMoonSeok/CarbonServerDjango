@@ -5,12 +5,13 @@ from django.db import models
 
 class User_Employee(models.Model):
     UID = models.CharField(
-        max_length=10, null=True, blank=True
+        max_length=10, null=True, blank=True, unique=True
     )  # 회원가입한 ID, 회원가입을 하지 않고 상사가 입력한 경우 없을 수 있음
     PassWd = models.CharField(max_length=10, null=True, blank=True)  # ID와 동일
     Name = models.TextField()
     PhoneNum = models.TextField()
     Email = models.EmailField()
+    Mother = models.TextField()
     Company = models.TextField()
     JobPos = models.TextField()  # 직위
     IdentityNum = models.TextField()  # 사번
@@ -83,11 +84,9 @@ class Carbon(models.Model):
     chief = models.ForeignKey(
         "User_Employee", on_delete=models.SET_NULL, null=True
     )  # 관리자
-    upper = models.ForeignKey("Department", on_delete=models.CASCADE, null=True)
-    Mother = models.ForeignKey(
-        "Company", on_delete=models.CASCADE, null=True
-    )  # root 노드
-    Category = models.IntegerField(null=True)  # 탄소 배출 원인과 숫자를 매핑 ex) 고정연소, 이동연소
+    upper = models.ForeignKey("Department", on_delete=models.CASCADE)
+    Mother = models.ForeignKey("Company", on_delete=models.CASCADE)  # root 노드
+    Category = models.IntegerField()  # 탄소 배출 원인과 숫자를 매핑 ex) 고정연소, 이동연소
     Division = models.TextField(
         null=True
     )  # 구분 : 저장 형태 {건물명 : '', 설비명:'', 연료정보:'', 연료량:''}

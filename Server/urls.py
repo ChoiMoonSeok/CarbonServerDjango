@@ -28,16 +28,20 @@ urlpatterns = [
         "Organization/<str:CompanyName>", views.CompanyQuery.as_view(), name="get"
     ),  # 최상위회사 이름으로 조직 설계도 호출
     path(
-        "Preview/<str:root>/<str:Depart>", views.PreviewQuery.as_view(), name="get"
+        "Preview/<str:Depart>", views.PreviewQuery.as_view(), name="get"
     ),  # 회사의 탄소 배출량 합계
     path(
         "PreviewInfo/<str:Depart>", views.PreviewQuery.as_view(), name="put"
     ),  # 회사의 정보 변경
     path(
-        "CarbonEmission/<str:Depart>", views.CarbonEmissionQuery.as_view(), name="get"
+        "CarbonEmission/<str:Depart>",
+        views.CarbonEmissionQuery.as_view(),
+        name="get",
     ),
     path(
-        "CarbonEmission/<str:Depart>", views.CarbonEmissionQuery.as_view(), name="post"
+        "CarbonEmission/<str:Depart>",
+        views.CarbonEmissionQuery.as_view(),
+        name="post",
     ),
 ]
 

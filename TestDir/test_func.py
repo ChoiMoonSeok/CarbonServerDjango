@@ -9,9 +9,40 @@ def CreateSamsung():
         PhoneNum="123456789",
         Email="1234@naver.com",
         Company="삼성",
+        Mother="삼성",
         JobPos="회장",
         IdentityNum="1",
         Authorization=0,
+    )
+    Carbon.models.User_Employee.objects.create(
+        Name="노태문",
+        PhoneNum="123456789",
+        Email="1234@naver.com",
+        Company="삼성",
+        Mother="삼성",
+        JobPos="사장",
+        IdentityNum="2",
+        Authorization=1,
+    )
+    Carbon.models.User_Employee.objects.create(
+        Name="고동진",
+        PhoneNum="123456789",
+        Email="12345@naver.com",
+        Company="삼성",
+        Mother="삼성",
+        JobPos="사원",
+        IdentityNum="3",
+        Authorization=2,
+    )
+    Carbon.models.User_Employee.objects.create(
+        Name="경계현",
+        PhoneNum="123456789",
+        Email="123456@naver.com",
+        Company="삼성",
+        Mother="삼성",
+        JobPos="대리",
+        IdentityNum="4",
+        Authorization=3,
     )
     Carbon.models.Company.objects.create(
         ComName="삼성",

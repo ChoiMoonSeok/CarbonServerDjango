@@ -78,18 +78,9 @@ class PreviewTest(TestCase):
             Mother=Carbon.models.Company.objects.get(ComName="삼성"),
             Category=1,
         )
-        Carbon.models.User_Employee.objects.create(
-            Name="노태문",
-            PhoneNum="123456789",
-            Email="1234@naver.com",
-            Company="삼성",
-            JobPos="사장",
-            IdentityNum="2",
-            Authorization=1,
-        )
 
     def testPreviewGet(self):
-        response = self.client.get("/Preview/{}/{}".format("삼성", "삼성전자"))
+        response = self.client.get("/Preview/{}".format("삼성전자"))
         data = json.loads(response.content)
         self.assertEqual(data["고정연소"], 25.0)
         self.assertEqual(data["이동연소"], 25.0)
@@ -130,34 +121,6 @@ class UserTest(TestCase):
     def setUpTestData(cls):
         test_func.CreateSamsung()
 
-        Carbon.models.User_Employee.objects.create(
-            Name="노태문",
-            PhoneNum="123456789",
-            Email="1234@naver.com",
-            Company="삼성",
-            JobPos="사장",
-            IdentityNum="2",
-            Authorization=1,
-        )
-        Carbon.models.User_Employee.objects.create(
-            Name="고동진",
-            PhoneNum="123456789",
-            Email="12345@naver.com",
-            Company="삼성",
-            JobPos="사원",
-            IdentityNum="3",
-            Authorization=2,
-        )
-        Carbon.models.User_Employee.objects.create(
-            Name="경계현",
-            PhoneNum="123456789",
-            Email="123456@naver.com",
-            Company="삼성",
-            JobPos="대리",
-            IdentityNum="4",
-            Authorization=3,
-        )
-
     def testUserGet(self):
         response = self.client.get("/User/{}".format("삼성"))
         data = json.loads(response.content)
@@ -168,7 +131,9 @@ class UserTest(TestCase):
 
 
 class CarbonEmissionTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
+        test_func.CreateSamsung()
         Carbon.models.Carbon.objects.create(
             Content="불량 소각",
             Data=10.0,
@@ -179,7 +144,7 @@ class CarbonEmissionTest(TestCase):
             location="busan",
             Scope=1,
             chief=Carbon.models.User_Employee.objects.get(Name="이재용"),
-            upper=Carbon.models.Department.objects.get(DepartmentName="삼성전자"),
+            upper=Carbon.models.Department.objects.get(DepartmentName="삼성생명"),
             Mother=Carbon.models.Company.objects.get(ComName="삼성"),
             Category=0,
         )
@@ -193,7 +158,7 @@ class CarbonEmissionTest(TestCase):
             location="busan",
             Scope=1,
             chief=Carbon.models.User_Employee.objects.get(Name="이재용"),
-            upper=Carbon.models.Department.objects.get(DepartmentName="삼성전자"),
+            upper=Carbon.models.Department.objects.get(DepartmentName="삼성생명"),
             Mother=Carbon.models.Company.objects.get(ComName="삼성"),
             Category=0,
         )
@@ -227,6 +192,31 @@ class CarbonEmissionTest(TestCase):
         )
 
     def testCarbonEmissionGet(self):
-        response = self.client.get("CarbonEmission/{}".format("삼성전자"))
+        response = self.client.get("/CarbonEmission/{}".format("삼성전자"))
         data = json.loads(response.content)
         self.assertEqual(len(data), 2)
+
+    def testCarbonEmissionPost(self):
+        Input = {
+            "Content": "폐기물 처리",
+            "Data": 2.8,
+            "unit": "kg",
+            "CarbonEmission": 2.8,
+            "StartDate": "{}".format("2022-12-05"),
+            "EndDate": "{}".format("2022-12-05"),
+            "location": "busan",
+            "chief": "노태문",
+            "admin": "노태문",
+            "upper": "삼성전자",
+            "Mother": "삼성",
+            "Scope": 1,
+            "Category": 1,
+            "Division": "{'건물명':'본관', '폐기물 처리 형태':'매립', '폐기물 종류':'생활', '배출 주체':'한국전력공사', '폐기물 배출량':'123456'}",
+        }
+        response = self.client.post(
+            "/CarbonEmission/{}".format("삼성전자"),
+            data=Input,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 3)

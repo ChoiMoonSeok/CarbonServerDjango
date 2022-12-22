@@ -68,6 +68,7 @@ class Carbon(models.Model):
     CarbonTrans = models.FloatField()  # kg 단위로 환산한 탄소량
     RootCom = models.ForeignKey("Company", on_delete=models.CASCADE)  # root 노드
     BelongCom = models.ForeignKey("Company", on_delete=models.CASCADE)
+    CarbonInfo = models.ForeignKey("CarbonInfo")
 
 
 # 탄소 사용량의 정보를 저장하는 테이블

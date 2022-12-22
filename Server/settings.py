@@ -86,9 +86,9 @@ WSGI_APPLICATION = "Server.wsgi.application"
 
 
 # mysql db 가져와서 호출
-import db_config
+import config
 
-DATABASES = db_config.DATABASES
+DATABASES = config.DATABASES
 
 
 # Password validation

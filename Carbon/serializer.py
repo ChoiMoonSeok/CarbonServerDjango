@@ -1,12 +1,18 @@
 from rest_framework import serializers
 from .models import *
 
-# User, Employee 직렬화(객체를 json으로 변환)
+# Employee 직렬화(객체를 json으로 변환)
 
 
-class User_EmployeeSerializer(serializers.ModelSerializer):  # 모델 전체를 직렬화(json 변환)
+class EmployeeSerializer(serializers.ModelSerializer):  # 모델 전체를 직렬화(json 변환)
     class Meta:
-        model = User_Employee
+        model = Employee
+        fields = "__all__"
+
+
+class UserSerializer(serializers.ModelSerializer):  # 모델 전체를 직렬화(json 변환)
+    class Meta:
+        model = User
         fields = "__all__"
 
 
@@ -34,4 +40,10 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class CarbonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carbon
+        fields = "__all__"
+
+
+class CarbonInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarbonInfo
         fields = "__all__"

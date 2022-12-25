@@ -8,11 +8,5 @@ urlpatterns = [
     path(
         "<str:Depart>",
         views.CarbonEmissionQuery.as_view(),
-        name="get",
-    ),
-    path(
-        "<str:Depart>",
-        views.CarbonEmissionQuery.as_view(),
-        name="post",
     ),
 ]

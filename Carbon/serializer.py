@@ -7,7 +7,7 @@ from . import models
 class CarbonSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Carbon
-        fields = "__all__"
+        exclude = ["RootCom", "BelongCom", "CarbonInfo"]
 
 
 class CarbonInfoSerializer(serializers.ModelSerializer):

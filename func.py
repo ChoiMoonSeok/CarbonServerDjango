@@ -1,3 +1,7 @@
+from Company import models as ComModel
+from Human import models as HuModel
+from Carbon import models as CarMode
+
 CarbonCategory = [
     "고정연소",
     "이동연소",
@@ -37,3 +41,13 @@ def put_struct(result, Company):
                 result["Children"].append(Company)
             else:
                 return 0
+
+
+def getChildCom(RootCom, HeadCom, Children):
+    data = ComModel.Department.objects.filter(RootCom=RootCom, BelongCom=HeadCom)
+    if type(data) == None:
+        return None
+    else:
+        for Depart in data:
+            Children.append(Depart.SelfCom)
+            getChildCom(RootCom, Depart.SelfCom, Children)

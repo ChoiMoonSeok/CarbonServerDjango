@@ -15,7 +15,6 @@ class Company(models.Model):
         null=True,
         blank=True,
     )  # 대표자
-    Depth = models.IntegerField()  # 깊이
     Admin = models.ForeignKey(  # 관리자
         "Human.Employee",
         related_name="AdminCom",
@@ -32,6 +31,7 @@ class Company(models.Model):
 
 
 class Department(models.Model):
+    DepartmentName = models.TextField(default=None)
     RootCom = models.ForeignKey(
         "Company", related_name="RootCom", on_delete=models.CASCADE, null=True
     )  # root 노드
@@ -47,3 +47,4 @@ class Department(models.Model):
         related_name="SelfCom",
         on_delete=models.CASCADE,
     )
+    Depth = models.IntegerField()  # 깊이

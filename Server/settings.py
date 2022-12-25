@@ -154,12 +154,16 @@ LOGGING = {
             "filename": os.path.join(BASE_DIR, "logs", "Server.log"),
             "formatter": "verbose",
         },
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
     },
     "loggers": {
         "django": {
-            "handlers": ["file"],
+            "handlers": ["console", "file"],
             "level": "DEBUG",
         },
-        "Server": {"handler": ["file"], "level": "DEBUG"},
+        "Server": {"handlers": ["console", "file"], "level": "DEBUG"},
     },
 }

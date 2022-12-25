@@ -8,7 +8,7 @@ class Employee(models.Model):
     PhoneNum = models.TextField()  # 문자열
     Email = models.EmailField()  # email 필드
     RootCom = models.ForeignKey(  # 외래키 가장 위에 있는 회사
-        "Company.Company", on_delete=models.CASCADE
+        "Company.Company", on_delete=models.CASCADE, null=True, blank=True
     )  # 고용인이 다니는 회사의 루트 회사(지주 회사)
     BelongCom = models.ForeignKey(
         "Company.Department", on_delete=models.CASCADE, null=True, blank=True

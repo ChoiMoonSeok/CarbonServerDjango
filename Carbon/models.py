@@ -21,7 +21,9 @@ class Carbon(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
-    CarbonInfo = models.ForeignKey("CarbonInfo", on_delete=models.SET_NULL, null=True)
+    CarbonInfo = models.ForeignKey(
+        "CarbonInfo", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
 
 # 탄소 사용량의 정보를 저장하는 테이블

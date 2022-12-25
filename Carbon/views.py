@@ -15,9 +15,10 @@ import func
 
 
 class CarbonEmissionQuery(APIView):
-    @swagger_auto_schema(operation_summary="탄소 배출량 목록 반환")
+    @swagger_auto_schema(operation_summary="요청한 회사의 모든 탄소 배출 행위 반환")
     def get(self, request, Depart, format=None):
-        """요청받은 부서, 회사의 모든 탄소 배출 목록을 리스트로 반환"""
+        """{Depart}를 통해 입력 받은 회사의 이름을 바탕으로, 해당 회사의 모든 탄소 배출 행위를 반환합니다.\n
+        해당 회사의 탄소 배출 뿐만 아니라 해당 회사의 자회사, 부서의 탄소 배출도 모두 포함합니다."""
 
         # 현재 사용자의 소속 회사와 요청받은 회사를 비교
         # if Depart ==

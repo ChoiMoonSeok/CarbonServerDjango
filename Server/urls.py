@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -52,26 +52,7 @@ urlpatterns = [
     ),
     # api의 url
     path("admin", admin.site.urls),
-    path(
-        "User/<str:Company>", views.User_EmployeeQuery.as_view(), name="get"
-    ),  # 조직설계에서 구성원 호출
-    path(
-        "Organization/<str:CompanyName>", views.CompanyQuery.as_view(), name="get"
-    ),  # 최상위회사 이름으로 조직 설계도 호출
-    path(
-        "Preview/<str:Depart>", views.PreviewQuery.as_view(), name="get"
-    ),  # 회사의 탄소 배출량 합계
-    path(
-        "PreviewInfo/<str:Depart>", views.PreviewInfoQuery.as_view(), name="put"
-    ),  # 회사의 정보 변경
-    path(
-        "CarbonEmission/<str:Depart>",
-        views.CarbonEmissionQuery.as_view(),
-        name="get",
-    ),
-    path(
-        "CarbonEmission/<str:Depart>",
-        views.CarbonEmissionQuery.as_view(),
-        name="post",
-    ),
+    path("User/", include("Human.urls")),
+    path("CarbonEmission/", include("Carbon.urls")),
+    path("Company/", include("Company.urls")),
 ]

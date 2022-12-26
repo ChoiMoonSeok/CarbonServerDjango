@@ -13,20 +13,20 @@ from . import serializer
 
 
 class CompanyQuery(APIView):
-    """
-    회사와 관련된 값들을 다루는 api
-    """
-
+    @swagger_auto_schema(operation_summary="조직 설계도를 반환하는 Api")
     def get(self, request, CompanyName, format=None):
         """
-        지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환.\
+        지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환합니다.\n
         ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
         """
         UserRoot = models.Company.objects.get(ComName="삼성")  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
         ComId = models.Company.objects.get(ComName=CompanyName)
+
         result = serializer.CompanySerializer(ComId)
         result = result.data
         result["Children"] = []
+
+        # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
         if ComId.id == UserRoot.id:
             func.getStruct(UserRoot, None, result)
         else:

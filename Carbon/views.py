@@ -15,14 +15,13 @@ import func
 
 
 class CarbonEmissionQuery(APIView):
-    @swagger_auto_schema(operation_summary="요청한 회사의 모든 탄소 배출 행위 반환")
+    @swagger_auto_schema(operation_summary="요청한 회사의 모든 탄소 배출원을 반환하는 Api")
     def get(self, request, Depart, format=None):
-        """{Depart}를 통해 입력 받은 회사의 이름을 바탕으로, 해당 회사의 모든 탄소 배출 행위를 반환합니다.\n
-        해당 회사의 탄소 배출 뿐만 아니라 해당 회사의 자회사, 부서의 탄소 배출도 모두 포함합니다.\n
-        하단의 Description에 탄소 배출원을 알고 싶은 회사의 사명을 입력하면 됩니다."""
+        """{Depart}를 통해 입력 받은 회사의 이름을 바탕으로, 해당 회사의 모든 탄소 배출원을 반환합니다.\n
+        해당 회사의 탄소 배출 뿐만 아니라 해당 회사의 자회사, 부서의 탄소 배출원도 모두 포함합니다.\n
+        하단의 Description에 탄소 배출원을 알고 싶은 회사의 사명을 입력하면 됩니다.\n
+        탄소 배출원 예) 홍길동 교수님 출장, 탄소 배출량 20"""
 
-        # 현재 사용자의 소속 회사와 요청받은 회사를 비교
-        # if Depart ==
         try:  # 요청받은 회사가 루트가 아닌 경우
             Root_id = ComModel.Department.objects.get(
                 DepartmentName=Depart  # 로그인이 구현된 이후에는 사용자의 root와 비교

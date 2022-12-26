@@ -1,16 +1,27 @@
 from rest_framework import serializers
+
 from . import models
+from Company import models as ComModel
+from Company import serializer as ComSerial
 
-# Carbon 직렬화(객체를 json으로 변환)
+
+class CarbonInfoSerializer(serializers.ModelSerializer):  # carbonInfo 모델을 json으로 변환
+    class Meta:
+        model = models.CarbonInfo
+        fields = "__all__"
 
 
-class CarbonSerializer(serializers.ModelSerializer):
+class CarbonSerializer(serializers.ModelSerializer):  # carbon 모델을 json으로 변환
     class Meta:
         model = models.Carbon
         exclude = ["RootCom", "BelongCom", "CarbonInfo"]
 
 
-class CarbonInfoSerializer(serializers.ModelSerializer):
+class CarbonTotalSerializer(serializers.ModelSerializer):
+    CarbonInfo = CarbonInfoSerializer()
+    RootCom = ComSerial.CompanySerializer()
+    BelongCom = ComSerial.CompanySerializer()
+
     class Meta:
-        model = models.CarbonInfo
+        model = models.Carbon
         fields = "__all__"

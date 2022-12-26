@@ -1,6 +1,7 @@
 from Company import models as ComModel
 from Human import models as HuModel
 from Carbon import models as CarMode
+from Company import serializer
 
 CarbonCategory = [
     "고정연소",
@@ -22,25 +23,18 @@ CarbonCategory = [
 
 
 # 조직 구조를 반환하는 함수
-def put_struct(result, Company):
-    if Company["upper"] == None:
-        result["Children"].append(Company)
-        return 0
-    elif result["depth"] == Company["depth"] - 1:
-        if result["id"] == Company["upper"]:
-            result["Children"].append(Company)
-        else:
-            return 0
+def getStruct(RootCom, HeadCom, result):
+    data = ComModel.Department.objects.filter(RootCom=RootCom, BelongCom=HeadCom)
+    print(data)
+    if type(data) == None:
+        return None
     else:
-        if len(result["Children"]) != 0:
-            for i in range(len(result["Children"])):
-                temp = result["Children"][i]
-                put_struct(temp, Company)
-        else:
-            if result["id"] == Company["upper"]:
-                result["Children"].append(Company)
-            else:
-                return 0
+        for Depart in data:
+            temp = serializer.CompanySerializer(Depart.SelfCom)
+            temp = temp.data
+            temp["Children"] = []
+            result["Children"].append(temp)
+            getStruct(RootCom, Depart.SelfCom, result["Children"][-1])
 
 
 def getChildCom(RootCom, HeadCom, Children):

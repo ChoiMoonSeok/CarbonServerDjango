@@ -7,6 +7,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 
+import func
+from . import models
+from . import serializer
+
 
 class CompanyQuery(APIView):
     """
@@ -18,23 +22,15 @@ class CompanyQuery(APIView):
         지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환.\
         ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
         """
-        ComId = Company.objects.get(ComName=CompanyName)
-        Departments = Department.objects.filter(Mother=ComId)
-        serializer = DepartmentSerializer(Departments, many=True)
-
-        result = {
-            "DepartmentName": CompanyName,
-            "depth": 0,
-            "Scope1": ComId.Scope1,
-            "Scope2": ComId.Scope2,
-            "Scope3": ComId.Scope3,
-            "Children": [],
-        }
-
-        for i in serializer.data:
-            i = dict(i)
-            i["Children"] = []
-            func.put_struct(result, i)
+        UserRoot = models.Company.objects.get(ComName="삼성")  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+        ComId = models.Company.objects.get(ComName=CompanyName)
+        result = serializer.CompanySerializer(ComId)
+        result = result.data
+        result["Children"] = []
+        if ComId.id == UserRoot.id:
+            func.getStruct(UserRoot, None, result)
+        else:
+            func.getStruct(UserRoot, ComId, result)
 
         return Response(result, status=status.HTTP_201_CREATED)
 

@@ -18,7 +18,8 @@ class CarbonEmissionQuery(APIView):
     @swagger_auto_schema(operation_summary="요청한 회사의 모든 탄소 배출 행위 반환")
     def get(self, request, Depart, format=None):
         """{Depart}를 통해 입력 받은 회사의 이름을 바탕으로, 해당 회사의 모든 탄소 배출 행위를 반환합니다.\n
-        해당 회사의 탄소 배출 뿐만 아니라 해당 회사의 자회사, 부서의 탄소 배출도 모두 포함합니다."""
+        해당 회사의 탄소 배출 뿐만 아니라 해당 회사의 자회사, 부서의 탄소 배출도 모두 포함합니다.\n
+        하단의 Description에 탄소 배출원을 알고 싶은 회사의 사명을 입력하면 됩니다."""
 
         # 현재 사용자의 소속 회사와 요청받은 회사를 비교
         # if Depart ==
@@ -52,10 +53,12 @@ class CarbonEmissionQuery(APIView):
 
             return Response(CarbonList, status=status.HTTP_201_CREATED)
 
-    @swagger_auto_schema(operation_summary="Carbon")
+    @swagger_auto_schema(
+        operation_summary="Carbon", request_body=serializer.CarbonSerializer
+    )
     def post(self, request, Depart, format=None):
         """탄소 사용량 데이터 입력"""
-        InputData = json.loads(request.body)
+        InputData = request.data
         Mother_id = User_root
         chief_id = User_Employee.objects.get(Name=InputData["chief"], Mother=Mother_id)
         Mother_id_upper = Company.objects.get(ComName=Mother_id)

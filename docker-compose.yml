@@ -30,9 +30,9 @@ services:
   carbon_mysql:
     image: mysql
     volumes:
-      - CarbonVol:/var/lib/mysql
+      - ${DB_VOLUME}:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=carbon1028
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     networks:
       - default
       - carbon

@@ -1,5 +1,6 @@
 db_config.py
 setDjango.sh
 config.py
+.env
 mysql
 logs

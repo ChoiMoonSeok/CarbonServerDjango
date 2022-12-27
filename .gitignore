@@ -4,3 +4,7 @@ config.py
 .env
 mysql
 logs
+Carbon/migrations/
+Company/migrations/
+Human/migrations/
+

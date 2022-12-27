@@ -1,0 +1,40 @@
+version: "3"
+
+networks:
+  carbon:
+    driver: bridge
+
+volumes:
+  CarbonVol:
+    external: true
+
+services:
+  carbon_app_server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home
+    links:
+      - "carbon_mysql:db"
+    ports:
+      - "8000:8000"
+    networks:
+      - default
+      - carbon
+    container_name: CarbonAppServer
+    depends_on:
+      - carbon_mysql
+    restart: always
+
+  carbon_mysql:
+    image: mysql
+    volumes:
+      - CarbonVol:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=carbon1028
+    networks:
+      - default
+      - carbon
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: carbon_mysql

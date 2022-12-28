@@ -13,27 +13,6 @@ def CreateSamsung():
         JobPos="회장",
         IdentityNum="1",
     )
-    HuModel.Employee.objects.create(
-        Name="노태문",
-        PhoneNum="123456789",
-        Email="1234@naver.com",
-        JobPos="사장",
-        IdentityNum="2",
-    )
-    HuModel.Employee.objects.create(
-        Name="고동진",
-        PhoneNum="123456789",
-        Email="12345@naver.com",
-        JobPos="사원",
-        IdentityNum="3",
-    )
-    HuModel.Employee.objects.create(
-        Name="경계현",
-        PhoneNum="123456789",
-        Email="123456@naver.com",
-        JobPos="대리",
-        IdentityNum="4",
-    )
     ComModel.Company.objects.create(
         ComName="삼성",
         Scope1=0,
@@ -123,4 +102,31 @@ def CreateSamsung():
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="삼성"),
         BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성전자"),
+    )
+    HuModel.Employee.objects.create(
+        Name="노태문",
+        PhoneNum="123456789",
+        Email="1234@naver.com",
+        JobPos="사장",
+        IdentityNum="2",
+        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        BelongCom=ComModel.Department.objects.get(DepartmentName="삼성전자"),
+    )
+    HuModel.Employee.objects.create(
+        Name="고동진",
+        PhoneNum="123456789",
+        Email="12345@naver.com",
+        JobPos="사원",
+        IdentityNum="3",
+        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        BelongCom=ComModel.Department.objects.get(DepartmentName="삼성생명"),
+    )
+    HuModel.Employee.objects.create(
+        Name="경계현",
+        PhoneNum="123456789",
+        Email="123456@naver.com",
+        JobPos="대리",
+        IdentityNum="4",
+        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        BelongCom=ComModel.Department.objects.get(DepartmentName="삼성디스플레이"),
     )

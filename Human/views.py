@@ -7,9 +7,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 
-# 사용자에 대한 api 함수
+from Human import models as HuModel
+from Human import serializer
+from Company import models as ComModel
+import func
 
-User_root = "삼성"
+# 사용자에 대한 api 함수
 
 
 class User_EmployeeQuery(APIView):
@@ -20,6 +23,34 @@ class User_EmployeeQuery(APIView):
     """
 
     def get(self, request, Company, format=None):
-        Users = User_Employee.objects.filter(Company=Company)
-        serializer = User_EmployeeSerializer(Users, many=True)
-        return Response(serializer.data)
+        U_Root = ComModel.Company.objects.get(ComName="삼성")  # 로그인 구현 후 변경 예정
+        try:
+            Root = ComModel.Department.objects.get(
+                RootCom=U_Root, DepartmentName=Company
+            )
+        except ComModel.Department.DoesNotExist:
+            try:
+                Root = ComModel.Company.objects.get(ComName=Company)
+            except ComModel.Company.DoesNotExist:
+                return Response(
+                    "This Company does not exist", status=status.HTTP_404_NOT_FOUND
+                )
+
+        if type(Root) == ComModel.Company:
+            Employee = HuModel.Employee.objects.filter(RootCom=Root)
+            serial = serializer.EmployeeSerializer(Employee, many=True)
+            return Response(serial.data, status=status.HTTP_200_OK)
+
+        else:
+            Departs = [Root]
+            func.getChildDepart(U_Root, Root.SelfCom, Departs)
+
+            Employee = []
+            for depart in Departs:
+
+                temp = HuModel.Employee.objects.filter(RootCom=U_Root, BelongCom=depart)
+                serial = serializer.EmployeeSerializer(temp, many=True)
+
+                Employee.append(serial.data)
+
+            return Response(Employee, status=status.HTTP_200_OK)

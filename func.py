@@ -44,3 +44,13 @@ def getChildDepart(RootCom, HeadCom, Children):
         for Depart in data:
             Children.append(Depart)
             getChildDepart(RootCom, Depart.SelfCom, Children)
+
+
+def getChildCom(RootCom, HeadCom, Children):
+    data = ComModel.Department.objects.filter(RootCom=RootCom, BelongCom=HeadCom)
+    if type(data) == None:
+        return None
+    else:
+        for Depart in data:
+            Children.append(Depart.SelfCom)
+            getChildDepart(RootCom, Depart.SelfCom, Children)

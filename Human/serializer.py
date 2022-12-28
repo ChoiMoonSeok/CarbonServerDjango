@@ -1,16 +1,22 @@
 from rest_framework import serializers
-from . import models
+
+from Human import models as HuModel
+from Company import models as ComModel
+from Company import serializer as ComSerial
 
 # Employee 직렬화(객체를 json으로 변환)
 
 
 class EmployeeSerializer(serializers.ModelSerializer):  # 모델 전체를 직렬화(json 변환)
+    BelongCom = ComSerial.DepartmentSerializer()
+    BelongCom = BelongCom.data["DepartmentName"]
+
     class Meta:
-        model = models.Employee
-        fields = "__all__"
+        model = HuModel.Employee
+        exclude = ["RootCom"]
 
 
 class UserSerializer(serializers.ModelSerializer):  # 모델 전체를 직렬화(json 변환)
     class Meta:
-        model = models.User
+        model = HuModel.User
         fields = "__all__"

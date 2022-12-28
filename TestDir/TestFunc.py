@@ -90,7 +90,7 @@ def CreateSamsung():
         CarbonUnit="kg",
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="삼성"),
-        BelongCom=ComModel.Company.objects.get(ComName="삼성"),
+        BelongDepart=None,
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="김재호 교수 출장",
@@ -98,7 +98,7 @@ def CreateSamsung():
         CarbonUnit="kg",
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="삼성"),
-        BelongCom=ComModel.Company.objects.get(ComName="삼성전자"),
+        BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성전자"),
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="정혜미 출장",
@@ -106,7 +106,7 @@ def CreateSamsung():
         CarbonUnit="kg",
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="삼성"),
-        BelongCom=ComModel.Company.objects.get(ComName="삼성디스플레이"),
+        BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성디스플레이"),
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="정대호 출장",
@@ -114,7 +114,7 @@ def CreateSamsung():
         CarbonUnit="kg",
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="삼성"),
-        BelongCom=ComModel.Company.objects.get(ComName="삼성생명"),
+        BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성생명"),
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="최문석 출장",
@@ -122,5 +122,5 @@ def CreateSamsung():
         CarbonUnit="kg",
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="삼성"),
-        BelongCom=ComModel.Company.objects.get(ComName="삼성전자"),
+        BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성전자"),
     )

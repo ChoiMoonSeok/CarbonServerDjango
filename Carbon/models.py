@@ -15,11 +15,12 @@ class Carbon(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )  # root 노드
-    BelongCom = models.ForeignKey(
-        "Company.Company",
-        related_name="BelongComCarbon",
+    BelongDepart = models.ForeignKey(
+        "Company.Department",
+        related_name="BelongDepartCarbon",
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     CarbonInfo = models.ForeignKey(
         "CarbonInfo", on_delete=models.SET_NULL, null=True, blank=True

@@ -41,12 +41,14 @@ class CarbonEmissionQuery(APIView):
             return Response(serial.data, status=status.HTTP_201_CREATED)
 
         else:  # 요청 받은 회사가 루트, 모회사가 아닌 경우
-            Coms = [Root_id.SelfCom]
-            func.getChildCom(Root_id.RootCom, Root_id.SelfCom, Coms)
+            Coms = [Root_id]
+            func.getChildDepart(Root_id.RootCom, Root_id.SelfCom, Coms)
 
             CarbonList = []
+
             for Com in Coms:
-                temp = CarModel.Carbon.objects.filter(BelongCom=Com)
+
+                temp = CarModel.Carbon.objects.filter(BelongDepart=Com)
                 serial = serializer.CarbonSerializer(temp, many=True)
                 CarbonList += serial.data
 

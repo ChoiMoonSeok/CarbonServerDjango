@@ -25,7 +25,6 @@ CarbonCategory = [
 # 조직 구조를 반환하는 함수
 def getStruct(RootCom, HeadCom, result):
     data = ComModel.Department.objects.filter(RootCom=RootCom, BelongCom=HeadCom)
-    print(data)
     if type(data) == None:
         return None
     else:
@@ -37,11 +36,11 @@ def getStruct(RootCom, HeadCom, result):
             getStruct(RootCom, Depart.SelfCom, result["Children"][-1])
 
 
-def getChildCom(RootCom, HeadCom, Children):
+def getChildDepart(RootCom, HeadCom, Children):
     data = ComModel.Department.objects.filter(RootCom=RootCom, BelongCom=HeadCom)
     if type(data) == None:
         return None
     else:
         for Depart in data:
-            Children.append(Depart.SelfCom)
-            getChildCom(RootCom, Depart.SelfCom, Children)
+            Children.append(Depart)
+            getChildDepart(RootCom, Depart.SelfCom, Children)

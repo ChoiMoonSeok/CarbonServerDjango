@@ -8,8 +8,9 @@ from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 
 import func
-from . import models
-from . import serializer
+from Company import models as ComModel
+from Company import serializer as ComSerial
+from Human import models as HuModel
 
 
 class CompanyQuery(APIView):
@@ -22,10 +23,12 @@ class CompanyQuery(APIView):
         지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환합니다.\n
         ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
         """
-        UserRoot = models.Company.objects.get(ComName="삼성")  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
-        ComId = models.Company.objects.get(ComName=CompanyName)
+        UserRoot = ComModel.Company.objects.get(
+            ComName="삼성"
+        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+        ComId = ComModel.Company.objects.get(ComName=CompanyName)
 
-        result = serializer.CompanySerializer(ComId)
+        result = ComSerial.CompanySerializer(ComId)
         result = result.data
         result["Children"] = []
 
@@ -39,64 +42,73 @@ class CompanyQuery(APIView):
 
 
 class PreviewQuery(APIView):
-    """
-    프리뷰와 관련된 내용을 다루는 api
-    """
-
+    @swagger_auto_schema(operation_summary="Preview 화면에서 필요한 값들을 반환하는 Api")
     def get(self, request, Depart, format=None):
-        """요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환"""
+        """
+        요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환\n
+        수식의 입력이 완료된 이후 개발이 진행될 필요성이 보임
+        """
 
         # 요청한 user의 모회사 확인
-        # Mother = User_Employee.objects.get(UID=jwt에서 추출한 id).Mother
-        Mother = User_root
+        UserRoot = ComModel.Company.objects.get(
+            ComName="삼성"
+        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
 
-        # root의 id와 Department의 id 가져오기
-        Root_Id = Company.objects.get(ComName=Mother)
-        Upper_Id = Department.objects.get(DepartmentName=Depart)
-        Data = Carbon.objects.filter(Mother=Root_Id, upper=Upper_Id)
-
-        ans = {}
-
-        for i in Data:
-            try:
-                ans[func.CarbonCategory[i.Category]] += i.CarbonEmission
-            except KeyError:
-                ans[func.CarbonCategory[i.Category]] = i.CarbonEmission
-
-        return Response(ans, status=status.HTTP_201_CREATED)
+        HeadDepart = ComModel.Department.objects.get(DepartmentName=Depart)
 
 
 class PreviewInfoQuery(APIView):
+    @swagger_auto_schema(
+        operation_summary="Company 혹은 Department의 데이터를 변경하는 Api",
+        request_body=ComSerial.CompanySerializer,
+        responses={202: "데이터가 문제없이 변경 됨", 406: "입력한 데이터에 오류가 있음, 수정 요함"},
+    )
     def put(self, request, Depart, format=None):
-        """요청한 부서 혹은 회사의 정보를 변경"""
+        """
+        요청한 부서 혹은 회사의 정보를 변경\n
+        아래 data에 Scope1, 2, 3을 제외한 나머지 값들은 모두 채워져 있어야만 변경이 가능\n
+        Chief와 Admin의 경우 해당 회사, 부서의 책임자와 관리자의 이름을 각각 입력\n
+        """
 
         request = json.loads(request.body)
 
+        UserRoot = ComModel.Company.objects.get(
+            ComName="삼성"
+        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+
         # 요청받은 즉 변경할 row 가져오기
         try:
-            ChangeData = Company.objects.get(ComName=Depart)
-            ChangeData.ComName = request["DepartName"]
+            ChangeData = ComModel.Department.objects.get(
+                RootCom=UserRoot, DepartmentName=Depart
+            )
+        except ComModel.Department.DoesNotExist:  # 변경할 것이 루트인 경우
+            ChangeData = ComModel.Company.objects.get(ComName=Depart)
+
+        if type(ChangeData) == ComModel.Department:
+            ChangeData = ChangeData.SelfCom
+
+        # 데이터 변경
+        try:
+
+            ChangeData.ComName = request["ComName"]
             ChangeData.Classification = request["Classification"]
-            ChangeData.chief = User_Employee.objects.get(Name=request["chief"])
+            ChangeData.Chief = HuModel.Employee.objects.get(Name=request["Chief"])
             ChangeData.Description = request["Description"]
-            ChangeData.admin = User_Employee.objects.get(Name=request["admin"])
-            ChangeData.location = request["location"]
+            ChangeData.Admin = HuModel.Employee.objects.get(Name=request["Admin"])
+            ChangeData.Location = request["Location"]
             ChangeData.save()
 
-            serializer = CompanySerializer(ChangeData)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serial = ComSerial.CompanySerializer(ChangeData)
 
-        except Company.DoesNotExist:
-            Mother_id = Company.objects.get(ComName=User_root)  # user의 모회사 확인
+            return Response(serial.data, status=status.HTTP_202_ACCEPTED)
 
-            ChangeData = Department.objects.get(Mother=Mother_id, DepartmentName=Depart)
-            ChangeData.DepartmentName = request["DepartName"]
-            ChangeData.Classification = request["Classification"]
-            ChangeData.chief = User_Employee.objects.get(Name=request["chief"])
-            ChangeData.Description = request["Description"]
-            ChangeData.admin = User_Employee.objects.get(Name=request["admin"])
-            ChangeData.location = request["location"]
-            ChangeData.save()
-
-            serializer = DepartmentSerializer(ChangeData)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except KeyError:  # request가 완전히 채워지지 않았음
+            Response(
+                "Please enter a whole data.",
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+        except ValueError:  # 틀린 데이터가 있는 경우
+            Response(
+                "Please enter a correct data.",
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )

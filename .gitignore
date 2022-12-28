@@ -7,4 +7,4 @@ logs
 Carbon/migrations/
 Company/migrations/
 Human/migrations/
-
+__pycache__

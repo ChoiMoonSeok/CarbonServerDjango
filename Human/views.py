@@ -16,13 +16,15 @@ import func
 
 
 class User_EmployeeQuery(APIView):
-    """
-    모든 사용자를 리스트 형태로 반환하는 Api
-    ---
-    # 사용자
-    """
-
+    @swagger_auto_schema(
+        operation_summary="입력한 회사와 그 자회사의 모든 직원을 가져오는 Api",
+        responses={200: "API가 정상적으로 동작하고 종료 됨", 404: "입력한 회사가 존재하지 않음"},
+    )
     def get(self, request, Company, format=None):
+        """
+        입력한 회사와 해당 회사의 자회사의 모든 소속 직원들의 정보를 가져옵니다.
+        ex) 삼성전자를 호출하면 삼성전자의 모든 직원과 삼성전자의 자회사인 삼성디스플레이의 모든 직원이 반환 됨
+        """
         U_Root = ComModel.Company.objects.get(ComName="삼성")  # 로그인 구현 후 변경 예정
         try:
             Root = ComModel.Department.objects.get(

@@ -13,7 +13,10 @@ from . import serializer
 
 
 class CompanyQuery(APIView):
-    @swagger_auto_schema(operation_summary="조직 설계도를 반환하는 Api")
+    @swagger_auto_schema(
+        operation_summary="조직 설계도를 반환하는 Api",
+        responses={201: "API가 정상적으로 실행 됨", 200: "API가 정상적으로 실행 됨"},
+    )
     def get(self, request, CompanyName, format=None):
         """
         지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환합니다.\n
@@ -32,7 +35,7 @@ class CompanyQuery(APIView):
         else:
             func.getStruct(UserRoot, ComId, result)
 
-        return Response(result, status=status.HTTP_201_CREATED)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class PreviewQuery(APIView):

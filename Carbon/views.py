@@ -15,7 +15,10 @@ import func
 
 
 class CarbonEmissionQuery(APIView):
-    @swagger_auto_schema(operation_summary="요청한 회사의 모든 탄소 배출원을 반환하는 Api")
+    @swagger_auto_schema(
+        operation_summary="요청한 회사의 모든 탄소 배출원을 반환하는 Api",
+        responses={404: "입력한 회사가 존재하지 않음", 201: "API가 정상적으로 실행 됨"},
+    )
     def get(self, request, Depart, format=None):
         """{Depart}를 통해 입력 받은 회사의 이름을 바탕으로, 해당 회사의 모든 탄소 배출원을 반환합니다.\n
         해당 회사의 탄소 배출 뿐만 아니라 해당 회사의 자회사, 부서의 탄소 배출원도 모두 포함합니다.\n
@@ -30,7 +33,10 @@ class CarbonEmissionQuery(APIView):
             try:
                 Root_id = ComModel.Company.objects.get(ComName=Depart)
             except ComModel.Company.DoesNotExist:  # 요청받은 회사가 존재하지 않는 경우
-                return Response("This Company/Department doesn't exist.")
+                return Response(
+                    "This Company/Department doesn't exist.",
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
         # 요청받은 회사가 루트인 경우
         if type(Root_id) == ComModel.Company:

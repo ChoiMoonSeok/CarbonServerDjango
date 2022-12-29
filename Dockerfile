@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends; \
     apt-get install python3-dev;\
     pip install mysqlclient;\
     pip install gunicorn;\
-    pip install drf_yasg;
+    pip install drf_yasg;\
+    pip install tzdata
 
 CMD cd /; . /venv/bin/activate;\
     cd /; cd /home;\

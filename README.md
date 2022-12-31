@@ -16,19 +16,49 @@ SECRET_KEY = "본인이 선택한 비밀 암호화 키"
 
 
 DATABASES = {
+
+
+
     "default": {
+
+
+
         "ENGINE": "django.db.backends.mysql",
+
+
+
         "NAME": "mysql에서 본인이 생성한 데이터베이스의 이름",
+
+
+
         "USER": "root",
+
+
+
         "PASSWORD": "본인이 선택한 비밀번호",
+
+
+
         "HOST": "db"
+
+
+
     }
+
+
+
 }
 
 
 ## .env 예시
 MYSQL_ROOT_PASSWORD="본인이 설정한 mysql의 루트 비밀번호"
+
+
+
 DB_VOLUME="데이터를 저장할 볼륨 이름"
+
+
+
 CARBON_PORT=본인이 사용할 포트 번호
 
 # Api 명세 및 사용법

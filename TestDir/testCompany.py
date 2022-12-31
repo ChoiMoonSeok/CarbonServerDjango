@@ -35,5 +35,20 @@ class CompanyStructTest(TestCase):
             content_type="application/json",
         )
         data = json.loads(response.content)
-        print(data)
         self.assertEqual(data["ComName"], "순양")
+
+    def testCompanyNotExist(self):
+        response = self.client.put(
+            "/Company/PreviewInfo/삼성자동차",
+            {
+                "ComName": "순양",
+                "Classification": "모회사",
+                "Description": "재벌집 막내 아들",
+                "Location": "서울",
+                "Chief": "이재용",
+                "Admin": "이재용",
+            },
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "This Company/Department does not exist.")

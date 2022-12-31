@@ -82,7 +82,13 @@ class PreviewInfoQuery(APIView):
                 RootCom=UserRoot, DepartmentName=Depart
             )
         except ComModel.Department.DoesNotExist:  # 변경할 것이 루트인 경우
-            ChangeData = ComModel.Company.objects.get(ComName=Depart)
+            try:
+                ChangeData = ComModel.Company.objects.get(ComName=Depart)
+            except ComModel.Company.DoesNotExist:  # 요청한 회사가 존재하지 않음
+                return Response(
+                    "This Company/Department does not exist.",
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
         if type(ChangeData) == ComModel.Department:
             ChangeData = ChangeData.SelfCom

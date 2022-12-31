@@ -18,7 +18,7 @@ services:
     links:
       - "carbon_mysql:db"
     ports:
-      - "8000:8000"
+      - "${CARBON_PORT}:8000"
     networks:
       - default
       - carbon

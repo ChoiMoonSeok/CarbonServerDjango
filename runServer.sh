@@ -10,10 +10,17 @@ sudo mv .env ..
 
 # db schema migration 파일 유지
 sudo mv Carbon/migrations ..
+cd ..
 sudo mv migrations Car_migrate
+
+cd CarbonServerDjango
 sudo mv Company/migrations ..
+cd ..
 sudo mv migrations Com_migrate
+
+cd CarbonServerDjango
 sudo mv Human/migrations ..
+cd ..
 sudo mv migrations Hu_migrate
 
 # 구형 코드 삭제

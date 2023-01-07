@@ -25,7 +25,7 @@ class User_EmployeeQuery(APIView):
         입력한 회사와 해당 회사의 자회사의 모든 소속 직원들의 정보를 가져옵니다.
         ex) 삼성전자를 호출하면 삼성전자의 모든 직원과 삼성전자의 자회사인 삼성디스플레이의 모든 직원이 반환 됨
         """
-        U_Root = ComModel.Company.objects.get(ComName="삼성")  # 로그인 구현 후 변경 예정
+        U_Root = ComModel.Company.objects.get(ComName="samsung")  # 로그인 구현 후 변경 예정
         try:
             Root = ComModel.Department.objects.get(
                 RootCom=U_Root, DepartmentName=Company

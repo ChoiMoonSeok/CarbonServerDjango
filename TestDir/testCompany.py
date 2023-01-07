@@ -57,3 +57,8 @@ class CompanyStructTest(TestCase):
         response = self.client.get("/Company/Organization/Simple/삼성전자")
         data = json.loads(response.content)
         self.assertEqual(data[0]["category"], 1)
+
+    def testPreviewGet(self):
+        response = self.client.get("/Company/Preview/삼성")
+        data = json.loads(response.content)
+        self.assertEqual(data[0]["category"], 1)

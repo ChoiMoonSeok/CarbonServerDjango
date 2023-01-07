@@ -9,6 +9,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 import func
 from Company import models as ComModel
+from Carbon import models as CarModel
 from Company import serializer as ComSerial
 from Human import models as HuModel
 
@@ -24,7 +25,7 @@ class CompanyQuery(APIView):
         ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
         """
         UserRoot = ComModel.Company.objects.get(
-            ComName="삼성"
+            ComName="samsung"
         )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
         ComId = ComModel.Company.objects.get(ComName=CompanyName)
 
@@ -44,18 +45,31 @@ class CompanyQuery(APIView):
 class CompanySimpleQuery(CompanyQuery):
     def get(self, request, CompanyName, format=None):
         UserRoot = ComModel.Company.objects.get(
-            ComName="삼성"
+            ComName="samsung"
         )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
-        ComId = ComModel.Company.objects.get(ComName=CompanyName)
+        try:
+            ComId = ComModel.Department.objects.get(
+                DepartmentName=CompanyName, RootCom=UserRoot
+            )
+        except ComModel.Department.DoesNotExist:
+            ComId = UserRoot
 
         result = []
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
-        if ComId.id == UserRoot.id:
+        if type(ComId) == ComModel.Company:
             func.getChildDepart(UserRoot, None, result)
+            ans = [{"category": 1, "image": None, "name": ComId.ComName, "check": None}]
         else:
-            func.getChildDepart(UserRoot, ComId, result)
+            func.getChildDepart(UserRoot, ComId.SelfCom, result)
+            ans = [
+                {
+                    "category": 1,
+                    "image": None,
+                    "name": ComId.DepartmentName,
+                    "check": None,
+                }
+            ]
 
-        ans = [{"category": 1, "image": None, "name": ComId.ComName, "check": None}]
         for depart in result:
             ans.append(
                 {
@@ -79,10 +93,39 @@ class PreviewQuery(APIView):
 
         # 요청한 user의 모회사 확인
         UserRoot = ComModel.Company.objects.get(
-            ComName="삼성"
+            ComName="samsung"
         )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
 
-        HeadDepart = ComModel.Department.objects.get(DepartmentName=Depart)
+        try:
+            HeadDepart = ComModel.Department.objects.get(
+                DepartmentName=Depart, RootCom=UserRoot
+            )
+        except ComModel.Department.DoesNotExist:
+            HeadDepart = UserRoot
+
+        Departs = []
+        # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
+        if type(HeadDepart) == ComModel.Company:
+            func.getChildDepart(UserRoot, None, Departs)
+        else:
+            func.getChildDepart(UserRoot, HeadDepart, Departs)
+
+        Carbons = []
+        for depart in Departs:
+            temp = CarModel.Carbon.objects.get(BelongDepart=depart)
+            Carbons.append(temp)
+            print(Carbons)
+
+        scope1 = 0
+        scope2 = 0
+        scope3 = 0
+        for car in Carbons:
+            if car.CarbonInfo == 1:
+                scope1 += car.CarbonTrans
+            elif car.CarbonInfo == 2:
+                scope2 += car.CarbonTrans
+            elif car.CarbonInfo == 3:
+                scope3 += car.CarbonTrans
 
 
 class PreviewInfoQuery(APIView):
@@ -101,7 +144,7 @@ class PreviewInfoQuery(APIView):
         request = json.loads(request.body)
 
         UserRoot = ComModel.Company.objects.get(
-            ComName="삼성"
+            ComName="samsung"
         )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
 
         # 요청받은 즉 변경할 row 가져오기

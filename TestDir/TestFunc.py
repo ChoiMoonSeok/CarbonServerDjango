@@ -14,7 +14,7 @@ def CreateSamsung():
         IdentityNum="1",
     )
     ComModel.Company.objects.create(
-        ComName="삼성",
+        ComName="samsung",
         Scope1=0,
         Scope2=0,
         Scope3=0,
@@ -31,7 +31,7 @@ def CreateSamsung():
         DepartmentName="삼성전자",
         Depth=1,
         BelongCom=None,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         SelfCom=ComModel.Company.objects.get(ComName="삼성전자"),
     )
     ComModel.Company.objects.create(
@@ -45,7 +45,7 @@ def CreateSamsung():
         DepartmentName="삼성생명",
         Depth=1,
         BelongCom=None,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         SelfCom=ComModel.Company.objects.get(ComName="삼성생명"),
     )
     ComModel.Company.objects.create(
@@ -59,49 +59,93 @@ def CreateSamsung():
         DepartmentName="삼성디스플레이",
         Depth=2,
         BelongCom=ComModel.Company.objects.get(ComName="삼성전자"),
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         SelfCom=ComModel.Company.objects.get(ComName="삼성디스플레이"),
     )
-
-    CarModel.Carbon.objects.create(
-        CarbonActivity="김재호 교수 출장",
-        CarbonData=20.0,
-        CarbonUnit="kg",
-        CarbonTrans=20.0,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
-        BelongDepart=None,
+    CarModel.CarbonInfo.objects.create(
+        id=1,
+        StartDate=datetime.date.today(),
+        EndDate=datetime.date.today(),
+        Location="진주",
+        Scope=1,
+        Category=12,
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="김재호 교수 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
         CarbonTrans=20.0,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
+        BelongDepart=None,
+        CarbonInfo=CarModel.CarbonInfo.objects.get(id=1),
+    )
+    CarModel.CarbonInfo.objects.create(
+        id=2,
+        StartDate=datetime.date.today(),
+        EndDate=datetime.date.today(),
+        Location="진주",
+        Scope=1,
+        Category=12,
+    )
+    CarModel.Carbon.objects.create(
+        CarbonActivity="김재호 교수 출장",
+        CarbonData=20.0,
+        CarbonUnit="kg",
+        CarbonTrans=20.0,
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성전자"),
+        CarbonInfo=CarModel.CarbonInfo.objects.get(id=2),
+    )
+    CarModel.CarbonInfo.objects.create(
+        id=3,
+        StartDate=datetime.date.today(),
+        EndDate=datetime.date.today(),
+        Location="진주",
+        Scope=2,
+        Category=11,
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="정혜미 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
         CarbonTrans=20.0,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성디스플레이"),
+        CarbonInfo=CarModel.CarbonInfo.objects.get(id=3),
+    )
+    CarModel.CarbonInfo.objects.create(
+        id=4,
+        StartDate=datetime.date.today(),
+        EndDate=datetime.date.today(),
+        Location="진주",
+        Scope=2,
+        Category=11,
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="정대호 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
         CarbonTrans=20.0,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성생명"),
+        CarbonInfo=CarModel.CarbonInfo.objects.get(id=4),
+    )
+    CarModel.CarbonInfo.objects.create(
+        id=5,
+        StartDate=datetime.date.today(),
+        EndDate=datetime.date.today(),
+        Location="진주",
+        Scope=3,
+        Category=10,
     )
     CarModel.Carbon.objects.create(
         CarbonActivity="최문석 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
         CarbonTrans=20.0,
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성전자"),
+        CarbonInfo=CarModel.CarbonInfo.objects.get(id=5),
     )
     HuModel.Employee.objects.create(
         Name="노태문",
@@ -109,7 +153,7 @@ def CreateSamsung():
         Email="1234@naver.com",
         JobPos="사장",
         IdentityNum="2",
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongCom=ComModel.Department.objects.get(DepartmentName="삼성전자"),
     )
     HuModel.Employee.objects.create(
@@ -118,7 +162,7 @@ def CreateSamsung():
         Email="12345@naver.com",
         JobPos="사원",
         IdentityNum="3",
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongCom=ComModel.Department.objects.get(DepartmentName="삼성생명"),
     )
     HuModel.Employee.objects.create(
@@ -127,6 +171,6 @@ def CreateSamsung():
         Email="123456@naver.com",
         JobPos="대리",
         IdentityNum="4",
-        RootCom=ComModel.Company.objects.get(ComName="삼성"),
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongCom=ComModel.Department.objects.get(DepartmentName="삼성디스플레이"),
     )

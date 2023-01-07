@@ -11,7 +11,7 @@ class EmployeeTest(TestCase):
         TestFunc.CreateSamsung()
 
     def testRootGet(self):
-        response = self.client.get("/User/삼성")
+        response = self.client.get("/User/samsung")
         data = json.loads(response.content)
         self.assertEqual(len(data), 3)
 

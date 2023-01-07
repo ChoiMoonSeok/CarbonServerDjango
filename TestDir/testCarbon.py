@@ -14,7 +14,7 @@ class CarbonGetTest(TestCase):
         TestFunc.CreateSamsung()
 
     def testCarbonGetRoot(self):
-        response = self.client.get("/CarbonEmission/{}".format("삼성"))
+        response = self.client.get("/CarbonEmission/{}".format("samsung"))
         data = json.loads(response.content)
         self.assertEquals(len(data), 5)
     

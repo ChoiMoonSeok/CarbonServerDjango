@@ -15,7 +15,7 @@ class CompanyStructTest(TestCase):
         TestFunc.CreateSamsung()
 
     def testGetStruct(self):
-        response = self.client.get("/Company/Organization/삼성")
+        response = self.client.get("/Company/Organization/samsung")
         data = json.loads(response.content)
         self.assertEqual(data["Children"][0]["ComName"], "삼성전자")
         self.assertEqual(data["Children"][1]["ComName"], "삼성생명")
@@ -23,7 +23,7 @@ class CompanyStructTest(TestCase):
 
     def testCompanyRootPut(self):
         response = self.client.put(
-            "/Company/PreviewInfo/삼성",
+            "/Company/PreviewInfo/samsung",
             {
                 "ComName": "순양",
                 "Classification": "모회사",
@@ -59,6 +59,10 @@ class CompanyStructTest(TestCase):
         self.assertEqual(data[0]["category"], 1)
 
     def testPreviewGet(self):
-        response = self.client.get("/Company/Preview/삼성")
+        response = self.client.get("/Company/Preview/samsung")
         data = json.loads(response.content)
-        self.assertEqual(data[0]["category"], 1)
+        self.assertEqual(data["Name"], "samsung")
+        self.assertEqual(data["Scopes"][0], 40.0)
+        self.assertEqual(data["Scopes"][1], 40.0)
+        self.assertEqual(data["Scopes"][2], 20.0)
+        self.assertEqual(data["EmissionList"][11]["출장"], 40.0)

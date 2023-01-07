@@ -12,6 +12,7 @@ from Company import models as ComModel
 from Carbon import models as CarModel
 from Company import serializer as ComSerial
 from Human import models as HuModel
+from CarbonConstant import CalcFunc
 
 
 class CompanyQuery(APIView):
@@ -104,28 +105,56 @@ class PreviewQuery(APIView):
             HeadDepart = UserRoot
 
         Departs = []
+        IsRoot = 0
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
         if type(HeadDepart) == ComModel.Company:
             func.getChildDepart(UserRoot, None, Departs)
+            IsRoot = 1
         else:
             func.getChildDepart(UserRoot, HeadDepart, Departs)
 
         Carbons = []
         for depart in Departs:
-            temp = CarModel.Carbon.objects.get(BelongDepart=depart)
+            temp = CarModel.Carbon.objects.filter(BelongDepart=depart)
             Carbons.append(temp)
-            print(Carbons)
 
         scope1 = 0
         scope2 = 0
         scope3 = 0
+        categories = [0] * CalcFunc.CarbonCateLen
+
+        if IsRoot == 1:  # 요청한 데이터가 루트인 경우 depart가 아니라 데이터를 가져오지 못하므로 따로 가져옴
+            Carbons.append(
+                CarModel.Carbon.objects.filter(RootCom=HeadDepart, BelongDepart=None)
+            )
         for car in Carbons:
-            if car.CarbonInfo == 1:
-                scope1 += car.CarbonTrans
-            elif car.CarbonInfo == 2:
-                scope2 += car.CarbonTrans
-            elif car.CarbonInfo == 3:
-                scope3 += car.CarbonTrans
+
+            for each in car:
+                TempScope = each.CarbonInfo.Scope
+                if TempScope == 1:
+                    scope1 += each.CarbonTrans
+                elif TempScope == 2:
+                    scope2 += each.CarbonTrans
+                elif TempScope == 3:
+                    scope3 += each.CarbonTrans
+
+                TempCate = each.CarbonInfo.Category
+                for i in range(CalcFunc.CarbonCateLen):
+                    if i == TempCate:
+                        categories[i] += each.CarbonTrans
+                        break
+
+        ans = {
+            "Name": Depart,
+            "Scopes": [scope1, scope2, scope3],
+            "EmissionList": [
+                {CalcFunc.CarbonCategories[i]: categories[i]}
+                for i in range(CalcFunc.CarbonCateLen)
+            ],
+        }
+        print(ans)
+
+        return Response(ans, status=status.HTTP_200_OK)
 
 
 class PreviewInfoQuery(APIView):

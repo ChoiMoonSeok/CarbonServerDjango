@@ -5,6 +5,11 @@ from . import views
 app_name = "Company"
 urlpatterns = [
     path(
+        "Organization/Simple/<str:CompanyName>",
+        views.CompanySimpleQuery.as_view(),
+        name="OrganSimpleGet",
+    ),
+    path(
         "Organization/<str:CompanyName>", views.CompanyQuery.as_view(), name="OrganGet"
     ),  # 최상위회사 이름으로 조직 설계도 호출
     path(

@@ -41,6 +41,34 @@ class CompanyQuery(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class CompanySimpleQuery(CompanyQuery):
+    def get(self, request, CompanyName, format=None):
+        UserRoot = ComModel.Company.objects.get(
+            ComName="삼성"
+        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+        ComId = ComModel.Company.objects.get(ComName=CompanyName)
+
+        result = []
+        # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
+        if ComId.id == UserRoot.id:
+            func.getChildDepart(UserRoot, None, result)
+        else:
+            func.getChildDepart(UserRoot, ComId, result)
+
+        ans = [{"category": 1, "image": None, "name": ComId.ComName, "check": None}]
+        for depart in result:
+            ans.append(
+                {
+                    "category": depart.Depth + 1,
+                    "image": None,
+                    "name": depart.DepartmentName,
+                    "check": None,
+                }
+            )
+
+        return Response(ans, status=status.HTTP_200_OK)
+
+
 class PreviewQuery(APIView):
     @swagger_auto_schema(operation_summary="Preview 화면에서 필요한 값들을 반환하는 Api")
     def get(self, request, Depart, format=None):

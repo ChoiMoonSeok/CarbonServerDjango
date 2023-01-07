@@ -52,3 +52,8 @@ class CompanyStructTest(TestCase):
         )
         data = json.loads(response.content)
         self.assertEqual(data, "This Company/Department does not exist.")
+
+    def testCompanySimpleGet(self):
+        response = self.client.get("/Company/Organization/Simple/삼성전자")
+        data = json.loads(response.content)
+        self.assertEqual(data[0]["category"], 1)

@@ -24,7 +24,6 @@ cd ..
 sudo mv migrations Hu_migrate
 
 # 구형 코드 삭제
-cd ..
 sudo rm -r CarbonServerDjango
 
 # 코드 가져오기 

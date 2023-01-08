@@ -108,6 +108,12 @@ class SignUpView(APIView):
         operation_summary="회원가입 Api", request_body=serializer.SignUpSerializer
     )
     def post(self, request, formant=None):
+        """
+        회원가입을 진행하는 Api\n
+        Email, password는 반드시 입력하여야 하며, DetailInfo의 경우 입력을 권장\n
+        다만 직위 밑의 3개는 반드시 채울 필요성은 없음
+        """
+
         UserData = request.data
         TempEmail = HuModel.User.objects.filter(Email=UserData["Email"])
 

@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -85,11 +86,16 @@ class CompanySimpleQuery(CompanyQuery):
 
 
 class PreviewQuery(APIView):
-    @swagger_auto_schema(operation_summary="Preview 화면에서 필요한 값들을 반환하는 Api")
-    def get(self, request, Depart, format=None):
+    @swagger_auto_schema(
+        operation_summary="Preview 화면에서 필요한 값들을 반환하는 Api",
+        responses={200: "Api가 정상적으로 동작함"},
+    )
+    def get(self, request, Depart, start, end, format=None):
         """
         요청한 부서의 탄소 배출량을 탄소 배출 원인별로 계산해 반환\n
-        수식의 입력이 완료된 이후 개발이 진행될 필요성이 보임
+        /start/end를 입력할 때 start는 조회하고 싶은 기간의 시작일, \n
+        end는 조회하고 싶은 기간의 마지막날을 입력할 것.\n
+        start, end 입력 예시) /2001-10-15/2002-10-15
         """
 
         # 요청한 user의 모회사 확인
@@ -115,7 +121,11 @@ class PreviewQuery(APIView):
 
         Carbons = []
         for depart in Departs:
-            temp = CarModel.Carbon.objects.filter(BelongDepart=depart)
+            temp = CarModel.Carbon.objects.filter(
+                BelongDepart=depart,
+                CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
+                CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+            )
             Carbons.append(temp)
 
         scope1 = 0
@@ -124,11 +134,14 @@ class PreviewQuery(APIView):
         categories = [0] * CalcFunc.CarbonCateLen
 
         if IsRoot == 1:  # 요청한 데이터가 루트인 경우 depart가 아니라 데이터를 가져오지 못하므로 따로 가져옴
-            Carbons.append(
-                CarModel.Carbon.objects.filter(RootCom=HeadDepart, BelongDepart=None)
+            temp = CarModel.Carbon.objects.filter(
+                BelongDepart=None,
+                CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
+                CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
             )
-        for car in Carbons:
+            Carbons.append(temp)
 
+        for car in Carbons:
             for each in car:
                 TempScope = each.CarbonInfo.Scope
                 if TempScope == 1:
@@ -152,7 +165,6 @@ class PreviewQuery(APIView):
                 for i in range(CalcFunc.CarbonCateLen)
             ],
         }
-        print(ans)
 
         return Response(ans, status=status.HTTP_200_OK)
 

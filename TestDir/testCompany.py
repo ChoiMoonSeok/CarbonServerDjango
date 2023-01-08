@@ -59,10 +59,10 @@ class CompanyStructTest(TestCase):
         self.assertEqual(data[0]["category"], 1)
 
     def testPreviewGet(self):
-        response = self.client.get("/Company/Preview/samsung")
+        response = self.client.get("/Company/Preview/samsung/2022-12-01/2023-01-01")
         data = json.loads(response.content)
         self.assertEqual(data["Name"], "samsung")
-        self.assertEqual(data["Scopes"][0], 40.0)
-        self.assertEqual(data["Scopes"][1], 40.0)
-        self.assertEqual(data["Scopes"][2], 20.0)
-        self.assertEqual(data["EmissionList"][11]["출장"], 40.0)
+        self.assertEqual(data["Scopes"][0], 20.0)
+        self.assertEqual(data["Scopes"][1], 20.0)
+        self.assertEqual(data["Scopes"][2], 0.0)
+        self.assertEqual(data["EmissionList"][11]["출장"], 20.0)

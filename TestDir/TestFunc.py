@@ -64,8 +64,8 @@ def CreateSamsung():
     )
     CarModel.CarbonInfo.objects.create(
         id=1,
-        StartDate=datetime.date.today(),
-        EndDate=datetime.date.today(),
+        StartDate=datetime.date(2023, 1, 1),
+        EndDate=datetime.date(2023, 1, 31),
         Location="진주",
         Scope=1,
         Category=12,
@@ -81,8 +81,8 @@ def CreateSamsung():
     )
     CarModel.CarbonInfo.objects.create(
         id=2,
-        StartDate=datetime.date.today(),
-        EndDate=datetime.date.today(),
+        StartDate=datetime.date(2022, 12, 1),
+        EndDate=datetime.date(2023, 1, 1),
         Location="진주",
         Scope=1,
         Category=12,
@@ -98,8 +98,8 @@ def CreateSamsung():
     )
     CarModel.CarbonInfo.objects.create(
         id=3,
-        StartDate=datetime.date.today(),
-        EndDate=datetime.date.today(),
+        StartDate=datetime.date(2022, 12, 1),
+        EndDate=datetime.date(2023, 1, 1),
         Location="진주",
         Scope=2,
         Category=11,
@@ -115,8 +115,8 @@ def CreateSamsung():
     )
     CarModel.CarbonInfo.objects.create(
         id=4,
-        StartDate=datetime.date.today(),
-        EndDate=datetime.date.today(),
+        StartDate=datetime.date(2022, 1, 1),
+        EndDate=datetime.date(2023, 1, 1),
         Location="진주",
         Scope=2,
         Category=11,

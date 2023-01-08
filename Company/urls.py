@@ -13,7 +13,9 @@ urlpatterns = [
         "Organization/<str:CompanyName>", views.CompanyQuery.as_view(), name="OrganGet"
     ),  # 최상위회사 이름으로 조직 설계도 호출
     path(
-        "Preview/<str:Depart>", views.PreviewQuery.as_view(), name="CarbonGet"
+        "Preview/<str:Depart>/<str:start>/<str:end>",
+        views.PreviewQuery.as_view(),
+        name="CarbonGet",
     ),  # 회사의 탄소 배출량 합계
     path(
         "PreviewInfo/<str:Depart>",

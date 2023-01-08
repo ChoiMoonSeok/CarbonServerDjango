@@ -27,8 +27,11 @@ class EmployeeTest(TestCase):
 
     def testLoginRight(self):
         response = self.client.post(
-            "/login",
+            "/User/Login",
             {"Email": "1234@naver.com", "password": "hi"},
-            content_type="application/json",
         )
         data = json.loads(response.content)
+        self.assertEqual(data, 0)
+
+    def testSignUpRight(self):
+        response = self.client.post("/User/SignUp", {"Email": ""})

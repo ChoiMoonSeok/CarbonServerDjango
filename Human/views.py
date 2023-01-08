@@ -103,4 +103,41 @@ class LogInView(APIView):
             )
 
 
-# class SignUpView(APIView):
+class SignUpView(APIView):
+    @swagger_auto_schema(
+        operation_summary="회원가입 Api", request_body=serializer.SignUpSerializer
+    )
+    def post(self, request, formant=None):
+        UserData = request.data
+        TempEmail = HuModel.User.objects.filter(Email=UserData["Email"])
+
+        if len(TempEmail) == 0:
+            EmployeeData = UserData["DetailInfo"]
+            Detail = HuModel.Employee.objects.create(
+                Name=EmployeeData["Name"],
+                PhoneNum=EmployeeData["PhoneNum"],
+                JobPos=EmployeeData["JobPos"],
+                IdentityNum=EmployeeData["IdentityNum"],
+                Authorization=EmployeeData["Authorization"],
+                RootCom=ComModel.Company.objects.get(ComName=EmployeeData["BelongCom"]),
+                BelongCom=ComModel.Department.objects.get(
+                    DepartmentName=EmployeeData["BelongCom"]
+                ),
+            )
+
+            NewUser = HuModel.User.objects.create(
+                Email=UserData["Email"],
+                DetailInfo=Detail,
+                password=UserData["password"],
+            )
+
+            Detail.save()
+            NewUser.save()
+
+            serial = serializer.UserSerializer(NewUser)
+            return Response(serial.data, status=status.HTTP_200_OK)
+
+        else:
+            return Response(
+                "This account already exist.", status=status.HTTP_400_BAD_REQUEST
+            )

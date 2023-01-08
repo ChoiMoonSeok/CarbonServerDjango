@@ -26,6 +26,9 @@ class Employee(models.Model):
 
 
 class UserManager(BaseUserManager):
+
+    use_in_migrations = True
+
     def create_user(self, Email, password):
         if not Email:
             raise ValueError("Please enter a Email")
@@ -47,7 +50,7 @@ class UserManager(BaseUserManager):
 
         User = self.create_user(Email, password=password)
 
-        User.is_admin = True
+        User.is_superuser = True
         User.save(using=self._db)
         return User
 
@@ -55,7 +58,7 @@ class UserManager(BaseUserManager):
 # 회원가입한 유저를 저장하는 테이블
 
 
-class User(AbstractBaseUser):  # 로그인 구현을 위해 AbstractBaseUser를 상속
+class User(AbstractBaseUser, PermissionsMixin):  # 로그인 구현을 위해 AbstractBaseUser를 상속
     Email = models.EmailField(primary_key=True)  # email 필드
     DetailInfo = models.ForeignKey(
         "Human.Employee", on_delete=models.CASCADE, null=True
@@ -64,3 +67,10 @@ class User(AbstractBaseUser):  # 로그인 구현을 위해 AbstractBaseUser를 
     objects = UserManager()
 
     USERNAME_FIELD = "Email"
+
+    def __str__(self):
+        return self.Email
+
+    @property
+    def is_staff(self):
+        return self.is_superuser

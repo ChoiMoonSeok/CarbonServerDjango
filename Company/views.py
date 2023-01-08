@@ -131,6 +131,32 @@ class PreviewQuery(APIView):
             func.getChildDepart(UserRoot, HeadDepart, Departs)
 
         Carbons = []
+        start = start.split("-")
+        for i in range(len(start)):
+            if len(start[i]) < 2:
+                start[i] = "0{}".format(start[i])
+
+        temp = str()
+        for i in start:
+            if i[0] == "0":
+                temp += "-"
+            temp += i
+        start = temp
+        del temp
+
+        end = end.split("-")
+        for i in range(len(end)):
+            if len(end[i]) < 2:
+                end[i] = "0{}".format(end[i])
+
+        temp = str()
+        for i in end:
+            if i[0] == "0":
+                temp += "-"
+            temp += i
+        start = temp
+        del temp
+
         for depart in Departs:
             temp = CarModel.Carbon.objects.filter(
                 BelongDepart=depart,

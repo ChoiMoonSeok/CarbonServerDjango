@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends; \
     pip install gunicorn;\
     pip install drf_yasg;\
     pip install tzdata;\
-    pip install rest_framework_simplejwt
+    pip install djangorestframework-simplejwt
 
 CMD cd /; . /venv/bin/activate;\
     cd /; cd /home;\

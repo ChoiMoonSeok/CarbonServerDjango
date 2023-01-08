@@ -101,3 +101,6 @@ class LogInView(APIView):
             return Response(
                 "Please Complete the data", status=status.HTTP_406_NOT_ACCEPTABLE
             )
+
+
+# class SignUpView(APIView):

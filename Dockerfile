@@ -18,7 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends; \
     pip install mysqlclient;\
     pip install gunicorn;\
     pip install drf_yasg;\
-    pip install tzdata
+    pip install tzdata;\
+    pip install rest_framework_simplejwt
 
 CMD cd /; . /venv/bin/activate;\
     cd /; cd /home;\

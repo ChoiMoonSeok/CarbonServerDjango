@@ -5,8 +5,8 @@ from . import views
 app_name = "Human"
 urlpatterns = [
     # 로그인/회원가입
-    path("login", views.LogInView.as_view(), name="login"),
-    # path("signup/", JWTSignupView.as_view()),
+    path("Login", views.LogInView.as_view(), name="login"),
+    path("SignUp/", views.SignUpView.as_view(), name="SignUp"),
     # # 토큰
     # path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     # path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

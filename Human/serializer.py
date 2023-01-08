@@ -29,15 +29,3 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = HuModel.User
         fields = "__all__"
-
-
-class MyTokenSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        refresh = self.get_token(self.user)
-
-        data["Email"] = self.user.Email
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-
-        return data

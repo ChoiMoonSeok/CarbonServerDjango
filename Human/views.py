@@ -14,8 +14,10 @@ from rest_framework.decorators import (
     authentication_classes,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.backends import TokenBackend
+import jwt
 
-
+import config
 from Human import models as HuModel
 from Human import serializer
 from Company import models as ComModel
@@ -38,6 +40,10 @@ class User_EmployeeQuery(APIView):
         입력한 회사와 해당 회사의 자회사의 모든 소속 직원들의 정보를 가져옵니다.
         ex) 삼성전자를 호출하면 삼성전자의 모든 직원과 삼성전자의 자회사인 삼성디스플레이의 모든 직원이 반환 됨
         """
+
+        tempToken = json.load(request.META.get("HTTP_AUTHORIZATION", " ").split(" ")[1])
+        print(jwt.decode(tempToken, config.SIGNING_KEY, "HS256"))
+        print(TokenBackend(algorithm="HS256").decode(tempToken, verify=True))
 
         U_Root = ComModel.Company.objects.get(ComName="samsung")  # 로그인 구현 후 변경 예정
         try:

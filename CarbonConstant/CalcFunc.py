@@ -1,10 +1,11 @@
 from .Constants import Electric
 
 # 탄소 배출 유형과 숫자 맵핑
-CarbonCateLen = 13
+CarbonCateLen = 14
 CarbonCategories = [
     "고정연소",
-    "이동연소" "탈루배출",
+    "이동연소",
+    "탈루배출",
     "폐기물처리시설",
     "비료사용",
     "대학소유동물",

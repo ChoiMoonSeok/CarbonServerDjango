@@ -1,7 +1,10 @@
+from rest_framework_simplejwt.tokens import AccessToken
+
 from Company import models as ComModel
 from Human import models as HuModel
 from Carbon import models as CarMode
 from Company import serializer
+
 
 CarbonCategory = [
     "고정연소",
@@ -54,3 +57,10 @@ def getChildCom(RootCom, HeadCom, Children):
         for Depart in data:
             Children.append(Depart.SelfCom)
             getChildDepart(RootCom, Depart.SelfCom, Children)
+
+
+def getRootViaJWT(token_str):
+    access_token = AccessToken(token_str)
+    Email = access_token["user_id"]
+    RootCom = HuModel.User.objects.get(Email=Email).DetailInfo.RootCom
+    return RootCom

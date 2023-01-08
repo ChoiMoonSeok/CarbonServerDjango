@@ -30,9 +30,10 @@ class CompanyQuery(APIView):
         지주회사가 동일한 모든 회사, 부서를 계층을 가진 형태로 반환합니다.\n
         ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
         """
-        UserRoot = ComModel.Company.objects.get(
-            ComName="samsung"
-        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
+
         ComId = ComModel.Company.objects.get(ComName=CompanyName)
 
         result = ComSerial.CompanySerializer(ComId)
@@ -53,9 +54,10 @@ class CompanySimpleQuery(CompanyQuery):
     permission_classes = (IsAuthenticated,)  # 로그인 검증
 
     def get(self, request, CompanyName, format=None):
-        UserRoot = ComModel.Company.objects.get(
-            ComName="samsung"
-        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
+
         try:
             ComId = ComModel.Department.objects.get(
                 DepartmentName=CompanyName, RootCom=UserRoot
@@ -109,9 +111,8 @@ class PreviewQuery(APIView):
         """
 
         # 요청한 user의 모회사 확인
-        UserRoot = ComModel.Company.objects.get(
-            ComName="samsung"
-        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
 
         try:
             HeadDepart = ComModel.Department.objects.get(
@@ -195,11 +196,10 @@ class PreviewInfoQuery(APIView):
         Chief와 Admin의 경우 해당 회사, 부서의 책임자와 관리자의 이름을 각각 입력\n
         """
 
-        request = json.loads(request.body)
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
 
-        UserRoot = ComModel.Company.objects.get(
-            ComName="samsung"
-        )  # 유저의 루트 컴퍼니, 로그인 구현 후에는 삭제
+        request = json.loads(request.body)
 
         # 요청받은 즉 변경할 row 가져오기
         try:

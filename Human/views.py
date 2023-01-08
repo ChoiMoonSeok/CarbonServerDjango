@@ -8,6 +8,12 @@ from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
+from rest_framework.permissions import IsAuthenticated
 
 
 from Human import models as HuModel
@@ -19,8 +25,12 @@ import func
 
 
 class User_EmployeeQuery(APIView):
+
+    permission_classes = (IsAuthenticated,)  # 로그인 검증
+
     @swagger_auto_schema(
         operation_summary="입력한 회사와 그 자회사의 모든 직원을 가져오는 Api",
+        headers={"Authorization"},
         responses={200: "API가 정상적으로 동작하고 종료 됨", 404: "입력한 회사가 존재하지 않음"},
     )
     def get(self, request, Company, format=None):
@@ -28,6 +38,7 @@ class User_EmployeeQuery(APIView):
         입력한 회사와 해당 회사의 자회사의 모든 소속 직원들의 정보를 가져옵니다.
         ex) 삼성전자를 호출하면 삼성전자의 모든 직원과 삼성전자의 자회사인 삼성디스플레이의 모든 직원이 반환 됨
         """
+
         U_Root = ComModel.Company.objects.get(ComName="samsung")  # 로그인 구현 후 변경 예정
         try:
             Root = ComModel.Department.objects.get(

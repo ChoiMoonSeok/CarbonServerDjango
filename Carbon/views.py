@@ -6,6 +6,7 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
 
 from . import models as CarModel
 from Human import models as HuModel
@@ -15,6 +16,9 @@ import func
 
 
 class CarbonEmissionQuery(APIView):
+
+    permission_classes = (IsAuthenticated,)  # 로그인 검증
+
     @swagger_auto_schema(
         operation_summary="요청한 회사의 모든 탄소 배출원을 반환하는 Api",
         responses={404: "입력한 회사가 존재하지 않음", 201: "API가 정상적으로 실행 됨"},

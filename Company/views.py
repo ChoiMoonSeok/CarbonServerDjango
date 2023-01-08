@@ -7,6 +7,7 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
 
 import func
 from Company import models as ComModel
@@ -17,6 +18,9 @@ from CarbonConstant import CalcFunc
 
 
 class CompanyQuery(APIView):
+
+    permission_classes = (IsAuthenticated,)  # 로그인 검증
+
     @swagger_auto_schema(
         operation_summary="조직 설계도를 반환하는 Api",
         responses={201: "API가 정상적으로 실행 됨", 200: "API가 정상적으로 실행 됨"},
@@ -45,6 +49,9 @@ class CompanyQuery(APIView):
 
 
 class CompanySimpleQuery(CompanyQuery):
+
+    permission_classes = (IsAuthenticated,)  # 로그인 검증
+
     def get(self, request, CompanyName, format=None):
         UserRoot = ComModel.Company.objects.get(
             ComName="samsung"
@@ -86,6 +93,9 @@ class CompanySimpleQuery(CompanyQuery):
 
 
 class PreviewQuery(APIView):
+
+    permission_classes = (IsAuthenticated,)  # 로그인 검증
+
     @swagger_auto_schema(
         operation_summary="Preview 화면에서 필요한 값들을 반환하는 Api",
         responses={200: "Api가 정상적으로 동작함"},
@@ -170,6 +180,9 @@ class PreviewQuery(APIView):
 
 
 class PreviewInfoQuery(APIView):
+
+    permission_classes = (IsAuthenticated,)  # 로그인 검증
+
     @swagger_auto_schema(
         operation_summary="Company 혹은 Department의 데이터를 변경하는 Api",
         request_body=ComSerial.CompanySerializer,

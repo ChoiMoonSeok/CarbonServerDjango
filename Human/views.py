@@ -6,6 +6,9 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.hashers import check_password
+
 
 from Human import models as HuModel
 from Human import serializer
@@ -56,3 +59,45 @@ class User_EmployeeQuery(APIView):
                 Employee.append(serial.data)
 
             return Response(Employee, status=status.HTTP_200_OK)
+
+
+class LogInView(APIView):
+    @swagger_auto_schema(
+        operation_summary="로그인 Api",
+        request_body=serializer.UserSerializer,
+        responses={404: "입력한 사용자가 존재하지 않음", 406: "입력한 데이터가 불충분 함"},
+    )
+    def post(self, request, format=None):
+        """
+        사용자의 로그인을 위한 Api.\n
+        jwt를 활용하며, 사용자의 Email과 비밀번호를 json의 형태로 입력받는다.\n
+        입력값들은 request body에 위치하여야 한다.
+        """
+
+        UserData = request.data
+        if type(UserData) is not None:
+            Email = UserData["Email"]
+            User = HuModel.User.objects.get(Email=Email)
+            if type(User) == None:
+                Response("Wrong Email address", status=status.HTTP_404_NOT_FOUND)
+
+            PW = UserData["password"]
+            if check_password(PW, User.password):  # 비밀 번호가 일치하는지 검사
+
+                token = TokenObtainPairSerializer.get_token(User)
+                refresh_token = str(token)
+                access_token = str(token.access_token)
+                return Response(
+                    {
+                        "Email": Email,
+                        "AccessToken": access_token,
+                        "RefreshToken": refresh_token,
+                    }
+                )
+            else:
+                return Response("Wrong PassWord.", status=status.HTTP_404_NOT_FOUND)
+
+        else:
+            return Response(
+                "Please Complete the data", status=status.HTTP_406_NOT_ACCEPTABLE
+            )

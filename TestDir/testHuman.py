@@ -24,3 +24,11 @@ class EmployeeTest(TestCase):
         response = self.client.get("/User/삼성자동차")
         data = json.loads(response.content)
         self.assertEqual(data, "This Company does not exist")
+
+    def testLoginRight(self):
+        response = self.client.post(
+            "/login",
+            {"Email": "1234@naver.com", "password": "hi"},
+            content_type="application/json",
+        )
+        data = json.loads(response.content)

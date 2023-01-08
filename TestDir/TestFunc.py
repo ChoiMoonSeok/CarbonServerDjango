@@ -9,7 +9,6 @@ def CreateSamsung():
     HuModel.Employee.objects.create(
         Name="이재용",
         PhoneNum="123456789",
-        Email="1234@naver.com",
         JobPos="회장",
         IdentityNum="1",
     )
@@ -19,6 +18,11 @@ def CreateSamsung():
         Scope2=0,
         Scope3=0,
         Chief=HuModel.Employee.objects.get(Name="이재용"),
+    )
+    HuModel.User.objects.create(
+        Email="1234@naver.com",
+        DetailInfo=HuModel.Employee.objects.get(Name="이재용"),
+        password="hi",
     )
     ComModel.Company.objects.create(
         ComName="삼성전자",
@@ -150,27 +154,39 @@ def CreateSamsung():
     HuModel.Employee.objects.create(
         Name="노태문",
         PhoneNum="123456789",
-        Email="1234@naver.com",
         JobPos="사장",
         IdentityNum="2",
         RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongCom=ComModel.Department.objects.get(DepartmentName="삼성전자"),
     )
+    HuModel.User.objects.create(
+        Email="12345@naver.com",
+        password="hihi",
+        DetailInfo=HuModel.Employee.objects.get(Name="노태문"),
+    )
     HuModel.Employee.objects.create(
         Name="고동진",
         PhoneNum="123456789",
-        Email="12345@naver.com",
         JobPos="사원",
         IdentityNum="3",
         RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongCom=ComModel.Department.objects.get(DepartmentName="삼성생명"),
     )
+    HuModel.User.objects.create(
+        Email="123456@naver.com",
+        password="hihihi",
+        DetailInfo=HuModel.Employee.objects.get(Name="고동진"),
+    )
     HuModel.Employee.objects.create(
         Name="경계현",
         PhoneNum="123456789",
-        Email="123456@naver.com",
         JobPos="대리",
         IdentityNum="4",
         RootCom=ComModel.Company.objects.get(ComName="samsung"),
         BelongCom=ComModel.Department.objects.get(DepartmentName="삼성디스플레이"),
+    )
+    HuModel.User.objects.create(
+        Email="1234567@naver.com",
+        password="hihihihi",
+        DetailInfo=HuModel.Employee.objects.get(Name="경계현"),
     )

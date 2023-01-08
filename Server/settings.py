@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+import datetime
 
 from pathlib import Path
 
@@ -41,7 +42,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",  # drf 라이브러리 추가
+    # 생성 및 개발한 웹 어플리케이션
+    "Carbon.apps.CarbonConfig",
+    "Human.apps.HumanConfig",
+    "Company.apps.CompanyConfig",
     # 로그인 라이브러리
+    "rest_framework_simplejwt",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "django.contrib.sites",
@@ -50,10 +56,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth.registration",
     "drf_yasg",
-    # 생성 및 개발한 웹 어플리케이션
-    "Carbon.apps.CarbonConfig",
-    "Human.apps.HumanConfig",
-    "Company.apps.CompanyConfig",
 ]
 
 MIDDLEWARE = [
@@ -166,4 +168,29 @@ LOGGING = {
         },
         "Server": {"handlers": ["console", "file"], "level": "DEBUG"},
     },
+}
+
+AUTH_USER_MODEL = "Human.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "SIGNING_KEY": config.SIGNING_KEY,
+}
+
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "Human.serializer.UserSerializer",
+}
+
+SIMPLE_JWT = {
+    "USER_ID_FIELD": "Email",
 }

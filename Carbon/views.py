@@ -29,6 +29,9 @@ class CarbonEmissionQuery(APIView):
         하단의 Description에 탄소 배출원을 알고 싶은 회사의 사명을 입력하면 됩니다.\n
         탄소 배출원 예) 홍길동 교수님 출장, 탄소 배출량 20"""
 
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
+
         try:  # 요청받은 회사가 루트가 아닌 경우
             Root_id = ComModel.Department.objects.get(
                 DepartmentName=Depart  # 로그인이 구현된 이후에는 사용자의 root와 비교
@@ -65,35 +68,14 @@ class CarbonEmissionQuery(APIView):
             return Response(CarbonList, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
-        operation_summary="Carbon", request_body=serializer.CarbonSerializer
+        operation_summary="탄소 배출 원인 Api", request_body=serializer.CarbonSerializer
     )
     def post(self, request, Depart, format=None):
-        """탄소 사용량 데이터 입력"""
-        InputData = request.data
-        Mother_id = User_root
-        chief_id = User_Employee.objects.get(Name=InputData["chief"], Mother=Mother_id)
-        Mother_id_upper = Company.objects.get(ComName=Mother_id)
-        upper_id = Department.objects.get(Mother=Mother_id_upper, DepartmentName=Depart)
+        """
+        탄소 사용량 데이터 입력
+        """
 
-        # 요청한 탄소 배출 현황 생성
-        Carbon.objects.create(
-            Content=InputData["Content"],
-            Data=InputData["Data"],
-            unit=InputData["unit"],
-            CarbonEmission=InputData["CarbonEmission"],
-            StartDate=InputData["StartDate"],
-            EndDate=InputData["EndDate"],
-            location=InputData["location"],
-            chief=chief_id,
-            upper=upper_id,
-            Mother=Mother_id_upper,
-            Scope=InputData["Scope"],
-            Category=InputData["Category"],
-            Division=InputData["Division"],
-        )
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
 
-        # 모회사의 모든 탄소 배출 가져오기
-        data = Carbon.objects.filter(Mother=Mother_id_upper, upper=upper_id)
-        serializer = CarbonSerializer(data, many=True)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        UserBelong = func.getBelongViaJWT(token_str)

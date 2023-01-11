@@ -64,3 +64,10 @@ def getRootViaJWT(token_str):
     Email = access_token["user_id"]
     RootCom = HuModel.User.objects.get(Email=Email).DetailInfo.RootCom
     return RootCom
+
+
+def getBelongViaJWT(token_str):
+    access_token = AccessToken(token_str)
+    Email = access_token["user_id"]
+    BelongCom = HuModel.User.objects.get(Email=Email).DetailInfo.BelongCom
+    return BelongCom

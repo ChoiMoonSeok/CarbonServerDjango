@@ -1,4 +1,4 @@
-import Constants
+from . import Constants
 
 # 탄소 배출 유형과 숫자 맵핑
 CarbonCateLen = 14

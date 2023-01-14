@@ -14,7 +14,7 @@ from Company import models as ComModel
 from Carbon import models as CarModel
 from Company import serializer as ComSerial
 from Human import models as HuModel
-from CarbonConstant import CalcFunc
+from CarbonConstant import CarbonDef
 
 
 class CompanyQuery(APIView):
@@ -168,7 +168,7 @@ class PreviewQuery(APIView):
         scope1 = 0
         scope2 = 0
         scope3 = 0
-        categories = [0] * CalcFunc.CarbonCateLen
+        categories = [0] * CarbonDef.CarbonCateLen
 
         if IsRoot == 1:  # 요청한 데이터가 루트인 경우 depart가 아니라 데이터를 가져오지 못하므로 따로 가져옴
             temp = CarModel.Carbon.objects.filter(
@@ -189,7 +189,7 @@ class PreviewQuery(APIView):
                     scope3 += each.CarbonTrans
 
                 TempCate = each.CarbonInfo.Category
-                for i in range(CalcFunc.CarbonCateLen):
+                for i in range(CarbonDef.CarbonCateLen):
                     if i == TempCate:
                         categories[i] += each.CarbonTrans
                         break
@@ -198,8 +198,8 @@ class PreviewQuery(APIView):
             "Name": Depart,
             "Scopes": [scope1, scope2, scope3],
             "EmissionList": [
-                {CalcFunc.CarbonCategories[i]: categories[i]}
-                for i in range(CalcFunc.CarbonCateLen)
+                {CarbonDef.CarbonCategories[i]: categories[i]}
+                for i in range(CarbonDef.CarbonCateLen)
             ],
         }
 

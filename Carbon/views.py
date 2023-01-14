@@ -72,7 +72,7 @@ class CarbonEmissionQuery(APIView):
     )
     def post(self, request, Depart, format=None):
         """
-        탄소 사용량 데이터 입력
+        탄소 사용량 데이터 입력하는 Api
         """
 
         token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]

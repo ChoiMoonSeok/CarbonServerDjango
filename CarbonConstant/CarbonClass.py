@@ -1,0 +1,104 @@
+# 전력 사용량의 탄소 발생량을 계산하기 위한 상수 목록
+class Electric:
+
+    CO2_EF = 0.4653
+    NH4_EF = 0.0054
+    N2O_EF = 0.0027
+    MULTIPLY_CON_NH = 21
+    MULTIPLY_CON_N2O = 310
+
+    def CO2_EQ(self, usage):
+        eq = (
+            (usage * self.CO2_EF)
+            + (usage * self.NH4_EF * self.MULTIPLY_CON_NH)
+            + (usage * self.N2O_EF * self.MULTIPLY_CON_N2O)
+        )
+
+        return eq
+
+
+# 열 사용량을 계산하는 클래스
+class Heat:
+    HEAT_EF = 0.2498  # EF(tCO2eq/Gj)
+
+    def CO2_EQ(self, usage):
+        eq = usage * self.HEAT_EF
+
+        return eq
+
+
+# 물 사용량을 계산하는 클래스
+class Water:
+
+    WATER_EF = 332  # (gCO2eq/m^3)
+
+    def CO2_EQ(self, usage):
+        eq = usage * self.WATER_EF * (10**-6)
+
+
+# 고정 연소에 대한 값을 저장하는 클래스
+class StationCom:
+    MULTIPLY_CON_CH = 21
+    MULTIPLY_CON_N2O = 310
+    EMISSION_EF = 1
+
+    def __init__(self, HEAT_VAL, C02_EF, CH4_EF, N2O_EF, STATE_CON):
+        self.HEAT_VAL = HEAT_VAL
+        self.CO2_EF = C02_EF
+        self.CH4_EF = CH4_EF
+        self.N2O_EF = N2O_EF
+        self.STATE_CON = STATE_CON
+
+    def CO2_EQ(self, usage):
+        eq = (
+            usage
+            * self.STATE_CON
+            * self.HEAT_VAL
+            * self.EMISSION_EF
+            * (
+                self.CO2_EF
+                + self.CH4_EF * self.MULTIPLY_CON_CH
+                + self.N2O_EF * self.MULTIPLY_CON_N2O
+            )
+        )
+        return eq
+
+
+# 이동연소를 저장하는 클래스
+class MovingCom:
+    MULTIPLY_CON_CH = 21
+    MULTIPLY_CON_N2O = 310
+    STATE_CON = 10**-9
+
+    def __init__(self, HEAT_VAL, C02_EF, CH4_EF, N2O_EF):
+        self.HEAT_VAL = HEAT_VAL
+        self.CO2_EF = C02_EF
+        self.CH4_EF = CH4_EF
+        self.N2O_EF = N2O_EF
+
+    def CO2_EQ(self, usage):
+        eq = (
+            usage
+            * self.STATE_CON
+            * self.HEAT_VAL
+            * (
+                self.CO2_EF
+                + self.CH4_EF * self.MULTIPLY_CON_CH
+                + self.N2O_EF * self.MULTIPLY_CON_N2O
+            )
+        )
+        return eq
+
+
+# 탈루배출에 관한 내용을 저장하는 클래스
+# 변경 사항에 따라 어떻게 달라진건지 질문 필요
+class FugitiveEmission:
+    HFC_134_A_X = 0.3
+    HFC_134_A_GWP = 1300
+    R_407C_X = 5.5
+    R_407C_A = 5.5
+    R_407C_GWP = 1525.5
+    R_407A_GWP = 1725
+
+    def CO2_EQ(self, usage, nums):
+        pass

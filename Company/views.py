@@ -136,11 +136,13 @@ class PreviewQuery(APIView):
             if len(start[i]) < 2:
                 start[i] = "0{}".format(start[i])
 
+        num = 0
         temp = str()
         for i in start:
             temp += i
             if start.index(i) != 2:
                 temp += "-"
+                num += 1
         start = temp
         del temp
 
@@ -149,11 +151,13 @@ class PreviewQuery(APIView):
             if len(end[i]) < 2:
                 end[i] = "0{}".format(end[i])
 
+        num = 0
         temp = str()
         for i in end:
             temp += i
-            if start.index(i) != 2:
+            if num != 2:
                 temp += "-"
+                num += 1
         end = temp
         del temp
 

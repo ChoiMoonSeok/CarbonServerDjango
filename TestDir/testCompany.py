@@ -8,8 +8,6 @@ from Company import models as ComModel
 from Company import serializer as ComSerial
 import TestFunc
 
-client = Client()
-
 
 class CompanyStructTest(TestCase):
     def setUp(self):
@@ -19,7 +17,7 @@ class CompanyStructTest(TestCase):
         self.Auth = TestFunc.Auth(self.token)
 
     def testGetStruct(self):
-        response = client.get(
+        response = self.client.get(
             "/Company/Organization/samsung",
             **self.Auth,
         )
@@ -80,4 +78,4 @@ class CompanyStructTest(TestCase):
         self.assertEqual(data["Scopes"][0], 20.0)
         self.assertEqual(data["Scopes"][1], 20.0)
         self.assertEqual(data["Scopes"][2], 0.0)
-        self.assertEqual(data["EmissionList"][11]["출장"], 20.0)
+        self.assertEqual(data["EmissionList"][12]["출장"], 20.0)

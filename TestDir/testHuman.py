@@ -5,23 +5,24 @@ import TestFunc
 
 
 class EmployeeTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.host = "/User/"
+    def setUp(self):
         TestFunc.CreateSamsung()
+        self.token = TestFunc.LogIn()
+        self.token = json.loads(self.token.content)
+        self.Auth = TestFunc.Auth(self.token)
 
     def testRootGet(self):
-        response = self.client.get("/User/samsung")
+        response = self.client.get("/User/samsung", **self.Auth)
         data = json.loads(response.content)
         self.assertEqual(len(data), 3)
 
     def testNotRootGet(self):
-        response = self.client.get("/User/삼성전자")
+        response = self.client.get("/User/삼성전자", **self.Auth)
         data = json.loads(response.content)
         self.assertEqual(len(data), 2)
 
     def testNotExistGet(self):
-        response = self.client.get("/User/삼성자동차")
+        response = self.client.get("/User/삼성자동차", **self.Auth)
         data = json.loads(response.content)
         self.assertEqual(data, "This Company does not exist")
 

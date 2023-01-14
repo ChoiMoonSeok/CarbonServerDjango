@@ -8,14 +8,21 @@ from Company import models as ComModel
 from Company import serializer as ComSerial
 import TestFunc
 
+client = Client()
+
 
 class CompanyStructTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         TestFunc.CreateSamsung()
+        self.token = TestFunc.LogIn()
+        self.token = json.loads(self.token.content)
+        self.Auth = TestFunc.Auth(self.token)
 
     def testGetStruct(self):
-        response = self.client.get("/Company/Organization/samsung")
+        response = client.get(
+            "/Company/Organization/samsung",
+            **self.Auth,
+        )
         data = json.loads(response.content)
         self.assertEqual(data["Children"][0]["ComName"], "삼성전자")
         self.assertEqual(data["Children"][1]["ComName"], "삼성생명")
@@ -32,6 +39,7 @@ class CompanyStructTest(TestCase):
                 "Chief": "이재용",
                 "Admin": "이재용",
             },
+            **self.Auth,
             content_type="application/json",
         )
         data = json.loads(response.content)
@@ -48,18 +56,25 @@ class CompanyStructTest(TestCase):
                 "Chief": "이재용",
                 "Admin": "이재용",
             },
+            **self.Auth,
             content_type="application/json",
         )
         data = json.loads(response.content)
         self.assertEqual(data, "This Company/Department does not exist.")
 
     def testCompanySimpleGet(self):
-        response = self.client.get("/Company/Organization/Simple/삼성전자")
+        response = self.client.get(
+            "/Company/Organization/Simple/삼성전자",
+            **self.Auth,
+        )
         data = json.loads(response.content)
         self.assertEqual(data[0]["category"], 1)
 
     def testPreviewGet(self):
-        response = self.client.get("/Company/Preview/samsung/2022-12-01/2023-01-01")
+        response = self.client.get(
+            "/Company/Preview/samsung/2022-12-01/2023-01-01",
+            **self.Auth,
+        )
         data = json.loads(response.content)
         self.assertEqual(data["Name"], "samsung")
         self.assertEqual(data["Scopes"][0], 20.0)

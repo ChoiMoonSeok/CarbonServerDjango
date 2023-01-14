@@ -13,6 +13,7 @@ from Human import models as HuModel
 from Company import models as ComModel
 from . import serializer
 import func
+from CarbonConstant import CarbonDef
 
 
 class CarbonEmissionQuery(APIView):
@@ -34,7 +35,7 @@ class CarbonEmissionQuery(APIView):
 
         try:  # 요청받은 회사가 루트가 아닌 경우
             Root_id = ComModel.Department.objects.get(
-                DepartmentName=Depart  # 로그인이 구현된 이후에는 사용자의 root와 비교
+                DepartmentName=Depart, RootCom=UserRoot  # 로그인이 구현된 이후에는 사용자의 root와 비교
             )
         except ComModel.Department.DoesNotExist:  # 요청받은 회사가 루트인 경우
             try:
@@ -72,10 +73,49 @@ class CarbonEmissionQuery(APIView):
     )
     def post(self, request, Depart, format=None):
         """
-        탄소 사용량 데이터 입력하는 Api
+        탄소 사용량 데이터를 입력하는 Api
         """
 
         token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
         UserRoot = func.getRootViaJWT(token_str)
 
-        UserBelong = func.getBelongViaJWT(token_str)
+        TargetCom = ComModel.Department.objects.get(
+            RootCom=UserRoot, DepartmentName=Depart
+        )
+
+        CarbonData = json.loads(request.Content)
+
+        CarType = CarbonData["Type"]
+        CarDetailType = CarbonData["DetailType"]
+
+        DataKind = CarbonDef.CarbonCateMap["{}".format(CarType)][
+            "{}".format(CarDetailType)
+        ]
+
+        CarTrans = DataKind.CO2_EQ(
+            CarbonData["CarbonData"]
+        )  # 탄소 배출 상수 입력 완료 후 사용량 외에 다른 입력값이 필요한 경우는 예외 처리 할 것
+
+        CarInfoTemp = CarModel.CarbonInfo.objects.create(
+            StateDate=CarbonData["StartDate"],
+            EndDate=CarbonData["EndDate"],
+            Location=CarbonData["Location"],
+            Scope=CarbonData["Scope"],
+            Chief=HuModel.Employee.objects.get(
+                RootCom=UserRoot, Name=CarbonData["Chief"]
+            ),
+            Category=CarbonDef.CarbonCategories.index(CarType),
+            Division=str(CarbonData),
+        )
+
+        CarModel.Carbon.objects.create(
+            CarbonActivity=CarbonData["CarbonActivity"],
+            CarbonData=CarbonData["CarbonData"],
+            CarbonUnit=CarbonData["CarbonUnit"],
+            CarbonTrans=CarTrans,
+            RootCom=UserRoot,
+            BelongDepart=TargetCom,
+            CarbonInfo=CarInfoTemp,
+        )
+
+        return Response("Add Carbon Data Success", status=status.HTTP_200_OK)

@@ -67,7 +67,7 @@ class CompanySimpleQuery(CompanyQuery):
 
         result = []
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
-        if type(ComId) == ComModel.Company:
+        if type(ComId) == ComModel.Company:  # 루트인 경우
             func.getChildDepart(UserRoot, None, result)
             ans = [{"category": 1, "image": None, "name": ComId.ComName, "check": None}]
         else:
@@ -138,9 +138,9 @@ class PreviewQuery(APIView):
 
         temp = str()
         for i in start:
-            if i[0] == "0":
-                temp += "-"
             temp += i
+            if start.index(i) != 2:
+                temp += "-"
         start = temp
         del temp
 
@@ -151,10 +151,10 @@ class PreviewQuery(APIView):
 
         temp = str()
         for i in end:
-            if i[0] == "0":
-                temp += "-"
             temp += i
-        start = temp
+            if start.index(i) != 2:
+                temp += "-"
+        end = temp
         del temp
 
         for depart in Departs:

@@ -45,6 +45,8 @@ def getChildDepart(RootCom, HeadCom, Children):
         return None
     else:
         for Depart in data:
+            if type(Depart) == None:
+                continue
             Children.append(Depart)
             getChildDepart(RootCom, Depart.SelfCom, Children)
 
@@ -71,3 +73,8 @@ def getBelongViaJWT(token_str):
     Email = access_token["user_id"]
     BelongCom = HuModel.User.objects.get(Email=Email).DetailInfo.BelongCom
     return BelongCom
+
+
+# 유저의 권환을 확인하는 함수
+def CheckUserAuthorization():
+    pass

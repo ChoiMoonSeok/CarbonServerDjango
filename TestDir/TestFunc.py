@@ -1,23 +1,29 @@
 import datetime
 
+from django.test import Client
+
 from Carbon import models as CarModel
 from Human import models as HuModel
 from Company import models as ComModel
 
+client = Client()
 
+# 테스트 데이터를 생성하는 함수
 def CreateSamsung():
-    HuModel.Employee.objects.create(
-        Name="이재용",
-        PhoneNum="123456789",
-        JobPos="회장",
-        IdentityNum="1",
-    )
+
     ComModel.Company.objects.create(
         ComName="samsung",
         Scope1=0,
         Scope2=0,
         Scope3=0,
-        Chief=HuModel.Employee.objects.get(Name="이재용"),
+        Chief=None,
+    )
+    HuModel.Employee.objects.create(
+        Name="이재용",
+        PhoneNum="123456789",
+        JobPos="회장",
+        IdentityNum="1",
+        RootCom=ComModel.Company.objects.get(ComName="samsung"),
     )
     HuModel.User.objects.create(
         Email="1234@naver.com",
@@ -190,3 +196,17 @@ def CreateSamsung():
         password="hihihihi",
         DetailInfo=HuModel.Employee.objects.get(Name="경계현"),
     )
+
+
+# 로그인 진행 후 jwt를 반환하는 함수
+def LogIn():
+    return client.post(
+        "/User/Login",
+        data={"Email": "1234@naver.com", "password": "hi"},
+        content_type="application/json",
+    )
+
+
+# 로그인 jwt 헤더를 작성하는 함수
+def Auth(token):
+    return {"HTTP_AUTHORIZATION": f'Bearer {token["AccessToken"]}'}

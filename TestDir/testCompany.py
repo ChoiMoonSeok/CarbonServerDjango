@@ -68,7 +68,7 @@ class CompanyStructTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data[0]["category"], 1)
 
-    def testPreviewGet(self):
+    def testPreviewGetRoot(self):
         response = self.client.get(
             "/Company/Preview/samsung/2022-12-01/2023-01-01",
             **self.Auth,
@@ -79,3 +79,11 @@ class CompanyStructTest(TestCase):
         self.assertEqual(data["Scopes"][1], 20.0)
         self.assertEqual(data["Scopes"][2], 0.0)
         self.assertEqual(data["EmissionList"][12]["출장"], 20.0)
+
+    def testPreviewGetNotRoot(self):
+        response = self.client.get(
+            "/Company/Preview/삼성전자/2023-01-01/2023-01-31",
+            **self.Auth,
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data["Name"], "삼성전자")

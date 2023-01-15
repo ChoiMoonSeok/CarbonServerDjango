@@ -128,7 +128,7 @@ class PreviewQuery(APIView):
             func.getChildDepart(UserRoot, None, Departs)
             IsRoot = 1
         else:
-            func.getChildDepart(UserRoot, HeadDepart, Departs)
+            func.getChildDepart(UserRoot, HeadDepart.SelfCom, Departs)
 
         Carbons = []
         start = start.split("-")
@@ -140,7 +140,7 @@ class PreviewQuery(APIView):
         temp = str()
         for i in start:
             temp += i
-            if start.index(i) != 2:
+            if num != 2:
                 temp += "-"
                 num += 1
         start = temp

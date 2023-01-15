@@ -194,3 +194,10 @@ REST_AUTH_SERIALIZERS = {
 SIMPLE_JWT = {
     "USER_ID_FIELD": "Email",
 }
+
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": False,
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    },
+}

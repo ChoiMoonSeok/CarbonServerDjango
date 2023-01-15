@@ -81,6 +81,7 @@ def CreateSamsung():
         Category=12,
     )
     CarModel.Carbon.objects.create(
+        id=1,
         CarbonActivity="김재호 교수 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
@@ -98,6 +99,7 @@ def CreateSamsung():
         Category=12,
     )
     CarModel.Carbon.objects.create(
+        id=2,
         CarbonActivity="김재호 교수 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
@@ -115,6 +117,7 @@ def CreateSamsung():
         Category=11,
     )
     CarModel.Carbon.objects.create(
+        id=3,
         CarbonActivity="정혜미 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
@@ -132,6 +135,7 @@ def CreateSamsung():
         Category=11,
     )
     CarModel.Carbon.objects.create(
+        id=4,
         CarbonActivity="정대호 출장",
         CarbonData=20.0,
         CarbonUnit="kg",
@@ -149,6 +153,7 @@ def CreateSamsung():
         Category=10,
     )
     CarModel.Carbon.objects.create(
+        id=5,
         CarbonActivity="최문석 출장",
         CarbonData=20.0,
         CarbonUnit="kg",

@@ -151,3 +151,53 @@ class UreaFert(Fertilizer):
 class NitroFert(Fertilizer):  # 질문 후 작성
     def CO2_EQ(self):
         return super().CO2_EQ()
+
+
+class Forest:
+    침엽수_Gw = 4
+    활엽수_Gw = 4
+    혼효림_Gw = 4
+    침엽수_CF = 510
+    활엽수_CF = 480
+    혼효림_CF = 470
+    침엽수_R = 0.28
+    활엽수_R = 0.47
+    혼효림_R = 0.345
+    조림_Bw = 20
+    손실_Bw = 120
+
+    def CO2_EQ(self, area):
+        pass
+
+
+class SoftWood(Forest):
+    def CO2_EQ(self, area, kind):
+        if kind == "임야면적":
+            eq = area * self.침엽수_Gw * self.침엽수_CF * (1 + self.침엽수_R) * 44 / 12
+        elif kind == "조림면적":
+            eq = area * self.조림_Bw * self.침엽수_CF * (1 + self.침엽수_R) * 44 / 12
+        else:
+            eq = -area * self.손실_Bw * self.침엽수_CF * (1 + self.침엽수_R) * 44 / 12
+        return eq
+
+
+class HardWood(Forest):
+    def CO2_EQ(self, area, kind):
+        if kind == "임야면적":
+            eq = area * self.활엽수_Gw * self.침엽수_CF * (1 + self.활엽수_R) * 44 / 12
+        elif kind == "조림면적":
+            eq = area * self.조림_Bw * self.침엽수_CF * (1 + self.활엽수_R) * 44 / 12
+        else:
+            eq = -area * self.손실_Bw * self.침엽수_CF * (1 + self.활엽수_R) * 44 / 12
+        return eq
+
+
+class Mixed(Forest):
+    def CO2_EQ(self, area, kind):
+        if kind == "임야면적":
+            eq = area * self.혼효림_Gw * self.침엽수_CF * (1 + self.혼효림_R) * 44 / 12
+        elif kind == "조림면적":
+            eq = area * self.조림_Bw * self.침엽수_CF * (1 + self.혼효림_R) * 44 / 12
+        else:
+            eq = -area * self.손실_Bw * self.침엽수_CF * (1 + self.혼효림_R) * 44 / 12
+        return eq

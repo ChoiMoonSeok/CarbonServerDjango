@@ -89,14 +89,13 @@ class LogInView(APIView):
         UserData = request.data
         if type(UserData) is not None:
             Email = UserData["Email"]
-            User = HuModel.User.objects.get(Email=Email)
-            if type(User) == None:
-                Response("Wrong Email address", status=status.HTTP_404_NOT_FOUND)
+            try:
+                User = HuModel.User.objects.get(Email=Email)
+            except HuModel.User.DoesNotExist:  # 해당 이메일의 회원이 존재하지 않을 때
+                return Response("Wrong Email address", status=status.HTTP_404_NOT_FOUND)
 
             PW = UserData["password"]
-            if (
-                PW == User.password  # test 코드 실행용 실제 운용 시는 아래 사용
-            ):  # check_password(PW, User.password):  # 비밀 번호가 일치하는지 검사
+            if check_password(PW, User.password):  # 비밀 번호가 일치하는지 검사
 
                 token = TokenObtainPairSerializer.get_token(User)
                 refresh_token = str(token)

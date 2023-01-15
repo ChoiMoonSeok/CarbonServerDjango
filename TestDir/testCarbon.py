@@ -19,7 +19,7 @@ class CarbonGetTest(TestCase):
         response = self.client.get("/CarbonEmission/{}".format("samsung"), **self.Auth)
         data = json.loads(response.content)
         self.assertEquals(len(data), 5)
-    
+
     def testCarbonGetNotRoot(self):
         response = self.client.get("/CarbonEmission/{}".format("삼성전자"), **self.Auth)
         data = json.loads(response.content)
@@ -29,4 +29,13 @@ class CarbonGetTest(TestCase):
         response = self.client.get("/CarbonEmission/{}".format("삼성자"), **self.Auth)
         data = json.loads(response.content)
         self.assertEqual(data, "This Company/Department doesn't exist.")
-        
+
+    def testDeleteCarbonRight(self):
+        response = self.client.delete("/CarbonEmission/{}".format(5), **self.Auth)
+        data = json.loads(response.content)
+        self.assertEqual(data, "Delete Success")
+
+    def testDeleteCarbonBad(self):
+        response = self.client.delete("/CarbonEmission/{}".format(10), **self.Auth)
+        data = json.loads(response.content)
+        self.assertEqual(data, "Request Data Doesn't Exist")

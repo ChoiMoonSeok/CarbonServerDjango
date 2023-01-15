@@ -69,11 +69,12 @@ class CarbonEmissionQuery(APIView):
             return Response(CarbonList, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
-        operation_summary="탄소 배출 원인 Api", request_body=serializer.CarbonSerializer
+        operation_summary="탄소 배출 원인을 입력하는 Api", request_body=serializer.CarbonSerializer
     )
     def post(self, request, Depart, format=None):
         """
-        탄소 사용량 데이터를 입력하는 Api
+        탄소 사용량 데이터를 입력하는 Api\n
+        로그인한 임직원이 자신이 직장 생활에서 발생시킨 탄소 배출량을 기록\n
         """
 
         token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
@@ -119,3 +120,40 @@ class CarbonEmissionQuery(APIView):
         )
 
         return Response("Add Carbon Data Success", status=status.HTTP_200_OK)
+
+
+class CarbonDeleteQuery(APIView):
+    @swagger_auto_schema(
+        operation_summary="입력된 탄소 배출 원인을 삭제하는 Api",
+        responses={404: "입력한 회사가 존재하지 않음", 200: "API가 정상적으로 실행 됨"},
+    )
+    def delete(self, request, pk, format=None):
+        """
+        입력된 탄소 배출 원인 중 불필요한 내용을 삭제하는 Api\n
+        삭제할 탄소 배출 원인의 기본키를 입력하여야 한다.
+        """
+        try:
+            CarInfo = CarModel.Carbon.objects.get(
+                id=pk
+            ).CarbonInfo  # CarbonInfo가 CASCADE가 아니므로 먼저 삭제
+        except CarModel.Carbon.DoesNotExist:  # 삭제할 데이터가 존재하지 않는 경우
+            return Response(
+                "Request Data Doesn't Exist", status=status.HTTP_404_NOT_FOUND
+            )
+        CarInfoId = CarInfo.id
+        CarInfo.delete()  # CarbonInfo가 CASCADE가 아니므로 먼저 삭제
+        CarModel.Carbon.objects.get(id=pk).delete()
+
+        try:
+            CarModel.Carbon.objects.get(id=pk)
+        except CarModel.Carbon.DoesNotExist:
+            try:
+                CarModel.CarbonInfo.objects.get(id=CarInfoId)
+            except CarModel.CarbonInfo.DoesNotExist:
+                return Response("Delete Success", status=status.HTTP_200_OK)
+
+            return Response(
+                "Delete CarbonInfo Fail", status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return Response("Delete Fail", status=status.HTTP_500_INTERNAL_SERVER_ERROR)

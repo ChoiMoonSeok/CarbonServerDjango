@@ -28,7 +28,10 @@ schema_view = get_schema_view(
     openapi.Info(
         title="CarbonServer",
         default_version="0.0.0",
-        description="해당 서버는 bigsys data lab의 탄소 배출 측정 연구 과제를 위한 api 서버입니다.\n",
+        description="해당 서버는 bigsys data lab의 탄소 배출 측정 연구 과제를 위한 api 서버입니다.\n\
+            Login과 Signin을 제외한 모든 API는 jwt인증이 필요합니다.\n\
+                swagger 활용을 위해 api 인증이 필요한 경우, 우측의 Authorize 버튼을 눌러 검증한 후 실행하십시요.\n\
+                    ex) Bearer (User/Login에서 얻은 Access jwt)",
     ),
     public=True,
     permission_classes=[permissions.AllowAny],

@@ -12,6 +12,8 @@ class CarbonInfoSerializer(serializers.ModelSerializer):  # carbonInfo 모델을
 
 
 class CarbonSerializer(serializers.ModelSerializer):  # carbon 모델을 json으로 변환
+    CarbonInfo = CarbonInfoSerializer()
+
     class Meta:
         model = models.Carbon
         exclude = ["RootCom", "BelongDepart"]

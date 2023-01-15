@@ -36,7 +36,7 @@ class CompanyQuery(APIView):
 
         ComId = ComModel.Company.objects.get(ComName=CompanyName)
 
-        result = ComSerial.CompanySerializer(ComId)
+        result = ComSerial.ComStructSerializer(ComId)
         result = result.data
         result["Children"] = []
 

@@ -107,9 +107,9 @@ class FugitiveEmission:
 class AirCon(FugitiveEmission):
     def CO2_EQ(self, usage, nums, kind):
         if kind == 407:
-            eq = usage * (self.R_407C_X / 100) * nums
+            eq = usage * (self.R_407C_X / 100) * nums * self.R_407C_GWP
         else:
-            eq = usage * (self.R_410A_X / 100) * nums
+            eq = usage * (self.R_410A_X / 100) * nums * self.R_410A_GWP
         return eq
 
 
@@ -117,3 +117,37 @@ class Refri(FugitiveEmission):
     def CO2_EQ(self, usage, nums):
         eq = usage * (self.HFC_134_A_X / 100) * nums
         return eq
+
+
+class Fertilizer:
+    석회고토_EF = 130
+    석회석_EF = 120
+    패화석_EF = 120
+    요소비료_EF = 200
+    질소질비료_EF = 12.5
+
+    def CO2_EQ(self):
+        pass
+
+
+class LimeFert(Fertilizer):
+    def CO2_EQ(self, usage, kind):
+        if kind == "석회고토":
+            eq = usage * self.석회고토_EF * 44 / 12
+        elif kind == "석회석":
+            eq = usage * self.석회석_EF * 44 / 12
+        else:
+            eq = usage * self.패화석_EF * 44 / 12
+
+        return eq
+
+
+class UreaFert(Fertilizer):
+    def CO2_EQ(self, usage):
+        eq = usage * self.요소비료_EF * 44 / 12
+        return eq
+
+
+class NitroFert(Fertilizer):  # 질문 후 작성
+    def CO2_EQ(self):
+        return super().CO2_EQ()

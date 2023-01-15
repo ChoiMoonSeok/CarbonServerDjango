@@ -18,22 +18,7 @@ CarbonCategories = [
     "출장",
     "위탁운영차량",
 ]
-CarbonCateMap = {
-    "고정연소": [],
-    "이동연소": [],
-    "탈루배출": [],
-    "폐기물처리시설": [],
-    "비료사용": [],
-    "대학소유동물": [],
-    "산림에의한흡수": [],
-    "전력": [],
-    "열": [],
-    "수도": [],
-    "폐기물": [],
-    "통근_통학": [],
-    "출장": [],
-    "위탁운영차량": [],
-}
+
 
 # 클래스 기반으로 각각의 계산 함수 및 상수 생성
 
@@ -95,3 +80,46 @@ LNG = CarbonClass.MovingCom(39.4, 56100, 92, 3)
 # 탈루배출
 AirCon = CarbonClass.AirCon()
 Refri = CarbonClass.Refri()
+
+CarbonCateMap = {
+    "고정연소": {
+        "CrudeOil": CrudeOil,
+        "Gasoline": Gasoline,
+        "KeroseneInside": KeroseneInside,
+        "KeroseneBoil": KeroseneBoil,
+        "Diesel": Diesel,
+        "B_A_Oil": B_A_Oil,
+        "B_B_Oil": B_B_Oil,
+        "B_C_Oil": B_C_Oil,
+        "Propane": Propane,
+        "Butane": Butane,
+        "Solvent": Solvent,
+        "AeroGasoline": AeroGasoline,
+        "JetGasoline": JetGasoline,
+        "JetKerosene": JetKerosene,
+        "Asphalt": Asphalt,
+        "Lubricant": Lubricant,
+        "PetCoke": PetCoke,
+        "NaturalLPG": NaturalLPG,
+        "LocalHardCoal": LocalHardCoal,
+        "ForeignHardCoalFuel": ForeignHardCoalFuel,
+        "ForeignHardCoalRaw": ForeignHardCoalRaw,
+        "SoftCoalFuel": SoftCoalFuel,
+        "SoftCoalRaw": SoftCoalRaw,
+        "BituminousCoal": BituminousCoal,
+        "Cokes": Cokes,
+    },
+    "이동연소": {},
+    "탈루배출": {},
+    "폐기물처리시설": {},
+    "비료사용": {},
+    "대학소유동물": {},
+    "산림에의한흡수": {},
+    "전력": {"Electric": Electric},
+    "열": {"Heat": Heat},
+    "수도": {"Water": Water},
+    "폐기물": {},
+    "통근_통학": {},
+    "출장": {},
+    "위탁운영차량": {},
+}

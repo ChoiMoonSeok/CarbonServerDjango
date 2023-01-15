@@ -13,7 +13,7 @@ def getStruct(RootCom, HeadCom, result):
         return None
     else:
         for Depart in data:
-            temp = serializer.CompanySerializer(Depart.SelfCom)
+            temp = serializer.ComStructSerializer(Depart.SelfCom)
             temp = temp.data
             temp["Children"] = []
             result["Children"].append(temp)

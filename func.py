@@ -15,8 +15,9 @@ def getStruct(RootCom, HeadCom, result):
         for Depart in data:
             temp = serializer.ComStructSerializer(Depart.SelfCom)
             temp = temp.data
-            if type(temp["Chief"]) != None:
-                temp["Chief"] = HuModel.Employee.objects.get(id=result["Chief"]).Name
+
+            if temp["Chief"] != None:
+                temp["Chief"] = HuModel.Employee.objects.get(id=temp["Chief"]).Name
             temp["Children"] = []
             result["Children"].append(temp)
             getStruct(RootCom, Depart.SelfCom, result["Children"][-1])

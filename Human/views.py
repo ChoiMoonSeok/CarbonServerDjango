@@ -95,7 +95,9 @@ class LogInView(APIView):
                 return Response("Wrong Email address", status=status.HTTP_404_NOT_FOUND)
 
             PW = UserData["password"]
-            if check_password(PW, User.password):  # 비밀 번호가 일치하는지 검사
+            if (
+                PW == User.password
+            ):  # check_password(PW, User.password):  # 비밀 번호가 일치하는지 검사
 
                 token = TokenObtainPairSerializer.get_token(User)
                 refresh_token = str(token)

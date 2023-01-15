@@ -38,6 +38,9 @@ class CompanyQuery(APIView):
 
         result = ComSerial.ComStructSerializer(ComId)
         result = result.data
+
+        if type(result["Chief"]) != None:
+            result["Chief"] = HuModel.Employee.objects.get(id=result["Chief"]).Name
         result["Children"] = []
 
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.

@@ -1,7 +1,9 @@
 import json
 
 from django.test import TestCase
+
 import TestFunc
+from Company import models as ComModel
 
 
 class EmployeeTest(TestCase):
@@ -32,7 +34,21 @@ class EmployeeTest(TestCase):
             {"Email": "1234@naver.com", "password": "hi"},
         )
         data = json.loads(response.content)
-        self.assertEqual(data, 0)
+        self.assertEqual(data["Email"], "1234@naver.com")
 
     def testSignUpRight(self):
-        response = self.client.post("/User/SignUp", {"Email": ""})
+        response = self.client.post(
+            "/User/SignUp",
+            {
+                "Email": "4321@naver.com",
+                "DetailInfo": {
+                    "Name": "최문석",
+                    "PhoneNum": "123456789",
+                    "JobPos": "사원",
+                    "IdentityNum": 13,
+                    "RootCom": "samsung",
+                    "BelongCom": "삼성전자",
+                },
+                "password": "abcdefg",
+            },
+        )

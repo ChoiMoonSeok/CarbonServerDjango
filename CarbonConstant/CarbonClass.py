@@ -96,9 +96,24 @@ class FugitiveEmission:
     HFC_134_A_X = 0.3
     HFC_134_A_GWP = 1300
     R_407C_X = 5.5
-    R_407C_A = 5.5
+    R_410A_X = 5.5
     R_407C_GWP = 1525.5
-    R_407A_GWP = 1725
+    R_410A_GWP = 1725
 
     def CO2_EQ(self, usage, nums):
         pass
+
+
+class AirCon(FugitiveEmission):
+    def CO2_EQ(self, usage, nums, kind):
+        if kind == 407:
+            eq = usage * (self.R_407C_X / 100) * nums
+        else:
+            eq = usage * (self.R_410A_X / 100) * nums
+        return eq
+
+
+class Refri(FugitiveEmission):
+    def CO2_EQ(self, usage, nums):
+        eq = usage * (self.HFC_134_A_X / 100) * nums
+        return eq

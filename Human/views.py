@@ -151,9 +151,6 @@ class SignUpView(APIView):
                 password=UserData["password"],
             )
 
-            Detail.save()
-            NewUser.save()
-
             serial = serializer.UserSerializer(NewUser)
             return Response(serial.data, status=status.HTTP_200_OK)
 

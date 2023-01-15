@@ -1,4 +1,4 @@
-import CarbonClass
+from . import CarbonClass
 
 # 탄소 배출 유형과 숫자 맵핑
 CarbonCateLen = 14
@@ -87,7 +87,7 @@ DieselMove = CarbonClass.MovingCom(35.3, 74100, 3.9, 3.9)
 LPGNaturalMove = CarbonClass.MovingCom(49.3, 63100, 62, 0.2)
 LPGCityMove = CarbonClass.MovingCom(39.4, 63100, 62, 0.2)
 KeroseneMove = CarbonClass.MovingCom(34.3, 71900, 0, 0)
-LubricantMove = CarbonClass.MovingCom(37, 73300, 0.0)
+LubricantMove = CarbonClass.MovingCom(37, 73300, 0, 0)
 # CNG
 LNG = CarbonClass.MovingCom(39.4, 56100, 92, 3)
 

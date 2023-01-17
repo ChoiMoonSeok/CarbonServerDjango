@@ -132,6 +132,7 @@ class SignUpView(APIView):
         UserData = request.data
         TempEmail = HuModel.User.objects.filter(Email=UserData["Email"])
 
+        # 해당 회원이 이미 가입된 회원인지 확인 후, 유저를 생성. 다만 현재 employee에는 존재하지만 User가 없는 경우는 지원하지 않음
         if len(TempEmail) == 0:
             EmployeeData = UserData["DetailInfo"]
             Detail = HuModel.Employee.objects.create(

@@ -1,9 +1,11 @@
 import json
 
-from django.test import TestCase
+from django.test import TestCase, Client
 
 import TestFunc
 from Company import models as ComModel
+
+client = Client()
 
 
 class EmployeeTest(TestCase):
@@ -16,7 +18,7 @@ class EmployeeTest(TestCase):
     def testRootGet(self):
         response = self.client.get("/User/samsung", **self.Auth)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 3)
+        self.assertEqual(len(data), 4)
 
     def testNotRootGet(self):
         response = self.client.get("/User/삼성전자", **self.Auth)
@@ -39,7 +41,7 @@ class EmployeeTest(TestCase):
     def testSignUpRight(self):
         response = self.client.post(
             "/User/SignUp",
-            {
+            data={
                 "Email": "4321@naver.com",
                 "DetailInfo": {
                     "Name": "최문석",
@@ -48,7 +50,9 @@ class EmployeeTest(TestCase):
                     "IdentityNum": 13,
                     "RootCom": "samsung",
                     "BelongCom": "삼성전자",
+                    "Authorization": 0,
                 },
                 "password": "abcdefg",
             },
+            content_type="application/json",
         )

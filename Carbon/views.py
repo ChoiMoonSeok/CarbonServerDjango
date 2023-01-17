@@ -13,7 +13,7 @@ from Human import models as HuModel
 from Company import models as ComModel
 from . import serializer
 import func
-from CarbonConstant import CarbonDef
+from CarbonConstant import CarbonDef, CarbonClass
 
 
 class CarbonEmissionQuery(APIView):
@@ -93,9 +93,23 @@ class CarbonEmissionQuery(APIView):
             "{}".format(CarDetailType)
         ]
 
-        CarTrans = DataKind.CO2_EQ(
-            CarbonData["CarbonData"]
-        )  # 탄소 배출 상수 입력 완료 후 사용량 외에 다른 입력값이 필요한 경우는 예외 처리 할 것
+        if type(DataKind) in [
+            CarbonClass.AirCon,
+            CarbonClass.SoftWood,
+            CarbonClass.HardWood,
+            CarbonClass.Mixed,
+        ]:
+            CarTrans = DataKind.CO2_EQ(
+                CarbonData["CarbonData"]["usage"],
+                CarbonData["CarbonData"]["nums"],
+                CarbonData["CarbonData"]["kind"],
+            )  # 탄소 배출 상수 입력 완료 후 사용량 외에 다른 입력값이 필요한 경우는 예외 처리 할 것
+        elif type(DataKind) == CarbonClass.Refri:
+            CarTrans = DataKind.CO2_EQ(
+                CarbonData["CarbonData"]["usage"], CarbonData["CarbonData"]["nums"]
+            )
+        else:
+            CarTrans = DataKind.CO2_EQ(CarbonData["CarbonData"]["usage"])
 
         CarInfoTemp = CarModel.CarbonInfo.objects.create(
             StateDate=CarbonData["StartDate"],

@@ -201,3 +201,12 @@ class Mixed(Forest):
         else:
             eq = -area * self.손실_Bw * self.침엽수_CF * (1 + self.혼효림_R) * 44 / 12
         return eq
+
+
+class Waste:
+    def __init__(self, EF):
+        self.EF = EF
+
+    def CO2_EQ(self, usage):
+        eq = usage * self.EF * (10**-3)
+        return eq

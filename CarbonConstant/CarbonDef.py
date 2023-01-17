@@ -1,7 +1,6 @@
 from . import CarbonClass
 
 # 탄소 배출 유형과 숫자 맵핑
-CarbonCateLen = 14
 CarbonCategories = [
     "고정연소",
     "이동연소",
@@ -18,6 +17,7 @@ CarbonCategories = [
     "출장",
     "위탁운영차량",
 ]
+CarbonCateLen = len(CarbonCategories)
 
 
 # 클래스 기반으로 각각의 계산 함수 및 상수 생성
@@ -90,6 +90,14 @@ HardWood = CarbonClass.HardWood()
 SoftWood = CarbonClass.SoftWood()
 Mixed = CarbonClass.Mixed()
 
+# 페기물
+Landfill = CarbonClass.Waste(517)
+SolidWasteBio = CarbonClass.Waste(97.6)
+Burning = CarbonClass.Waste(1052.40)
+Sewage = CarbonClass.Waste(0.0285)
+WasteWater = CarbonClass.Waste(0.0123)
+NightSoil = CarbonClass.Waste(18.9)
+
 CarbonCateMap = {
     "고정연소": {
         "원유": CrudeOil,
@@ -135,7 +143,14 @@ CarbonCateMap = {
     "전력": {"전력": Electric},
     "열": {"열": Heat},
     "수도": {"수도": Water},
-    "폐기물": {},
+    "폐기물": {
+        "매립": Landfill,
+        "고형폐기물의생물학적처리": SolidWasteBio,
+        "소각": Burning,
+        "하수": Sewage,
+        "폐수": WasteWater,
+        "분뇨": NightSoil,
+    },
     "통근_통학": {},
     "출장": {},
     "위탁운영차량": {},

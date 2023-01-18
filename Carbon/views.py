@@ -84,7 +84,7 @@ class CarbonEmissionQuery(APIView):
             RootCom=UserRoot, DepartmentName=Depart
         )
 
-        CarbonData = json.loads(request.Content)
+        CarbonData = request.data
 
         CarType = CarbonData["Type"]
         CarDetailType = CarbonData["DetailType"]
@@ -93,18 +93,19 @@ class CarbonEmissionQuery(APIView):
             "{}".format(CarDetailType)
         ]
 
-        if type(DataKind) in [
-            CarbonClass.AirCon,
-            CarbonClass.SoftWood,
-            CarbonClass.HardWood,
-            CarbonClass.Mixed,
-        ]:
+        if DataKind in CarbonDef.CarbonCateMap["산림에의한흡수"]:
+            CarTrans = DataKind.CO2_EQ(
+                CarbonData["CarbonData"]["usage"],
+                CarbonData["CarbonData"]["kind"],
+            )
+            # 탄소 배출 상수 입력 완료 후 사용량 외에 다른 입력값이 필요한 경우는 예외 처리 할 것
+        elif DataKind == "에어컨":
             CarTrans = DataKind.CO2_EQ(
                 CarbonData["CarbonData"]["usage"],
                 CarbonData["CarbonData"]["nums"],
                 CarbonData["CarbonData"]["kind"],
-            )  # 탄소 배출 상수 입력 완료 후 사용량 외에 다른 입력값이 필요한 경우는 예외 처리 할 것
-        elif type(DataKind) == CarbonClass.Refri:
+            )
+        elif DataKind == "냉장고":
             CarTrans = DataKind.CO2_EQ(
                 CarbonData["CarbonData"]["usage"], CarbonData["CarbonData"]["nums"]
             )
@@ -112,21 +113,21 @@ class CarbonEmissionQuery(APIView):
             CarTrans = DataKind.CO2_EQ(CarbonData["CarbonData"]["usage"])
 
         CarInfoTemp = CarModel.CarbonInfo.objects.create(
-            StateDate=CarbonData["StartDate"],
-            EndDate=CarbonData["EndDate"],
-            Location=CarbonData["Location"],
-            Scope=CarbonData["Scope"],
+            StartDate=CarbonData["CarbonData"]["StartDate"],
+            EndDate=CarbonData["CarbonData"]["EndDate"],
+            Location=CarbonData["CarbonData"]["Location"],
+            Scope=CarbonData["CarbonData"]["Scope"],
             Chief=HuModel.Employee.objects.get(
-                RootCom=UserRoot, Name=CarbonData["Chief"]
+                RootCom=UserRoot, Name=CarbonData["CarbonData"]["Chief"]
             ),
             Category=CarbonDef.CarbonCategories.index(CarType),
             Division=str(CarbonData),
         )
 
         CarModel.Carbon.objects.create(
-            CarbonActivity=CarbonData["CarbonActivity"],
-            CarbonData=CarbonData["CarbonData"],
-            CarbonUnit=CarbonData["CarbonUnit"],
+            CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
+            CarbonData=CarbonData["CarbonData"]["usage"],
+            CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
             CarbonTrans=CarTrans,
             RootCom=UserRoot,
             BelongDepart=TargetCom,
@@ -134,6 +135,10 @@ class CarbonEmissionQuery(APIView):
         )
 
         return Response("Add Carbon Data Success", status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(operation_summary="탄소 배출 원인을 수정하는 Api")
+    def put(self, request, pk, format=None):
+        pass
 
 
 class CarbonDeleteQuery(APIView):

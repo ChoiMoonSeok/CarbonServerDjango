@@ -10,11 +10,12 @@ import TestFunc
 
 
 class CompanyStructTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         TestFunc.CreateSamsung()
-        self.token = TestFunc.LogIn()
-        self.token = json.loads(self.token.content)
-        self.Auth = TestFunc.Auth(self.token)
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+        cls.Auth = TestFunc.Auth(cls.token)
 
     def testGetStruct(self):
         response = self.client.get(
@@ -87,3 +88,38 @@ class CompanyStructTest(TestCase):
         )
         data = json.loads(response.content)
         self.assertEqual(data["Name"], "삼성전자")
+
+    def testCompanyDelNotRoot(self):
+        response = self.client.delete(
+            "/Company/PreviewInfo/{}".format("삼성전자"), **self.Auth
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Delete Complete")
+        self.assertEqual(
+            len(
+                ComModel.Department.objects.filter(
+                    RootCom=ComModel.Company.objects.get(ComName="samsung")
+                )
+            ),
+            1,
+        )
+
+    def testCompanyDelRoot(self):
+        print(
+            ComModel.Department.objects.filter(
+                RootCom=ComModel.Company.objects.get(ComName="samsung")
+            )
+        )
+        response = self.client.delete(
+            "/Company/PreviewInfo/{}".format("samsung"), **self.Auth
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Delete Complete")
+        self.assertEqual(
+            len(
+                ComModel.Department.objects.filter(
+                    RootCom=ComModel.Company.objects.get(ComName="samsung")
+                )
+            ),
+            0,
+        )

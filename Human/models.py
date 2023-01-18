@@ -5,9 +5,8 @@ from django.contrib.auth.models import (
 )  # 로그인 기능을 구현하기 위해 상속받는 모델
 from django.contrib.auth.models import PermissionsMixin
 
+
 # 회사의 모든고용인을 저장하는 테이블
-
-
 class Employee(models.Model):
     Name = models.TextField()  # 문자열
     PhoneNum = models.TextField()  # 문자열
@@ -23,8 +22,6 @@ class Employee(models.Model):
 
 
 # 회원 가입 관리
-
-
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
@@ -56,8 +53,6 @@ class UserManager(BaseUserManager):
 
 
 # 회원가입한 유저를 저장하는 테이블
-
-
 class User(AbstractBaseUser, PermissionsMixin):  # 로그인 구현을 위해 AbstractBaseUser를 상속
     Email = models.EmailField(primary_key=True)  # email 필드
     DetailInfo = models.ForeignKey(

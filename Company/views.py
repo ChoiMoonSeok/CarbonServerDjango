@@ -275,3 +275,29 @@ class PreviewInfoQuery(APIView):
                 "Please enter a correct data.",
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
+
+    @swagger_auto_schema(operation_summary="회사 삭제 Api")
+    def delete(self, request, Depart, format=None):
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
+
+        # 모회사를 삭제하는 경우
+        if Depart == UserRoot.ComName:
+            DelList = []
+            func.getChildCom(UserRoot, None, DelList)
+
+            for Com in DelList:
+                Com.delete()
+
+            return Response("Delete Complete", status=status.HTTP_200_OK)
+
+        else:
+            DelList = [
+                ComModel.Department.objects.get(RootCom=UserRoot, DepartmentName=Depart)
+            ]
+            func.getChildCom(UserRoot, DelList[0].SelfCom, DelList)
+
+            for Com in DelList:
+                Com.delete()
+
+            return Response("Delete Complete", status=status.HTTP_200_OK)

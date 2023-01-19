@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg import openapi
 
 import func
 from Company import models as ComModel
@@ -15,6 +16,7 @@ from Carbon import models as CarModel
 from Company import serializer as ComSerial
 from Human import models as HuModel
 from CarbonConstant import CarbonDef
+from Swag import ComSwag
 
 
 class CompanyQuery(APIView):
@@ -54,7 +56,16 @@ class CompanySimpleQuery(CompanyQuery):
 
     permission_classes = (IsAuthenticated,)  # 로그인 검증
 
+    @swagger_auto_schema(
+        operation_summary="요청한 회사에 대한 최소한의 정보만을 반환하는 Api",
+        responses={200: "Api가 정상적으로 동작함"},
+    )
     def get(self, request, CompanyName, format=None):
+        """
+        요청한 회사에 대한 최소한의 정보를 반환하는 Api\n
+        회사의 이름과 깊이만을 반환\n
+        프론트엔드에서 조직 설계도를 그릴 때 사용
+        """
 
         UserRoot = func.GetUserRoot(request)
 
@@ -129,37 +140,10 @@ class PreviewQuery(APIView):
         else:
             func.getChildDepart(UserRoot, HeadDepart.SelfCom, Departs)
 
+        start = func.AddZero(start)
+        end = func.AddZero(end)
+
         Carbons = []
-        start = start.split("-")
-        for i in range(len(start)):
-            if len(start[i]) < 2:
-                start[i] = "0{}".format(start[i])
-
-        num = 0
-        temp = str()
-        for i in start:
-            temp += i
-            if num != 2:
-                temp += "-"
-                num += 1
-        start = temp
-        del temp
-
-        end = end.split("-")
-        for i in range(len(end)):
-            if len(end[i]) < 2:
-                end[i] = "0{}".format(end[i])
-
-        num = 0
-        temp = str()
-        for i in end:
-            temp += i
-            if num != 2:
-                temp += "-"
-                num += 1
-        end = temp
-        del temp
-
         for depart in Departs:
             temp = CarModel.Carbon.objects.filter(
                 BelongDepart=depart,
@@ -216,7 +200,11 @@ class PreviewInfoQuery(APIView):
     @swagger_auto_schema(
         operation_summary="Company 혹은 Department의 데이터를 변경하는 Api",
         request_body=ComSerial.CompanySerializer,
-        responses={202: "데이터가 문제없이 변경 됨", 406: "입력한 데이터에 오류가 있음, 수정 요함"},
+        responses={
+            202: "데이터가 문제없이 변경 됨",
+            406: "입력한 데이터에 오류가 있음, 수정 요함",
+            404: "요청한 회사가 존재하지 않음",
+        },
     )
     def put(self, request, Depart, format=None):
         """
@@ -272,8 +260,16 @@ class PreviewInfoQuery(APIView):
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
 
-    @swagger_auto_schema(operation_summary="회사 삭제 Api")
+    @swagger_auto_schema(
+        operation_summary="회사 삭제 Api", responses={200: "Api가 정상적으로 실행됨"}
+    )
     def delete(self, request, Depart, format=None):
+        """
+        더 이상 탄소배출에 포함하지 않을 회사를 삭제하는 Api\n
+        해당하는 회사의 이름을 URL에 입력하여 요청.\n
+        단, 동일한 이름의 회사는 동일한 Root에서는 존재하지 않는다고 가정.
+        """
+
         UserRoot = func.GetUserRoot(request)
 
         # 모회사를 삭제하는 경우
@@ -297,8 +293,74 @@ class PreviewInfoQuery(APIView):
 
             return Response("Delete Complete", status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_summary="회사 생성 Api")
+    @swagger_auto_schema(
+        operation_summary="회사 생성 Api",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "ComName": ComSwag.ComName,
+                "Scope1": ComSwag.Scope1,
+                "Scope2": ComSwag.Scope2,
+                "Scope3": ComSwag.Scope3,
+                "Chief": ComSwag.Chief,
+                "Admin": ComSwag.Admin,
+                "Classification": ComSwag.Classification,
+                "Description": ComSwag.Description,
+                "Location": ComSwag.Location,
+                "DepartmentName": ComSwag.DepartmentName,
+                "Depth": ComSwag.Depth,
+            },
+        ),
+        responses={200: "Api가 정상적으로 실행됨"},
+    )
     def post(self, request, Depart, format=None):
+        """
+        조직 설계에서 회사을 생성하는 Api\n
+        현재는 최하단의 회사만 추가 가능\n
+        아래의 데이터를 모두 입력하여야 추가 가능\n
+        다만 Chief, Admin, Classification, Description, Location은 None 입력 가능\n
+        단 {Depart}는 추가할 회사의 바로 윗 회사이여야 함
+        """
         UserRoot = func.GetUserRoot(request)
 
-        pass
+        ComData = request.data
+
+        try:
+            Chief = HuModel.Employee.objects.get(
+                RootCom=UserRoot, Name=ComData["Chief"]
+            )
+        except HuModel.Employee.DoesNotExist:
+            Chief = (None,)
+        try:
+            Admin = HuModel.Employee.objects.get(
+                RootCom=UserRoot, Name=ComData["Admin"]
+            )
+        except HuModel.Employee.DoesNotExist:
+            Admin = None
+
+        BelongCom = ComModel.Department.objects.get(
+            RootCom=UserRoot, DepartmentName=Depart
+        )
+
+        SelfCom = ComModel.Company.objects.create(
+            ComName=ComData["ComName"],
+            Scope1=ComData["Scope1"],
+            Scope2=ComData["Scope2"],
+            Scope3=ComData["Scope3"],
+            Chief=Chief,
+            Admin=Admin,
+            Classification=ComData["Classification"],
+            Description=ComData["Description"],
+            Location=ComData["Location"],
+        )
+
+        ans = ComModel.Department.objects.create(
+            DepartmentName=ComData["DepartmentName"],
+            RootCom=UserRoot,
+            BelongCom=BelongCom.SelfCom,
+            SelfCom=SelfCom,
+            Depth=ComData["Depth"],
+        )
+
+        ans = ComSerial.DepartmentSerializer(ans)
+        return Response(ans.data, status=status.HTTP_200_OK)

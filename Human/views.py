@@ -19,7 +19,7 @@ from drf_yasg import openapi
 from Human import models as HuModel
 from Human import serializer
 from Company import models as ComModel
-from Swag import HuSwage
+from Swag import HuSwag
 import func
 
 
@@ -80,7 +80,7 @@ class LogInView(APIView):
         operation_summary="로그인 Api",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            properties={"Email": HuSwage.Email, "password": HuSwage.password},
+            properties={"Email": HuSwag.Email, "password": HuSwag.password},
         ),
         responses={404: "입력한 사용자가 존재하지 않음", 406: "입력한 데이터가 불충분 함"},
     )

@@ -206,6 +206,13 @@ class CarbonFixingQuery(APIView):
         responses={200: "데이터 입력 성공"},
     )
     def put(self, request, pk, format=None):
+        """
+        이전에 입력한 탄소 배출량 데이터를 수정하는 Api\n
+        이전에 입력한 내용과 동일한 카테고리 내에서 값들을 수정\n
+        불가능 예시) 고정연소인데 이동연소로 변경\n
+        아래의 데이터들을 모두 입력하여야 변경 가능\n
+        그렇지 않은 경우 오류가 발생함
+        """
 
         UserRoot = func.GetUserRoot(request)
 

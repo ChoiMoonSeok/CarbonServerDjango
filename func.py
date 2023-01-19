@@ -87,6 +87,25 @@ def GetUserRoot(request):
     return UserRoot
 
 
+def AddZero(date):
+    date = date.split("-")
+    for i in range(len(date)):
+        if len(date[i]) < 2:
+            date[i] = "0{}".format(date[i])
+
+    num = 0
+    temp = str()
+    for i in date:
+        temp += i
+        if num != 2:
+            temp += "-"
+            num += 1
+    date = temp
+    del temp
+
+    return date
+
+
 # 유저의 권환을 확인하는 함수
 def CheckUserAuthorization():
     pass

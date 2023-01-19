@@ -1,19 +1,18 @@
 import json
 
-from django.test import TestCase, Client
+from django.test import TestCase
 
 import TestFunc
 from Company import models as ComModel
 
-client = Client()
 
-
-class EmployeeTest(TestCase):
-    def setUp(self):
+class EmployeeGetTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
         TestFunc.CreateSamsung()
-        self.token = TestFunc.LogIn()
-        self.token = json.loads(self.token.content)
-        self.Auth = TestFunc.Auth(self.token)
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+        cls.Auth = TestFunc.Auth(cls.token)
 
     def testRootGet(self):
         response = self.client.get("/User/samsung", **self.Auth)
@@ -30,6 +29,14 @@ class EmployeeTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data, "This Company does not exist")
 
+
+class EmployeeLogInTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        TestFunc.CreateSamsung()
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+
     def testLoginRight(self):
         response = self.client.post(
             "/User/Login",
@@ -38,13 +45,21 @@ class EmployeeTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data["Email"], "1234@naver.com")
 
-    def testSignUpRight(self):
+
+class EmployeeSignUpTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        TestFunc.CreateSamsung()
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+
+    def testSignUpFirst(self):
         response = self.client.post(
             "/User/SignUp",
             data={
-                "Email": "4321@naver.com",
+                "Email": "54321@naver.com",
                 "DetailInfo": {
-                    "Name": "최문석",
+                    "Name": "최문석1",
                     "PhoneNum": "123456789",
                     "JobPos": "사원",
                     "IdentityNum": 13,
@@ -56,3 +71,26 @@ class EmployeeTest(TestCase):
             },
             content_type="application/json",
         )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Sign Up Success")
+
+    def testSignUpOther(self):
+        response = self.client.post(
+            "/User/SignUp",
+            data={
+                "Email": "54321@naver.com",
+                "DetailInfo": {
+                    "Name": "최문석1",
+                    "PhoneNum": "123456789",
+                    "JobPos": "사원",
+                    "IdentityNum": 13,
+                    "RootCom": "samsung",
+                    "BelongCom": "삼성전자",
+                    "Authorization": 0,
+                },
+                "password": "abcdefg",
+            },
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Sign Up Success")

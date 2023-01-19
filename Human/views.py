@@ -14,11 +14,14 @@ from rest_framework.decorators import (
     authentication_classes,
 )
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg import openapi
 
 from Human import models as HuModel
 from Human import serializer
 from Company import models as ComModel
+from Swag import HuSwage
 import func
+
 
 # 사용자에 대한 api 함수
 
@@ -76,7 +79,10 @@ class User_EmployeeQuery(APIView):
 class LogInView(APIView):
     @swagger_auto_schema(
         operation_summary="로그인 Api",
-        request_body=serializer.UserSerializer,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={"Email": HuSwage.Email, "password": HuSwage.password},
+        ),
         responses={404: "입력한 사용자가 존재하지 않음", 406: "입력한 데이터가 불충분 함"},
     )
     def post(self, request, format=None):
@@ -134,27 +140,51 @@ class SignUpView(APIView):
 
         # 해당 회원이 이미 가입된 회원인지 확인 후, 유저를 생성. 다만 현재 employee에는 존재하지만 User가 없는 경우는 지원하지 않음
         if len(TempEmail) == 0:
+
             EmployeeData = UserData["DetailInfo"]
-            Detail = HuModel.Employee.objects.create(
-                Name=EmployeeData["Name"],
-                PhoneNum=EmployeeData["PhoneNum"],
-                JobPos=EmployeeData["JobPos"],
-                IdentityNum=EmployeeData["IdentityNum"],
-                Authorization=EmployeeData["Authorization"],
-                RootCom=ComModel.Company.objects.get(ComName=EmployeeData["BelongCom"]),
-                BelongCom=ComModel.Department.objects.get(
-                    DepartmentName=EmployeeData["BelongCom"]
-                ),
+
+            RootCom = ComModel.Company.objects.get(ComName=EmployeeData["RootCom"])
+            BelongCom = ComModel.Department.objects.get(
+                RootCom=RootCom, DepartmentName=EmployeeData["BelongCom"]
             )
 
-            NewUser = HuModel.User.objects.create(
-                Email=UserData["Email"],
-                DetailInfo=Detail,
-                password=UserData["password"],
-            )
+            # 해당 유저가 employee에 존재하는지 확인
+            try:
+                CheckEmp = HuModel.Employee.objects.get(
+                    RootCom=RootCom, BelongCom=BelongCom, Name=EmployeeData["Name"]
+                )
 
-            serial = serializer.UserSerializer(NewUser)
-            return Response(serial.data, status=status.HTTP_200_OK)
+                NewUser = HuModel.User.objects.create(
+                    Email=UserData["Email"],
+                    DetailInfo=CheckEmp,
+                    password=UserData["password"],
+                )
+
+                return Response("Sign Up Success", status=status.HTTP_200_OK)
+
+            except HuModel.Employee.DoesNotExist:
+
+                Detail = HuModel.Employee.objects.create(
+                    Name=EmployeeData["Name"],
+                    PhoneNum=EmployeeData["PhoneNum"],
+                    JobPos=EmployeeData["JobPos"],
+                    IdentityNum=EmployeeData["IdentityNum"],
+                    Authorization=EmployeeData["Authorization"],
+                    RootCom=ComModel.Company.objects.get(
+                        ComName=EmployeeData["RootCom"]
+                    ),
+                    BelongCom=ComModel.Department.objects.get(
+                        DepartmentName=EmployeeData["BelongCom"]
+                    ),
+                )
+
+                NewUser = HuModel.User.objects.create(
+                    Email=UserData["Email"],
+                    DetailInfo=Detail,
+                    password=UserData["password"],
+                )
+
+                return Response("Sign Up Success", status=status.HTTP_200_OK)
 
         else:
             return Response(

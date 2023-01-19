@@ -70,8 +70,6 @@ Chief = openapi.Schema(
 CarbonData = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        "Type": Type,
-        "DetailType": DetailType,
         "StartDate": StartDate,
         "EndDate": EndDate,
         "Location": Location,

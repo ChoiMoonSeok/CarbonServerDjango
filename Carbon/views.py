@@ -112,7 +112,6 @@ class CarbonEmissionQuery(APIView):
                 CarbonData["CarbonData"]["usage"],
                 CarbonData["CarbonData"]["kind"],
             )
-            # 탄소 배출 상수 입력 완료 후 사용량 외에 다른 입력값이 필요한 경우는 예외 처리 할 것
         elif DataKind == "에어컨":
             CarTrans = DataKind.CO2_EQ(
                 CarbonData["CarbonData"]["usage"],
@@ -198,10 +197,45 @@ class CarbonFixingQuery(APIView):
 
         return Response("Delete Fail", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @swagger_auto_schema(operation_summary="탄소 배출 원인을 수정하는 Api")
+    @swagger_auto_schema(
+        operation_summary="탄소 배출 원인을 수정하는 Api",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "DetailType": CarSwag.DetailType,
+                "CarbonData": CarSwag.CarbonData,
+            },
+        ),
+        responses={200: "데이터 입력 성공"},
+    )
     def put(self, request, pk, format=None):
+
+        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+        UserRoot = func.getRootViaJWT(token_str)
+
         temp = CarModel.Carbon.objects.get(id=pk)
+        tempInfo = temp.CarbonInfo
 
         InData = request.data
 
-        return Response(0)
+        tempInfo.StartDate = InData["CarbonData"]["StartDate"]
+        tempInfo.EndDate = InData["CarbonData"]["EndDate"]
+        tempInfo.Location = InData["CarbonData"]["Location"]
+        tempInfo.Scope = InData["CarbonData"]["Scope"]
+        tempInfo.Chief = HuModel.Employee.objects.get(
+            RootCom=UserRoot, Name=InData["CarbonData"]["Chief"]
+        )
+        tempInfo.Division = str(InData)
+        tempInfo.save()
+
+        temp.CarbonActivity = InData["CarbonData"]["CarbonActivity"]
+        temp.CarbonData = InData["CarbonData"]["usage"]
+        temp.CarbonUnit = InData["CarbonData"]["CarbonUnit"]
+        temp.CarbonTrans = CarbonDef.CarbonCateMap[
+            "{}".format(CarbonDef.CarbonCategories[tempInfo.Category])
+        ][InData["DetailType"]].CO2_EQ(InData["CarbonData"]["usage"])
+
+        temp.CarbonInfo = tempInfo
+        temp.save()
+        tempInfo.save()
+        return Response("Change Complete", status=status.HTTP_200_OK)

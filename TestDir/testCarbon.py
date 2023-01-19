@@ -85,8 +85,8 @@ class CarbonPostTest(TestCase):
         response = self.client.post(
             "/CarbonEmission/{}".format("samsung"),
             {
-                "Type": "고정연소",
-                "DetailType": "원유",
+                "Type": "이동연소",
+                "DetailType": "경유",
                 "CarbonData": {
                     "StartDate": datetime.date.today(),
                     "EndDate": datetime.date.today(),
@@ -117,7 +117,21 @@ class CarbonPutTest(TestCase):
     def testPut(self):
         response = self.client.put(
             "/CarbonEmission/{}".format(4),
-            {"usage": 20},
+            {
+                "Type": "이동연소",
+                "DetailType": "경유",
+                "CarbonData": {
+                    "StartDate": datetime.date.today(),
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "Category": 10,
+                    "CarbonActivity": "최문석 출장",
+                    "usage": 25.0,
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
             **self.Auth,
             content_type="application/json",
         )

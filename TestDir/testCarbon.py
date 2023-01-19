@@ -57,9 +57,33 @@ class CarbonPostTest(TestCase):
         cls.token = json.loads(cls.token.content)
         cls.Auth = TestFunc.Auth(cls.token)
 
-    def testEnterCarbon(self):
+    def testEnterCarbonNotRoot(self):
         response = self.client.post(
             "/CarbonEmission/{}".format("삼성전자"),
+            {
+                "Type": "고정연소",
+                "DetailType": "원유",
+                "CarbonData": {
+                    "StartDate": datetime.date.today(),
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "Category": 10,
+                    "CarbonActivity": "최문석 출장",
+                    "usage": 20.0,
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Add Carbon Data Success")
+
+    def testEnterCarbonRoot(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
             {
                 "Type": "고정연소",
                 "DetailType": "원유",

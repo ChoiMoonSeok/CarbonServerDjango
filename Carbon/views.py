@@ -91,9 +91,12 @@ class CarbonEmissionQuery(APIView):
         token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
         UserRoot = func.getRootViaJWT(token_str)
 
-        TargetCom = ComModel.Department.objects.get(
-            RootCom=UserRoot, DepartmentName=Depart
-        )
+        if Depart == UserRoot.ComName:
+            TargetCom = UserRoot
+        else:
+            TargetCom = ComModel.Department.objects.get(
+                RootCom=UserRoot, DepartmentName=Depart
+            )
 
         CarbonData = request.data
 
@@ -135,15 +138,26 @@ class CarbonEmissionQuery(APIView):
             Division=str(CarbonData),
         )
 
-        CarModel.Carbon.objects.create(
-            CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
-            CarbonData=CarbonData["CarbonData"]["usage"],
-            CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
-            CarbonTrans=CarTrans,
-            RootCom=UserRoot,
-            BelongDepart=TargetCom,
-            CarbonInfo=CarInfoTemp,
-        )
+        if type(TargetCom) == ComModel.Company:
+            CarModel.Carbon.objects.create(
+                CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
+                CarbonData=CarbonData["CarbonData"]["usage"],
+                CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
+                CarbonTrans=CarTrans,
+                RootCom=UserRoot,
+                BelongDepart=None,
+                CarbonInfo=CarInfoTemp,
+            )
+        else:
+            CarModel.Carbon.objects.create(
+                CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
+                CarbonData=CarbonData["CarbonData"]["usage"],
+                CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
+                CarbonTrans=CarTrans,
+                RootCom=UserRoot,
+                BelongDepart=TargetCom,
+                CarbonInfo=CarInfoTemp,
+            )
 
         return Response("Add Carbon Data Success", status=status.HTTP_200_OK)
 

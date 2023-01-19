@@ -1,11 +1,8 @@
 import json
 import datetime
 
-from django.test import TestCase, Client
+from django.test import TestCase
 
-from Carbon import models as CarModel
-from Human import models as HuModel
-from Company import models as ComModel
 import TestFunc
 
 
@@ -32,6 +29,15 @@ class CarbonGetTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data, "This Company/Department doesn't exist.")
 
+
+class CarbonDelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        TestFunc.CreateSamsung()
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+        cls.Auth = TestFunc.Auth(cls.token)
+
     def testDeleteCarbonRight(self):
         response = self.client.delete("/CarbonEmission/{}".format(5), **self.Auth)
         data = json.loads(response.content)
@@ -41,6 +47,15 @@ class CarbonGetTest(TestCase):
         response = self.client.delete("/CarbonEmission/{}".format(10), **self.Auth)
         data = json.loads(response.content)
         self.assertEqual(data, "Request Data Doesn't Exist")
+
+
+class CarbonPostTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        TestFunc.CreateSamsung()
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+        cls.Auth = TestFunc.Auth(cls.token)
 
     def testEnterCarbon(self):
         response = self.client.post(
@@ -65,3 +80,20 @@ class CarbonGetTest(TestCase):
         )
         data = json.loads(response.content)
         self.assertEqual(data, "Add Carbon Data Success")
+
+
+class CarbonPutTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        TestFunc.CreateSamsung()
+        cls.token = TestFunc.LogIn()
+        cls.token = json.loads(cls.token.content)
+        cls.Auth = TestFunc.Auth(cls.token)
+
+    def testPut(self):
+        response = self.client.put(
+            "/CarbonEmission/{}".format(4),
+            {"usage": 20},
+            **self.Auth,
+            content_type="application/json",
+        )

@@ -105,11 +105,6 @@ class CompanyStructTest(TestCase):
         )
 
     def testCompanyDelRoot(self):
-        print(
-            ComModel.Department.objects.filter(
-                RootCom=ComModel.Company.objects.get(ComName="samsung")
-            )
-        )
         response = self.client.delete(
             "/Company/PreviewInfo/{}".format("samsung"), **self.Auth
         )

@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg import openapi
 
 from . import models as CarModel
 from Human import models as HuModel
@@ -14,6 +15,7 @@ from Company import models as ComModel
 from . import serializer
 import func
 from CarbonConstant import CarbonDef, CarbonClass
+from Swag import CarSwag
 
 
 class CarbonEmissionQuery(APIView):
@@ -69,7 +71,16 @@ class CarbonEmissionQuery(APIView):
             return Response(CarbonList, status=status.HTTP_201_CREATED)
 
     @swagger_auto_schema(
-        operation_summary="탄소 배출 원인을 입력하는 Api", request_body=serializer.CarbonSerializer
+        operation_summary="탄소 배출 원인을 입력하는 Api",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "Type": CarSwag.Type,
+                "DetailType": CarSwag.DetailType,
+                "CarbonData": CarSwag.CarbonData,
+            },
+        ),
+        responses={200: "데이터 입력 성공"},
     )
     def post(self, request, Depart, format=None):
         """
@@ -136,12 +147,8 @@ class CarbonEmissionQuery(APIView):
 
         return Response("Add Carbon Data Success", status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_summary="탄소 배출 원인을 수정하는 Api")
-    def put(self, request, pk, format=None):
-        pass
 
-
-class CarbonDeleteQuery(APIView):
+class CarbonFixingQuery(APIView):
     @swagger_auto_schema(
         operation_summary="입력된 탄소 배출 원인을 삭제하는 Api",
         responses={404: "입력한 회사가 존재하지 않음", 200: "API가 정상적으로 실행 됨"},
@@ -176,3 +183,11 @@ class CarbonDeleteQuery(APIView):
             )
 
         return Response("Delete Fail", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @swagger_auto_schema(operation_summary="탄소 배출 원인을 수정하는 Api")
+    def put(self, request, pk, format=None):
+        temp = CarModel.Carbon.objects.get(id=pk)
+
+        InData = request.data
+
+        return Response(0)

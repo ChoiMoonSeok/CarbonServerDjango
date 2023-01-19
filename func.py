@@ -61,6 +61,26 @@ def getBelongViaJWT(token_str):
     return BelongCom
 
 
+# 탄소 데이터를 변경하는 함수
+def ChangeCarbon(Kind, Info, Carbon):
+    if Kind == "StartDate":
+        Carbon.CarbonInfo.StartDate = Info
+    elif Kind == "EndDate":
+        Carbon.CarbonInfo.EndDate = Info
+    elif Kind == "Location":
+        Carbon.CarbonInfo.Location = Info
+    elif Kind == "Scope":
+        Carbon.CarbonInfo.Scope = Info
+    elif Kind == "Chief":
+        Carbon.CarbonInfo.StartDate = HuModel.Employee.objects.get(
+            RootCom=Root, Name=Info
+        )
+    elif Kind == "StartDate":
+        Carbon.CarbonInfo.StartDate = Info
+    elif Kind == "StartDate":
+        Carbon.CarbonInfo.StartDate = Info
+
+
 # 유저의 권환을 확인하는 함수
 def CheckUserAuthorization():
     pass

@@ -31,8 +31,7 @@ class CompanyQuery(APIView):
         ex) 삼성 dict 내부의 Children에 리스트 형태로 자회사 혹은 부서가 저장됨.
         """
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         ComId = ComModel.Company.objects.get(ComName=CompanyName)
 
@@ -57,8 +56,7 @@ class CompanySimpleQuery(CompanyQuery):
 
     def get(self, request, CompanyName, format=None):
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         try:
             ComId = ComModel.Department.objects.get(
@@ -113,8 +111,7 @@ class PreviewQuery(APIView):
         """
 
         # 요청한 user의 모회사 확인
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         try:
             HeadDepart = ComModel.Department.objects.get(
@@ -228,8 +225,7 @@ class PreviewInfoQuery(APIView):
         Chief와 Admin의 경우 해당 회사, 부서의 책임자와 관리자의 이름을 각각 입력\n
         """
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         request = json.loads(request.body)
 
@@ -278,8 +274,7 @@ class PreviewInfoQuery(APIView):
 
     @swagger_auto_schema(operation_summary="회사 삭제 Api")
     def delete(self, request, Depart, format=None):
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         # 모회사를 삭제하는 경우
         if Depart == UserRoot.ComName:
@@ -301,3 +296,9 @@ class PreviewInfoQuery(APIView):
                 Com.delete()
 
             return Response("Delete Complete", status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(operation_summary="회사 생성 Api")
+    def post(self, request, Depart, format=None):
+        UserRoot = func.GetUserRoot(request)
+
+        pass

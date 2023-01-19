@@ -81,6 +81,12 @@ def ChangeCarbon(Kind, Info, Carbon):
         Carbon.CarbonInfo.StartDate = Info
 
 
+def GetUserRoot(request):
+    token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
+    UserRoot = getRootViaJWT(token_str)
+    return UserRoot
+
+
 # 유저의 권환을 확인하는 함수
 def CheckUserAuthorization():
     pass

@@ -32,8 +32,7 @@ class CarbonEmissionQuery(APIView):
         하단의 Description에 탄소 배출원을 알고 싶은 회사의 사명을 입력하면 됩니다.\n
         탄소 배출원 예) 홍길동 교수님 출장, 탄소 배출량 20"""
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         try:  # 요청받은 회사가 루트가 아닌 경우
             Root_id = ComModel.Department.objects.get(
@@ -88,8 +87,7 @@ class CarbonEmissionQuery(APIView):
         로그인한 임직원이 자신이 직장 생활에서 발생시킨 탄소 배출량을 기록\n
         """
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         if Depart == UserRoot.ComName:
             TargetCom = UserRoot
@@ -102,6 +100,7 @@ class CarbonEmissionQuery(APIView):
 
         CarType = CarbonData["Type"]
         CarDetailType = CarbonData["DetailType"]
+        usage = float(CarbonData["CarbonData"]["usage"].split("/")[0])
 
         DataKind = CarbonDef.CarbonCateMap["{}".format(CarType)][
             "{}".format(CarDetailType)
@@ -109,21 +108,19 @@ class CarbonEmissionQuery(APIView):
 
         if DataKind in CarbonDef.CarbonCateMap["산림에의한흡수"]:
             CarTrans = DataKind.CO2_EQ(
-                CarbonData["CarbonData"]["usage"],
+                usage,
                 CarbonData["CarbonData"]["kind"],
             )
         elif DataKind == "에어컨":
             CarTrans = DataKind.CO2_EQ(
-                CarbonData["CarbonData"]["usage"],
+                usage,
                 CarbonData["CarbonData"]["nums"],
                 CarbonData["CarbonData"]["kind"],
             )
         elif DataKind == "냉장고":
-            CarTrans = DataKind.CO2_EQ(
-                CarbonData["CarbonData"]["usage"], CarbonData["CarbonData"]["nums"]
-            )
+            CarTrans = DataKind.CO2_EQ(usage, CarbonData["CarbonData"]["nums"])
         else:
-            CarTrans = DataKind.CO2_EQ(CarbonData["CarbonData"]["usage"])
+            CarTrans = DataKind.CO2_EQ(usage)
 
         CarInfoTemp = CarModel.CarbonInfo.objects.create(
             StartDate=CarbonData["CarbonData"]["StartDate"],
@@ -140,7 +137,7 @@ class CarbonEmissionQuery(APIView):
         if type(TargetCom) == ComModel.Company:
             CarModel.Carbon.objects.create(
                 CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
-                CarbonData=CarbonData["CarbonData"]["usage"],
+                CarbonData=usage,
                 CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
                 CarbonTrans=CarTrans,
                 RootCom=UserRoot,
@@ -150,7 +147,7 @@ class CarbonEmissionQuery(APIView):
         else:
             CarModel.Carbon.objects.create(
                 CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
-                CarbonData=CarbonData["CarbonData"]["usage"],
+                CarbonData=usage,
                 CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
                 CarbonTrans=CarTrans,
                 RootCom=UserRoot,
@@ -210,8 +207,7 @@ class CarbonFixingQuery(APIView):
     )
     def put(self, request, pk, format=None):
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        UserRoot = func.getRootViaJWT(token_str)
+        UserRoot = func.GetUserRoot(request)
 
         temp = CarModel.Carbon.objects.get(id=pk)
         tempInfo = temp.CarbonInfo
@@ -229,11 +225,13 @@ class CarbonFixingQuery(APIView):
         tempInfo.save()
 
         temp.CarbonActivity = InData["CarbonData"]["CarbonActivity"]
-        temp.CarbonData = InData["CarbonData"]["usage"]
+        temp.CarbonData = float(InData["CarbonData"]["usage"].split("/")[0])
         temp.CarbonUnit = InData["CarbonData"]["CarbonUnit"]
         temp.CarbonTrans = CarbonDef.CarbonCateMap[
             "{}".format(CarbonDef.CarbonCategories[tempInfo.Category])
-        ][InData["DetailType"]].CO2_EQ(InData["CarbonData"]["usage"])
+        ][InData["DetailType"]].CO2_EQ(
+            float(InData["CarbonData"]["usage"].split("/")[0])
+        )
 
         temp.CarbonInfo = tempInfo
         temp.save()

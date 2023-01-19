@@ -41,8 +41,7 @@ class User_EmployeeQuery(APIView):
         ex) 삼성전자를 호출하면 삼성전자의 모든 직원과 삼성전자의 자회사인 삼성디스플레이의 모든 직원이 반환 됨
         """
 
-        token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
-        U_Root = func.getRootViaJWT(token_str)
+        U_Root = func.GetUserRoot(request)
 
         try:
             Root = ComModel.Department.objects.get(

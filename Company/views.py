@@ -39,6 +39,8 @@ class CompanyQuery(APIView):
 
         result = ComSerial.ComStructSerializer(ComId)
         result = result.data
+        result["label"] = result["ComName"]
+        result["expand"] = True
         if result["Chief"] != None:
             result["Chief"] = HuModel.Employee.objects.get(id=result["Chief"]).Name
         result["Children"] = []

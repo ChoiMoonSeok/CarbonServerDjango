@@ -249,13 +249,18 @@ class PreviewInfoQuery(APIView):
 
             func.ChangeCol(ChangeData.ComName, request["ComName"])
             func.ChangeCol(ChangeData.Classification, request["Classification"])
-            func.ChangeCol(
-                ChangeData.Chief, HuModel.Employee.objects.get(Name=request["Chief"])
-            )
+            if request["Chief"] != None:
+                func.ChangeCol(
+                    ChangeData.Chief,
+                    HuModel.Employee.objects.get(Name=request["Chief"]),
+                )
+            if request["Admin"] != None:
+                func.ChangeCol(
+                    ChangeData.Admin,
+                    HuModel.Employee.objects.get(Name=request["Admin"]),
+                )
             func.ChangeCol(ChangeData.Description, request["Description"])
-            func.ChangeCol(
-                ChangeData.Admin, HuModel.Employee.objects.get(Name=request["Admin"])
-            )
+
             func.ChangeCol(ChangeData.Location, request["Location"])
             ChangeData.save()
 

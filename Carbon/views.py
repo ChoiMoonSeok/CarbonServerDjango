@@ -120,6 +120,7 @@ class CarbonEmissionQuery(APIView):
         elif DataKind == "냉장고":
             CarTrans = DataKind.CO2_EQ(usage, CarbonData["CarbonData"]["nums"])
         else:
+            print(DataKind)
             CarTrans = DataKind.CO2_EQ(usage)
 
         CarInfoTemp = CarModel.CarbonInfo.objects.create(

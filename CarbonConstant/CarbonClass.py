@@ -34,6 +34,7 @@ class Water:
 
     def CO2_EQ(self, usage):
         eq = usage * self.WATER_EF * (10**-6)
+        return eq
 
 
 # 고정 연소에 대한 값을 저장하는 클래스

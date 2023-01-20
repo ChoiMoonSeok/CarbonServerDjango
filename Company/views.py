@@ -193,9 +193,9 @@ class PreviewQuery(APIView):
 
         ans = {
             "Name": Depart,
-            "Scopes": [scope1, scope2, scope3],
+            "Scopes": [round(scope1, 2), round(scope2, 2), round(scope3, 2)],
             "EmissionList": [
-                {CarbonDef.CarbonCategories[i]: categories[i]}
+                {CarbonDef.CarbonCategories[i]: round(categories[i], 2)}
                 for i in range(CarbonDef.CarbonCateLen)
             ],
         }
@@ -247,12 +247,16 @@ class PreviewInfoQuery(APIView):
         # 데이터 변경
         try:
 
-            ChangeData.ComName = request["ComName"]
-            ChangeData.Classification = request["Classification"]
-            ChangeData.Chief = HuModel.Employee.objects.get(Name=request["Chief"])
-            ChangeData.Description = request["Description"]
-            ChangeData.Admin = HuModel.Employee.objects.get(Name=request["Admin"])
-            ChangeData.Location = request["Location"]
+            func.ChangeCol(ChangeData.ComName, request["ComName"])
+            func.ChangeCol(ChangeData.Classification, request["Classification"])
+            func.ChangeCol(
+                ChangeData.Chief, HuModel.Employee.objects.get(Name=request["Chief"])
+            )
+            func.ChangeCol(ChangeData.Description, request["Description"])
+            func.ChangeCol(
+                ChangeData.Admin, HuModel.Employee.objects.get(Name=request["Admin"])
+            )
+            func.ChangeCol(ChangeData.Location, request["Location"])
             ChangeData.save()
 
             serial = ComSerial.CompanySerializer(ChangeData)

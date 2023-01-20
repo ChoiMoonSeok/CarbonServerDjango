@@ -121,6 +121,12 @@ def CreateCarbonInfo(CarbonData, Root, Type):
     return ans
 
 
+# 데이터 변경시 해당 데이터가 입력되었는지 확인
+def ChangeCol(request, data):
+    if request != None:
+        request = data
+
+
 # 유저의 권환을 확인하는 함수
 def CheckUserAuthorization():
     pass

@@ -111,7 +111,7 @@ class PreviewQuery(APIView):
 
     @swagger_auto_schema(
         operation_summary="Preview 화면에서 필요한 값들을 반환하는 Api",
-        responses={200: "Api가 정상적으로 동작함"},
+        responses={200: "Api가 정상적으로 동작함", 406: "날짜가 범위를 초과함"},
     )
     def get(self, request, Depart, start, end, format=None):
         """
@@ -145,12 +145,17 @@ class PreviewQuery(APIView):
 
         Carbons = []
         for depart in Departs:
-            temp = CarModel.Carbon.objects.filter(
-                BelongDepart=depart,
-                CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
-                CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
-            )
-            Carbons.append(temp)
+            try:
+                temp = CarModel.Carbon.objects.filter(
+                    BelongDepart=depart,
+                    CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
+                    CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                )
+                Carbons.append(temp)
+            except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
+                return Response(
+                    "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
+                )
 
         scope1 = 0
         scope2 = 0
@@ -158,12 +163,17 @@ class PreviewQuery(APIView):
         categories = [0] * CarbonDef.CarbonCateLen
 
         if IsRoot == 1:  # 요청한 데이터가 루트인 경우 depart가 아니라 데이터를 가져오지 못하므로 따로 가져옴
-            temp = CarModel.Carbon.objects.filter(
-                BelongDepart=None,
-                CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
-                CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
-            )
-            Carbons.append(temp)
+            try:
+                temp = CarModel.Carbon.objects.filter(
+                    BelongDepart=None,
+                    CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
+                    CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                )
+                Carbons.append(temp)
+            except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
+                return Response(
+                    "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
+                )
 
         for car in Carbons:
             for each in car:

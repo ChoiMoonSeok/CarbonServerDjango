@@ -100,60 +100,36 @@ class CarbonEmissionQuery(APIView):
 
         CarType = CarbonData["Type"]
         CarDetailType = CarbonData["DetailType"]
+
         usage = float(CarbonData["CarbonData"]["usage"].split("/")[0])
 
         DataKind = CarbonDef.CarbonCateMap["{}".format(CarType)][
             "{}".format(CarDetailType)
         ]
 
-        if DataKind in CarbonDef.CarbonCateMap["산림에의한흡수"]:
+        if CarDetailType in CarbonDef.CarbonCateMap["산림에의한흡수"]:
             CarTrans = DataKind.CO2_EQ(
                 usage,
                 CarbonData["CarbonData"]["kind"],
             )
-        elif DataKind == "에어컨":
+        elif CarDetailType == "에어컨":
             CarTrans = DataKind.CO2_EQ(
                 usage,
                 CarbonData["CarbonData"]["nums"],
                 CarbonData["CarbonData"]["kind"],
             )
-        elif DataKind == "냉장고":
+        elif CarDetailType == "냉장고":
             CarTrans = DataKind.CO2_EQ(usage, CarbonData["CarbonData"]["nums"])
         else:
-            print(DataKind)
             CarTrans = DataKind.CO2_EQ(usage)
 
-        CarInfoTemp = CarModel.CarbonInfo.objects.create(
-            StartDate=CarbonData["CarbonData"]["StartDate"],
-            EndDate=CarbonData["CarbonData"]["EndDate"],
-            Location=CarbonData["CarbonData"]["Location"],
-            Scope=CarbonData["CarbonData"]["Scope"],
-            Chief=HuModel.Employee.objects.get(
-                RootCom=UserRoot, Name=CarbonData["CarbonData"]["Chief"]
-            ),
-            Category=CarbonDef.CarbonCategories.index(CarType),
-            Division=str(CarbonData),
-        )
+        CarInfoTemp = func.CreateCarbonInfo(CarbonData, UserRoot, CarType)
 
         if type(TargetCom) == ComModel.Company:
-            CarModel.Carbon.objects.create(
-                CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
-                CarbonData=usage,
-                CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
-                CarbonTrans=CarTrans,
-                RootCom=UserRoot,
-                BelongDepart=None,
-                CarbonInfo=CarInfoTemp,
-            )
+            func.CreateCarbon(CarbonData, CarTrans, usage, UserRoot, None, CarInfoTemp)
         else:
-            CarModel.Carbon.objects.create(
-                CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
-                CarbonData=usage,
-                CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
-                CarbonTrans=CarTrans,
-                RootCom=UserRoot,
-                BelongDepart=TargetCom,
-                CarbonInfo=CarInfoTemp,
+            func.CreateCarbon(
+                CarbonData, round(CarTrans, 4), usage, UserRoot, TargetCom, CarInfoTemp
             )
 
         return Response("Add Carbon Data Success", status=status.HTTP_200_OK)

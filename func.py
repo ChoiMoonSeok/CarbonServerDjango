@@ -2,8 +2,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from Company import models as ComModel
 from Human import models as HuModel
-from Carbon import models as CarMode
+from Carbon import models as CarModel
 from Company import serializer
+from CarbonConstant import CarbonDef
 
 
 # 조직 구조를 반환하는 함수
@@ -61,26 +62,6 @@ def getBelongViaJWT(token_str):
     return BelongCom
 
 
-# 탄소 데이터를 변경하는 함수
-def ChangeCarbon(Kind, Info, Carbon):
-    if Kind == "StartDate":
-        Carbon.CarbonInfo.StartDate = Info
-    elif Kind == "EndDate":
-        Carbon.CarbonInfo.EndDate = Info
-    elif Kind == "Location":
-        Carbon.CarbonInfo.Location = Info
-    elif Kind == "Scope":
-        Carbon.CarbonInfo.Scope = Info
-    elif Kind == "Chief":
-        Carbon.CarbonInfo.StartDate = HuModel.Employee.objects.get(
-            RootCom=Root, Name=Info
-        )
-    elif Kind == "StartDate":
-        Carbon.CarbonInfo.StartDate = Info
-    elif Kind == "StartDate":
-        Carbon.CarbonInfo.StartDate = Info
-
-
 def GetUserRoot(request):
     token_str = request.META.get("HTTP_AUTHORIZATION").split()[1]
     UserRoot = getRootViaJWT(token_str)
@@ -104,6 +85,40 @@ def AddZero(date):
     del temp
 
     return date
+
+
+# 소속된 회사를 가져오는 함수
+def GetBelong():
+    pass
+
+
+# db에 Carbon 생성
+def CreateCarbon(CarbonData, CarTrans, usage, Root, Belong, CarInfo):
+    CarModel.Carbon.objects.create(
+        CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
+        CarbonData=usage,
+        CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
+        CarbonTrans=CarTrans,
+        RootCom=Root,
+        BelongDepart=Belong,
+        CarbonInfo=CarInfo,
+    )
+
+
+# db에 CarbonInfo 생성
+def CreateCarbonInfo(CarbonData, Root, Type):
+    ans = CarModel.CarbonInfo.objects.create(
+        StartDate=CarbonData["CarbonData"]["StartDate"],
+        EndDate=CarbonData["CarbonData"]["EndDate"],
+        Location=CarbonData["CarbonData"]["Location"],
+        Scope=CarbonData["CarbonData"]["Scope"],
+        Chief=HuModel.Employee.objects.get(
+            RootCom=Root, Name=CarbonData["CarbonData"]["Chief"]
+        ),
+        Category=CarbonDef.CarbonCategories.index(Type),
+        Division=str(CarbonData),
+    )
+    return ans
 
 
 # 유저의 권환을 확인하는 함수

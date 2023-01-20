@@ -66,7 +66,7 @@ class CompanySimpleQuery(CompanyQuery):
         """
         요청한 회사에 대한 최소한의 정보를 반환하는 Api\n
         회사의 이름과 깊이만을 반환\n
-        프론트엔드에서 조직 설계도를 그릴 때 사용
+        프론트엔드에서 Preview 정보 화면을 그릴 때 사용
         """
 
         UserRoot = func.GetUserRoot(request)
@@ -188,10 +188,7 @@ class PreviewQuery(APIView):
                     scope3 += each.CarbonTrans
 
                 TempCate = each.CarbonInfo.Category
-                for i in range(CarbonDef.CarbonCateLen):
-                    if i == TempCate:
-                        categories[i] += each.CarbonTrans
-                        break
+                categories[TempCate] += each.CarbonTrans
 
         ans = {
             "Name": Depart,

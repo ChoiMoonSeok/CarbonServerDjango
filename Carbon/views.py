@@ -198,13 +198,18 @@ class CarbonFixingQuery(APIView):
 
         InData = request.data
 
-        tempInfo.StartDate = InData["CarbonData"]["StartDate"]
-        tempInfo.EndDate = InData["CarbonData"]["EndDate"]
-        tempInfo.Location = InData["CarbonData"]["Location"]
-        tempInfo.Scope = InData["CarbonData"]["Scope"]
-        tempInfo.Chief = HuModel.Employee.objects.get(
-            RootCom=UserRoot, Name=InData["CarbonData"]["Chief"]
-        )
+        if InData["CarbonData"]["StartDate"] != None:
+            tempInfo.StartDate = InData["CarbonData"]["StartDate"]
+        if InData["CarbonData"]["EndDate"] != None:
+            tempInfo.EndDate = InData["CarbonData"]["EndDate"]
+        if InData["CarbonData"]["Location"] != None:
+            tempInfo.Location = InData["CarbonData"]["Location"]
+        if InData["CarbonData"]["Scope"] != None:
+            tempInfo.Scope = InData["CarbonData"]["Scope"]
+        if InData["CarbonData"]["Chief"] != None:
+            tempInfo.Chief = HuModel.Employee.objects.get(
+                RootCom=UserRoot, Name=InData["CarbonData"]["Chief"]
+            )
         tempInfo.Division = str(InData)
         tempInfo.save()
 

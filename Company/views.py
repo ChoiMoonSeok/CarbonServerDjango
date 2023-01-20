@@ -247,21 +247,19 @@ class PreviewInfoQuery(APIView):
         # 데이터 변경
         try:
 
-            func.ChangeCol(ChangeData.ComName, request["ComName"])
-            func.ChangeCol(ChangeData.Classification, request["Classification"])
+            if request["ComName"] != None:
+                ChangeData.ComName = request["ComName"]
+            if request["Classification"] != None:
+                ChangeData.Classification = request["Classification"]
             if request["Chief"] != None:
-                func.ChangeCol(
-                    ChangeData.Chief,
-                    HuModel.Employee.objects.get(Name=request["Chief"]),
-                )
+                ChangeData.Chief = HuModel.Employee.objects.get(Name=request["Chief"])
             if request["Admin"] != None:
-                func.ChangeCol(
-                    ChangeData.Admin,
-                    HuModel.Employee.objects.get(Name=request["Admin"]),
-                )
-            func.ChangeCol(ChangeData.Description, request["Description"])
+                ChangeData.Admin = HuModel.Employee.objects.get(Name=request["Admin"])
+            if request["Description"] != None:
+                ChangeData.Description, request["Description"]
 
-            func.ChangeCol(ChangeData.Location, request["Location"])
+            if request["Location"] != None:
+                ChangeData.Location = request["Location"]
             ChangeData.save()
 
             serial = ComSerial.CompanySerializer(ChangeData)

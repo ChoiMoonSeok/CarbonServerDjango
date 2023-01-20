@@ -213,9 +213,13 @@ class CarbonFixingQuery(APIView):
         tempInfo.Division = str(InData)
         tempInfo.save()
 
-        temp.CarbonActivity = InData["CarbonData"]["CarbonActivity"]
-        temp.CarbonData = float(InData["CarbonData"]["usage"].split("/")[0])
-        temp.CarbonUnit = InData["CarbonData"]["CarbonUnit"]
+        if InData["CarbonData"]["CarbonActivity"] != None:
+            temp.CarbonActivity = InData["CarbonData"]["CarbonActivity"]
+        if InData["CarbonData"]["usage"] != None:
+            temp.CarbonData = float(InData["CarbonData"]["usage"].split("/")[0])
+        if InData["CarbonData"]["CarbonUnit"] != None:
+            temp.CarbonUnit = InData["CarbonData"]["CarbonUnit"]
+
         temp.CarbonTrans = CarbonDef.CarbonCateMap[
             "{}".format(CarbonDef.CarbonCategories[tempInfo.Category])
         ][InData["DetailType"]].CO2_EQ(

@@ -67,6 +67,27 @@ Chief = openapi.Schema(
             ex) 홍길동",
 )
 
+CarbonActivity = openapi.Schema(
+    type=openapi.TYPE_STRING,
+    description="문자열 형태\n\
+            해당 활동의 이름을 기록\n\
+            ex) 홍길동 부산 출장",
+)
+
+Division = openapi.Schema(
+    type=openapi.TYPE_STRING,
+    description="문자열 형태\n\
+            해당 활동 상세 정보들을 기록\n\
+            ex) \{ 건물명:경상대, 설비명:기업 소유 \}}",
+)
+
+kind = openapi.Schema(
+    type=openapi.TYPE_STRING,
+    description="문자열 형태\n\
+            해당 활동의 물질 이름을 기록\n\
+            ex) HFC-134a",
+)
+
 CarbonData = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
@@ -77,5 +98,8 @@ CarbonData = openapi.Schema(
         "usage": usage,
         "CarbonUnit": CarbonUnit,
         "Chief": Chief,
+        "kind": kind,
+        "CarbonActivity": CarbonActivity,
+        "Division": Division,
     },
 )

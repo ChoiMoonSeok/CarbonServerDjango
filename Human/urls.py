@@ -12,6 +12,6 @@ urlpatterns = [
     # path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path(
-        "<str:Company>", views.User_EmployeeQuery.as_view(), name="get"
+        "<str:Company>", views.User_EmployeeQuery.as_view(), name="User"
     ),  # 조직설계에서 구성원 호출
 ]

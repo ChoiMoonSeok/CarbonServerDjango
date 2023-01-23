@@ -125,6 +125,21 @@ def CreateCarbonInfo(CarbonData, Root, Type):
     return ans
 
 
+def CreateEmployee(EmployeeData, RootCom, BelongCom):
+
+    Employee = HuModel.Employee.objects.create(
+        Name=EmployeeData["Name"],
+        PhoneNum=EmployeeData["PhoneNum"],
+        JobPos=EmployeeData["JobPos"],
+        IdentityNum=EmployeeData["IdentityNum"],
+        Authorization=EmployeeData["Authorization"],
+        RootCom=RootCom,
+        BelongCom=BelongCom,
+    )
+
+    return Employee
+
+
 # 유저의 권환을 확인하는 함수
 def CheckUserAuthorization(Authori):
     pass

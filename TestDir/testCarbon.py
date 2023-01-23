@@ -270,3 +270,4 @@ class CarbonPutTest(TestCase):
             **self.Auth,
             content_type="application/json",
         )
+        print(response)

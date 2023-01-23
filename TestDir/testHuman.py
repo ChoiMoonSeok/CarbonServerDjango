@@ -94,3 +94,29 @@ class EmployeeSignUpTest(TestCase):
         )
         data = json.loads(response.content)
         self.assertEqual(data, "Sign Up Success")
+
+
+class EmployeeAddTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        TestFunc.CreateSamsung()
+        cls.token = TestFunc.LogIn()
+        cls.Auth = TestFunc.Auth(json.loads(cls.token.content))
+
+    def testAddEmp(self):
+        response = self.client.post(
+            "/User/{}".format("삼성전자"),
+            data={
+                "Name": "최문석1",
+                "PhoneNum": "123456789",
+                "JobPos": "사원",
+                "IdentityNum": 13,
+                "RootCom": "samsung",
+                "BelongCom": "삼성전자",
+                "Authorization": 0,
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Create Employee Success")

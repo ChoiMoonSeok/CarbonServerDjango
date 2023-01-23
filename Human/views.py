@@ -17,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from drf_yasg import openapi
 
 from Human import models as HuModel
-from Human import serializer
+from Human import serializer as HuSerial
 from Company import models as ComModel
 from Swag import HuSwag
 import func
@@ -57,7 +57,7 @@ class User_EmployeeQuery(APIView):
 
         if type(Root) == ComModel.Company:
             Employee = HuModel.Employee.objects.filter(RootCom=Root)
-            serial = serializer.EmployeeSerializer(Employee, many=True)
+            serial = HuSerial.EmployeeSerializer(Employee, many=True)
             return Response(serial.data, status=status.HTTP_200_OK)
 
         else:
@@ -68,11 +68,42 @@ class User_EmployeeQuery(APIView):
             for depart in Departs:
 
                 temp = HuModel.Employee.objects.filter(RootCom=U_Root, BelongCom=depart)
-                serial = serializer.EmployeeSerializer(temp, many=True)
+                serial = HuSerial.EmployeeSerializer(temp, many=True)
 
                 Employee.append(serial.data)
 
             return Response(Employee, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="직원을 추가하는 api",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "Name": HuSwag.Name,
+                "PhoneName": HuSwag.PhoneNum,
+                "JobPos": HuSwag.JobPos,
+                "IdentityNum": HuSwag.IdentityNum,
+                "Authorization": HuSwag.Authorization,
+                "RootCom": HuSwag.RootCom,
+                "BelongCom": HuSwag.BelongCom,
+            },
+        ),
+        responses={201: "Employee 생성 성공", 404: "요청한 회사가 존재하지 않음"},
+    )
+    def post(self, request, Company, format=None):
+
+        UserRoot = func.GetUserRoot(request)
+
+        try:
+            Belong = ComModel.Department.objects.get(
+                RootCom=UserRoot, DepartmentName=Company
+            )
+        except ComModel.Department.DoesNotExist:
+            return Response("Department Not Exist", status=status.HTTP_404_NOT_FOUND)
+
+        NewEmp = func.CreateEmployee(request.data, UserRoot, Belong)
+
+        return Response("Create Employee Success", status=status.HTTP_201_CREATED)
 
 
 class LogInView(APIView):
@@ -125,7 +156,7 @@ class LogInView(APIView):
 
 class SignUpView(APIView):
     @swagger_auto_schema(
-        operation_summary="회원가입 Api", request_body=serializer.SignUpSerializer
+        operation_summary="회원가입 Api", request_body=HuSerial.SignUpSerializer
     )
     def post(self, request, formant=None):
         """
@@ -163,19 +194,7 @@ class SignUpView(APIView):
 
             except HuModel.Employee.DoesNotExist:
 
-                Detail = HuModel.Employee.objects.create(
-                    Name=EmployeeData["Name"],
-                    PhoneNum=EmployeeData["PhoneNum"],
-                    JobPos=EmployeeData["JobPos"],
-                    IdentityNum=EmployeeData["IdentityNum"],
-                    Authorization=EmployeeData["Authorization"],
-                    RootCom=ComModel.Company.objects.get(
-                        ComName=EmployeeData["RootCom"]
-                    ),
-                    BelongCom=ComModel.Department.objects.get(
-                        DepartmentName=EmployeeData["BelongCom"]
-                    ),
-                )
+                Detail = func.CreateEmployee(EmployeeData, RootCom, BelongCom)
 
                 NewUser = HuModel.User.objects.create(
                     Email=UserData["Email"],

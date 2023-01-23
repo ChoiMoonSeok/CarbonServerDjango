@@ -1,7 +1,7 @@
 from django.db import models
 
 
-# 탄소 사용량을 저장하는 테이블
+# 탄소 사용 내역을 저장하는 테이블
 
 
 class Carbon(models.Model):

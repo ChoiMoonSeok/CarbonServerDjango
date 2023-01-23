@@ -126,5 +126,5 @@ def CreateCarbonInfo(CarbonData, Root, Type):
 
 
 # 유저의 권환을 확인하는 함수
-def CheckUserAuthorization():
+def CheckUserAuthorization(Authori):
     pass

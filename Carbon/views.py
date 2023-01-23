@@ -79,7 +79,7 @@ class CarbonEmissionQuery(APIView):
                 "CarbonData": CarSwag.CarbonData,
             },
         ),
-        responses={200: "데이터 입력 성공"},
+        responses={200: "데이터 입력 성공", 410: "입력할 데이터를 입력하지 않음", 406: "입력한 데이터에 오류가 있음"},
     )
     def post(self, request, Depart, format=None):
         """
@@ -97,16 +97,41 @@ class CarbonEmissionQuery(APIView):
             )
 
         CarbonData = request.data
+        try:
+            CarType = CarbonData["Type"]
+            if type(CarType) != str:
+                return Response(
+                    "Wrong data type entered in Type",
+                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                )
+        except KeyError:
+            return Response("Type Not Exist", status=status.HTTP_410_GONE)
 
-        CarType = CarbonData["Type"]
-        CarDetailType = CarbonData["DetailType"]
+        try:
+            CarDetailType = CarbonData["DetailType"]
+            if type(CarDetailType) != str:
+                return Response(
+                    "Wrong data type entered in DetailType",
+                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                )
+        except KeyError:
+            return Response("DetailType Not Exist", status=status.HTTP_410_GONE)
 
-        usage = float(CarbonData["CarbonData"]["usage"].split("/")[0])
+        try:
+            usage = float(CarbonData["CarbonData"]["usage"].split("/")[0])
+        except KeyError:
+            return Response("usage Not Exist", status=status.HTTP_410_GONE)
+        except ValueError:
+            return Response(
+                "Wrong data type entered in usage",
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
 
         DataKind = CarbonDef.CarbonCateMap["{}".format(CarType)][
             "{}".format(CarDetailType)
         ]
 
+        # 입력값에 따라 사용할 수식과 클래스가 변화하기 때문에 그에 맞게 다른 입력값 입력
         if CarDetailType in CarbonDef.CarbonCateMap["산림에의한흡수"]:
             CarTrans = DataKind.CO2_EQ(
                 usage,
@@ -123,14 +148,27 @@ class CarbonEmissionQuery(APIView):
         else:
             CarTrans = DataKind.CO2_EQ(usage)
 
-        CarInfoTemp = func.CreateCarbonInfo(CarbonData, UserRoot, CarType)
+        try:
+            CarInfoTemp = func.CreateCarbonInfo(CarbonData, UserRoot, CarType)
+        except KeyError:
+            return Response("Wrong CarbonInfo Data", status=status.HTTP_410_GONE)
 
-        if type(TargetCom) == ComModel.Company:
-            func.CreateCarbon(CarbonData, CarTrans, usage, UserRoot, None, CarInfoTemp)
-        else:
-            func.CreateCarbon(
-                CarbonData, round(CarTrans, 4), usage, UserRoot, TargetCom, CarInfoTemp
-            )
+        try:
+            if type(TargetCom) == ComModel.Company:
+                func.CreateCarbon(
+                    CarbonData, CarTrans, usage, UserRoot, None, CarInfoTemp
+                )
+            else:
+                func.CreateCarbon(
+                    CarbonData,
+                    round(CarTrans, 4),
+                    usage,
+                    UserRoot,
+                    TargetCom,
+                    CarInfoTemp,
+                )
+        except KeyError:
+            return Response("Wrong Carbon Data", status=status.HTTP_410_GONE)
 
         return Response("Add Carbon Data Success", status=status.HTTP_200_OK)
 

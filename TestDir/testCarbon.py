@@ -105,6 +105,141 @@ class CarbonPostTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data, "Add Carbon Data Success")
 
+    def testEnterCarbonWrongCarbon(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "Type": "이동연소",
+                "DetailType": "경유",
+                "CarbonData": {
+                    "StartDate": datetime.date.today(),
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "Category": 10,
+                    "usage": "20.0/kg",
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Wrong Carbon Data")
+
+    def testEnterCarbonWrongCarbonInfo(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "Type": "이동연소",
+                "DetailType": "경유",
+                "CarbonData": {
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "CarbonActivity": "최문석 출장",
+                    "Category": 10,
+                    "usage": "20.0/kg",
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Wrong CarbonInfo Data")
+
+    def testEnterCarbonWrongNonUsage(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "Type": "이동연소",
+                "DetailType": "경유",
+                "CarbonData": {
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "CarbonActivity": "최문석 출장",
+                    "Category": 10,
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "usage Not Exist")
+
+    def testEnterCarbonWrongUsage(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "Type": "이동연소",
+                "DetailType": "경유",
+                "CarbonData": {
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "CarbonActivity": "최문석 출장",
+                    "Category": 10,
+                    "usage": "20.0kg",
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Wrong data type entered in usage")
+
+    def testEnterCarbonWrongNonType(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "DetailType": "경유",
+                "CarbonData": {
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "CarbonActivity": "최문석 출장",
+                    "Category": 10,
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Type Not Exist")
+
+    def testEnterCarbonWrongType(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "Type": 20,
+                "DetailType": "경유",
+                "CarbonData": {
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "CarbonActivity": "최문석 출장",
+                    "Category": 10,
+                    "usage": "20.0/kg",
+                    "CarbonUnit": "kg",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Wrong data type entered in Type")
+
 
 class CarbonPutTest(TestCase):
     @classmethod

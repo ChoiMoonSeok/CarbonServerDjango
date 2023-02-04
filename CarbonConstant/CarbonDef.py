@@ -103,6 +103,25 @@ Sewage = CarbonClass.Waste(0.0285)
 WasteWater = CarbonClass.Waste(0.0123)
 NightSoil = CarbonClass.Waste(18.9)
 
+# 대학소유동물
+육성우 = CarbonClass.DairyCow(61.813, 19.953, 63.71, None, 450)
+착유우 = CarbonClass.DairyCow(106.69, 19.953, 63.71, None, 350)
+송아지 = CarbonClass.Beef(39.191, 0.621, 28.75, None, 350)
+번식우 = CarbonClass.Beef(48.979, 0.621, 28.75, None, 350)
+비육우 = CarbonClass.Beef(50.712, 0.621, 28.75, None, 350)
+돼지 = CarbonClass.Pig(1.5, 0.183, 8.16, None, 70)
+산란계 = CarbonClass.Chicken_Lay(None, 0.022, 0.147, None, 1.62)
+육계 = CarbonClass.Turkey_Duck_Goose_OtherChicken(None, 0.016, 0.087, None, 0.71)
+기타닭 = CarbonClass.Turkey_Duck_Goose_OtherChicken(None, 0.019, 0.117, None, 1.165)
+면양 = CarbonClass.Lamb_Horse_Deer_Rabbit(8, 0.28, None, 1.17, 48.5)
+산양 = CarbonClass.Lamb_Horse_Deer_Rabbit(5, 0.2, None, 1.37, 38.5)
+말 = CarbonClass.Lamb_Horse_Deer_Rabbit(18, 2.34, None, 0.46, 377)
+칠면조 = CarbonClass.Turkey_Duck_Goose_OtherChicken(None, 0.09, None, 0.74, 6.8)
+오리 = CarbonClass.Turkey_Duck_Goose_OtherChicken(None, 0.03, None, 0.83, 2.7)
+사슴 = CarbonClass.Lamb_Horse_Deer_Rabbit(20, 0.22, None, 1.17, 120)
+토끼 = CarbonClass.Lamb_Horse_Deer_Rabbit(0.2297, 0.08, 8.1, None, 1.6)
+거위 = CarbonClass.Turkey_Duck_Goose_OtherChicken(None, 0.03, None, 0.83, 2.7)
+
 CarbonCateMap = {
     "고정연소": {
         "원유": CrudeOil,
@@ -143,7 +162,25 @@ CarbonCateMap = {
     "탈루배출": {"에어컨": AirCon, "냉장고": Refri},
     "폐기물처리시설": {},
     "비료사용": {"석회질비료": LimeFert, "요소비료": UreaFert},
-    "대학소유동물": {},
+    "대학소유동물": {
+        "육성우": 육성우,
+        "착유우": 착유우,
+        "송아지": 송아지,
+        "번식우": 번식우,
+        "비육우": 비육우,
+        "돼지": 돼지,
+        "산란계": 산란계,
+        "육계": 육계,
+        "기타닭": 기타닭,
+        "면양": 면양,
+        "산양": 산양,
+        "말": 말,
+        "칠면조": 칠면조,
+        "오리": 오리,
+        "사슴": 사슴,
+        "토끼": 토끼,
+        "거위": 거위,
+    },
     "산림에의한흡수": {"침엽수": HardWood, "활엽수": SoftWood, "혼효림": Mixed},
     "전력": {"전력": Electric},
     "열": {"열": Heat},

@@ -145,6 +145,10 @@ class CarbonEmissionQuery(APIView):
             )
         elif CarDetailType == "냉장고":
             CarTrans = DataKind.CO2_EQ(usage, CarbonData["CarbonData"]["nums"])
+        elif CarDetailType in CarbonDef.CarbonCateMap["대학소유동물"]:
+            CarTrans = DataKind.CO2_EQ(
+                CarbonData["CarbonData"]["kind"], CarbonData["CarbonData"]["nums"]
+            )
         else:
             CarTrans = DataKind.CO2_EQ(usage)
 

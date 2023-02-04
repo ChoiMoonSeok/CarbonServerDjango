@@ -211,3 +211,167 @@ class Waste:
     def CO2_EQ(self, usage):
         eq = usage * self.EF * (10**-3)
         return eq
+
+
+# 혜미 누나한테 질문
+class Animal:
+    N20_EF_Dic = {
+        "혐기성늪": 0,
+        "액체/슬러지": 0.0005,
+        "고체저장": 0.0005,
+        "건조부지": 0.02,
+        "목장/방목": None,
+        "일일살포": 0,
+        "소화조": 0,
+        "연료로사용": None,
+        "WithLitter": 0.001,
+        "WithoutLitter": 0.001,
+    }
+
+    MS_Type = {
+        "혐기성늪": None,
+        "액체/슬러지": None,
+        "고체저장": None,
+        "건조부지": None,
+        "목장/방목": None,
+        "일일살포": None,
+        "소화조": None,
+        "연료로사용": None,
+        "기타": None,
+        "WithLitter": None,
+        "WithoutLitter": None,
+    }
+
+    def __init__(self, CH4_EF_장내발효, CH4_EF_분뇨관리, Nex, Nrate, TAM):
+        self.CH4_EF_장내발효 = CH4_EF_장내발효
+        self.CH4_EF_분뇨관리 = CH4_EF_분뇨관리
+        self.Nex = Nex
+        self.Nrate = Nrate
+        self.TAM = TAM
+
+    def CO2_EQ(self, MS, nums):
+
+        MS = self.MS_Type[MS]
+        if self.CH4_EF_장내발효 == None:
+            Ch4_In = 0
+        else:
+            Ch4_In = self.CH4_EF_장내발효 * nums
+        Ch4_excretion = self.CH4_EF_분뇨관리 * nums
+
+        if self.Nex == None:
+            self.Nex = self.Nrate * self.TAM / 1000 * 365
+
+        if self.N20_EF == None:
+            return (Ch4_excretion + Ch4_In) * 21
+
+        if MS == None:
+            N2O_excretion = nums * self.Nex * self.N20_EF * 44 / 28 * (10**-3)
+        else:
+            N2O_excretion = (
+                nums * self.Nex * self.MS * self.N20_EF * 44 / 28 * (10**-3)
+            )
+
+        ans = (Ch4_excretion + Ch4_In) * 21 + N2O_excretion * 310
+
+        return ans
+
+
+class DairyCow(Animal):
+    MS_Type = {
+        "혐기성늪": 4,
+        "액체/슬러지": 38,
+        "고체저장": 0,
+        "건조부지": 0,
+        "목장/방목": 20,
+        "일일살포": 29,
+        "소화조": 2,
+        "연료로사용": 7,
+        "기타": 0,
+        "WithLitter": None,
+        "WithoutLitter": None,
+    }
+
+
+class Beef(Animal):
+    MS_Type = {
+        "혐기성늪": 0,
+        "액체/슬러지": 0,
+        "고체저장": 0,
+        "건조부지": 46,
+        "목장/방목": 50,
+        "일일살포": 2,
+        "소화조": 0,
+        "연료로사용": 2,
+        "기타": 0,
+        "WithLitter": None,
+        "WithoutLitter": None,
+    }
+
+
+class Pig(Animal):
+    MS_Type = {
+        "혐기성늪": 0,
+        "액체/슬러지": 40,
+        "고체저장": 0,
+        "건조부지": 54,
+        "목장/방목": 0,
+        "일일살포": 0,
+        "소화조": 0,
+        "연료로사용": 7,
+        "기타": 0,
+        "WithLitter": None,
+        "WithoutLitter": None,
+    }
+
+
+class Chicken_Lay(Animal):
+    MS_Type = {
+        "혐기성늪": 0,
+        "액체/슬러지": None,
+        "고체저장": None,
+        "건조부지": None,
+        "목장/방목": None,
+        "일일살포": None,
+        "소화조": None,
+        "연료로사용": None,
+        "기타": None,
+        "WithLitter": 0,
+        "WithoutLitter": 100,
+    }
+
+
+class Lamb_Horse_Deer_Rabbit(Animal):
+    MS_Type = {
+        "혐기성늪": 0,
+        "액체/슬러지": 0,
+        "고체저장": 0,
+        "건조부지": 0,
+        "목장/방목": 100,
+        "일일살포": 0,
+        "소화조": 0,
+        "연료로사용": 0,
+        "기타": 0,
+        "WithLitter": None,
+        "WithoutLitter": None,
+    }
+
+
+class Turkey_Duck_Goose_OtherChicken(Animal):
+    MS_Type = {
+        "혐기성늪": None,
+        "액체/슬러지": None,
+        "고체저장": None,
+        "건조부지": None,
+        "목장/방목": None,
+        "일일살포": None,
+        "소화조": None,
+        "연료로사용": None,
+        "기타": None,
+        "WithLitter": 100,
+        "WithoutLitter": 0,
+    }
+
+
+# 폐기물처리시설 매립
+class WasteFacil:
+    pass

@@ -127,7 +127,7 @@ def CreateCarbonInfo(CarbonData, Root, Type):
 
 def CreateEmployee(EmployeeData, RootCom, BelongCom):
 
-    Employee = HuModel.Employee(
+    Employee = HuModel.Employee.objects.create(
         Name=EmployeeData["Name"],
         PhoneNum=EmployeeData["PhoneNum"],
         JobPos=EmployeeData["JobPos"],

@@ -251,7 +251,8 @@ class Animal:
 
     def CO2_EQ(self, MS, nums):
 
-        MS = self.MS_Type[MS]
+        self.N2O_EF = self.N20_EF_Dic[MS]
+        self.MS = self.MS_Type[MS]
         if self.CH4_EF_장내발효 == None:
             Ch4_In = 0
         else:
@@ -261,14 +262,14 @@ class Animal:
         if self.Nex == None:
             self.Nex = self.Nrate * self.TAM / 1000 * 365
 
-        if self.N20_EF == None:
+        if self.N2O_EF == None:
             return (Ch4_excretion + Ch4_In) * 21
 
         if MS == None:
-            N2O_excretion = nums * self.Nex * self.N20_EF * 44 / 28 * (10**-3)
+            N2O_excretion = nums * self.Nex * self.N2O_EF * 44 / 28 * (10**-3)
         else:
             N2O_excretion = (
-                nums * self.Nex * self.MS * self.N20_EF * 44 / 28 * (10**-3)
+                nums * self.Nex * self.MS * self.N2O_EF * 44 / 28 * (10**-3)
             )
 
         ans = (Ch4_excretion + Ch4_In) * 21 + N2O_excretion * 310

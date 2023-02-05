@@ -373,6 +373,57 @@ class Turkey_Duck_Goose_OtherChicken(Animal):
     }
 
 
-# 폐기물처리시설 매립
-class WasteFacil:
-    pass
+# 폐기물처리시설 소각
+class Burning:
+    OF = 1
+    N2O_EF = None
+
+    BurningTech = {
+        "연속식 - 고정상": 0.0002,
+        "연속식 - 유동상": 0,
+        "준연속식 - 고정상": 0.006,
+        "준연속식 - 유동상": 0.188,
+        "회분식(배치형) - 고정상": 0.06,
+        "회분식(배치형) - 유동상": 0.237,
+    }
+
+    def __init__(self, dm, CF, FCF):
+        self.dm = dm
+        self.CF = CF
+        self.FCF = FCF
+
+    def CO2_EQ(self, usage, kind):
+
+        CO2 = usage
+
+        if self.dm != None:
+            CO2 *= self.dm
+        if self.CF != None:
+            CO2 *= self.CF
+        if self.FCF != None:
+            CO2 *= self.FCF
+
+        CO2 = CO2 * self.OF * 44 / 12
+
+        CH4 = usage * self.BurningTech[kind] * (10**-3)
+        N2O = usage * self.N2O_EF * (10**-3)
+
+        ans = CO2 + CH4 * 21 + N2O * 310
+
+        return ans
+
+
+class BurningIndividual(Burning):
+    N2O_EF = 39.8
+
+
+class BurningCom(Burning):
+    N2O_EF = 113.19
+
+
+class BurningComSludge(Burning):
+    N2O_EF = 408.41
+
+
+class BurningComWaste(Burning):
+    N2O_EF = 113.19

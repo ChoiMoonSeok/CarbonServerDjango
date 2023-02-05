@@ -122,6 +122,33 @@ NightSoil = CarbonClass.Waste(18.9)
 토끼 = CarbonClass.Lamb_Horse_Deer_Rabbit(0.2297, 0.08, 8.1, None, 1.6)
 거위 = CarbonClass.Turkey_Duck_Goose_OtherChicken(None, 0.03, None, 0.83, 2.7)
 
+
+# 폐기물 처리시설 소각
+종이_판지 = CarbonClass.BurningIndividual(0.9, 0.46, 0.01)
+섬유 = CarbonClass.BurningIndividual(0.8, 0.5, 0.2)
+음식물 = CarbonClass.BurningIndividual(0.4, 0.38, 0)
+목재 = CarbonClass.BurningIndividual(0.85, 0.5, 0)
+정원및공원폐기물 = CarbonClass.BurningIndividual(0.4, 0.49, 0)
+기저귀 = CarbonClass.BurningIndividual(0.4, 0.7, 0.1)
+고무및가죽 = CarbonClass.BurningIndividual(0.84, 0.67, 0.1)
+플라스틱 = CarbonClass.BurningIndividual(1, 0.75, 1)
+금속 = CarbonClass.BurningIndividual(1, None, None)
+유리 = CarbonClass.BurningIndividual(1, None, None)
+기타비활성 = CarbonClass.BurningIndividual(0.9, 0.03, 1)
+대안 = CarbonClass.BurningIndividual(0.75, 0.42, 0.28)
+음식음료및담배 = CarbonClass.BurningCom(0.3, 0.15, 0)
+섬유_회사 = CarbonClass.BurningCom(0.8, 0.4, 0.16)
+나무및목제품 = CarbonClass.BurningCom(0.85, 0.13, 0)
+제지 = CarbonClass.BurningCom(0.9, 0.41, 0.01)
+석유제품_용매_플라스틱 = CarbonClass.BurningCom(1, 0.8, 0.8)
+고무 = CarbonClass.BurningCom(0.84, 0.56, 0.17)
+건설및파쇄잔재물 = CarbonClass.BurningCom(1, 0.24, 0.2)
+기타 = CarbonClass.BurningCom(0.9, 0.04, 0.03)
+하수슬러지 = CarbonClass.BurningComSludge(0.1, 0.45, 0)
+폐수슬러지 = CarbonClass.BurningComSludge(0.35, 0.45, 0)
+병원성폐기물 = CarbonClass.BurningComSludge(0.65, 0.4, 0.25)
+액상폐기물 = CarbonClass.BurningComSludge(None, 0.8, None)
+
 CarbonCateMap = {
     "고정연소": {
         "원유": CrudeOil,
@@ -192,6 +219,32 @@ CarbonCateMap = {
         "하수": Sewage,
         "폐수": WasteWater,
         "분뇨": NightSoil,
+    },
+    "폐기물처리시설(소각)": {
+        "종이/판지": 종이_판지,
+        "섬유": 섬유,
+        "음식물": 음식물,
+        "목재": 목재,
+        "정원및공원폐기물": 정원및공원폐기물,
+        "기저귀": 기저귀,
+        "고무및가죽": 고무및가죽,
+        "플라스틱": 플라스틱,
+        "금속": 금속,
+        "유리": 유리,
+        "기타비활성(불연성)": 기타비활성,
+        "대안": 대안,
+        "음식음료및담배": 음식음료및담배,
+        "섬유": 섬유,
+        "나무및목제품": 나무및목제품,
+        "제지": 제지,
+        "석유제품용매플라스틱": 석유제품_용매_플라스틱,
+        "고무": 고무,
+        "건설및파쇄잔재물": 건설및파쇄잔재물,
+        "기타": 기타,
+        "하수슬러지": 하수슬러지,
+        "폐수슬러지": 폐수슬러지,
+        "병원성폐기물": 병원성폐기물,
+        "액상폐기물": 액상폐기물,
     },
     "통근_통학": {},
     "출장": {},

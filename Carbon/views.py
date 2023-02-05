@@ -132,7 +132,10 @@ class CarbonEmissionQuery(APIView):
         ]
 
         # 입력값에 따라 사용할 수식과 클래스가 변화하기 때문에 그에 맞게 다른 입력값 입력
-        if CarDetailType in CarbonDef.CarbonCateMap["산림에의한흡수"]:
+        if (
+            CarDetailType in CarbonDef.CarbonCateMap["산림에의한흡수"]
+            or CarDetailType in CarbonDef.CarbonCateMap["폐기물처리시설(소각)"]
+        ):
             CarTrans = DataKind.CO2_EQ(
                 usage,
                 CarbonData["CarbonData"]["kind"],

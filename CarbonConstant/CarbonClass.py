@@ -427,3 +427,35 @@ class BurningComSludge(Burning):
 
 class BurningComWaste(Burning):
     N2O_EF = 113.19
+
+
+# 하수처리
+class FoulWater:
+    CH4_EF = 0.01532
+    N2O_EF = 0.005
+
+    def CO2_EQ(self, usage, BODIN, BODOUT, TNIN, TNOUT, R):
+        CH4 = ((BODIN - BODOUT) * (10**-3) * usage * self.CH4_EF - R) * (10**-3)
+        N2O = (TNIN - TNOUT) * usage * self.N2O_EF * 44 / 28 * (10**-6)
+
+        return CH4 * 21 + N2O * 310
+
+
+# 폐수처리
+class WaterWaste:
+    EF = 0.2
+
+    def CO2_EQ(self, usage, CODIN, CODOUT, R):
+        CH4 = ((CODIN - CODOUT) * usage * self.EF - R) * (10**-6)
+
+        return CH4 * 21
+
+
+# 생물학적
+class BioWaste:
+    pass
+
+
+# 매립
+class Digging:
+    pass

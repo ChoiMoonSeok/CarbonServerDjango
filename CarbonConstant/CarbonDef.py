@@ -149,6 +149,15 @@ NightSoil = CarbonClass.Waste(18.9)
 병원성폐기물 = CarbonClass.BurningComSludge(0.65, 0.4, 0.25)
 액상폐기물 = CarbonClass.BurningComSludge(None, 0.8, None)
 
+# 하수처리
+하수 = CarbonClass.FoulWater()
+
+# 폐수처리
+폐수 = CarbonClass.WaterWaste()
+
+# 생물학적
+생물학적 = CarbonClass.BioWaste()
+
 CarbonCateMap = {
     "고정연소": {
         "원유": CrudeOil,
@@ -246,6 +255,9 @@ CarbonCateMap = {
         "병원성폐기물": 병원성폐기물,
         "액상폐기물": 액상폐기물,
     },
+    "폐기물처리시설(하수처리)": {"하수처리": 하수},
+    "폐기물처리시설(폐수)": {"폐수": 폐수},
+    "폐기물처리시설(생물학적)": {"생물학적": 생물학적},
     "통근_통학": {},
     "출장": {},
     "위탁운영차량": {},

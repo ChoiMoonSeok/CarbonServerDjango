@@ -211,6 +211,33 @@ class CarbonPostTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data, "Add Carbon Data Success")
 
+    def testEnterCarbonWasteFacilityBio(self):
+        response = self.client.post(
+            "/CarbonEmission/{}".format("samsung"),
+            {
+                "Type": "폐기물처리시설(생물학적)",
+                "DetailType": "생물학적",
+                "CarbonData": {
+                    "StartDate": datetime.date.today(),
+                    "EndDate": datetime.date.today(),
+                    "Location": "진주",
+                    "Scope": 3,
+                    "usage": "12/ton",
+                    "R": 10,
+                    "ProcessType": "건량",
+                    "ProcessKind": "퇴비화",
+                    "CarbonActivity": "최문석 출장",
+                    "Category": 10,
+                    "CarbonUnit": "ton",
+                    "Chief": "이재용",
+                },
+            },
+            **self.Auth,
+            content_type="application/json",
+        )
+        data = json.loads(response.content)
+        self.assertEqual(data, "Add Carbon Data Success")
+
     def testEnterCarbonWrongCarbon(self):
         response = self.client.post(
             "/CarbonEmission/{}".format("samsung"),

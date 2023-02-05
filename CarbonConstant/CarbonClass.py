@@ -453,7 +453,24 @@ class WaterWaste:
 
 # 생물학적
 class BioWaste:
-    pass
+
+    BioDicCH4 = {
+        "퇴비화": {"건량": 10, "습량": 4, "배출계수": 4},
+        "혐기성소화": {"건량": 2, "습량": 1, "배출계수": 4},
+    }
+    BioDicN2O = {
+        "퇴비화": {"건량": 0.6, "습량": 0.3, "배출계수": 0.3},
+        "혐기성소화": {"건량": 0, "습량": 0, "배출계수": 0.3},
+    }
+
+    def CO2_EQ(self, usage, ProcessKind, ProcessType, R):
+        self.CH4_EFI = self.BioDicCH4[ProcessKind][ProcessType]
+        self.N2O_EFI = self.BioDicN2O[ProcessKind][ProcessType]
+
+        CH4 = usage * self.CH4_EFI * (10**-3) - R
+        N2O = usage * self.N2O_EFI * (10**-3) - R
+
+        return CH4 * 21 + N2O * 310
 
 
 # 매립

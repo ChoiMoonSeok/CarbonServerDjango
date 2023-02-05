@@ -166,6 +166,13 @@ class CarbonEmissionQuery(APIView):
                 CarbonData["CarbonData"]["CODOUT"],
                 CarbonData["CarbonData"]["R"],
             )
+        elif CarDetailType == "생물학적":
+            CarTrans = DataKind.CO2_EQ(
+                usage,
+                CarbonData["CarbonData"]["ProcessKind"],
+                CarbonData["CarbonData"]["ProcessType"],
+                CarbonData["CarbonData"]["R"],
+            )
         else:
             CarTrans = DataKind.CO2_EQ(usage)
 

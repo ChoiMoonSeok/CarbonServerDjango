@@ -8,10 +8,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends; \
     mkdir myproject;\
     virtualenv venv;\
     . venv/bin/activate;\
-    pip install django;\
-    pip install djangorestframework;\
-    pip install dj_rest_auth;\
-    pip install django-allauth; \
+    pip install django==4.1.4;\
+    pip install djangorestframework==3.14.0;\
+    pip install dj_rest_auth==2.2.5;\
+    pip install django-allauth==0.51.0; \
     apt-get install python-dev libmysqlclient-dev -y;\
     pip install setuptools;\
     apt-get install python3-dev;\

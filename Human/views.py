@@ -174,9 +174,12 @@ class SignUpView(APIView):
             EmployeeData = UserData["DetailInfo"]
 
             RootCom = ComModel.Company.objects.get(ComName=EmployeeData["RootCom"])
-            BelongCom = ComModel.Department.objects.get(
-                RootCom=RootCom, DepartmentName=EmployeeData["BelongCom"]
-            )
+            if EmployeeData["BelongCom"] != None:
+                BelongCom = ComModel.Department.objects.get(
+                    RootCom=RootCom, DepartmentName=EmployeeData["BelongCom"]
+                )
+            else:
+                BelongCom = None
 
             # 해당 유저가 employee에 존재하는지 확인
             try:

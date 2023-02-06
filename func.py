@@ -98,7 +98,7 @@ def GetBelong():
 
 # db에 Carbon 생성
 def CreateCarbon(CarbonData, CarTrans, usage, Root, Belong, CarInfo):
-    CarModel.Carbon(
+    CarModel.Carbon.objects.create(
         CarbonActivity=CarbonData["CarbonData"]["CarbonActivity"],
         CarbonData=usage,
         CarbonUnit=CarbonData["CarbonData"]["CarbonUnit"],
@@ -111,7 +111,7 @@ def CreateCarbon(CarbonData, CarTrans, usage, Root, Belong, CarInfo):
 
 # db에 CarbonInfo 생성
 def CreateCarbonInfo(CarbonData, Root, Type):
-    ans = CarModel.CarbonInfo(
+    ans = CarModel.CarbonInfo.objects.create(
         StartDate=CarbonData["CarbonData"]["StartDate"],
         EndDate=CarbonData["CarbonData"]["EndDate"],
         Location=CarbonData["CarbonData"]["Location"],

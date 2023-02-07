@@ -90,7 +90,7 @@ class CompanyPreviewTest(TestCase):
 
     def testPreviewGetRoot(self):
         response = self.client.get(
-            "/Company/Preview/samsung/2023-01-01/2023-12-28",
+            "/Company/Preview/samsung/2023-01-01/2023-02-28",
             **self.Auth,
         )
         data = json.loads(response.content)

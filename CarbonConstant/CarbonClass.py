@@ -150,8 +150,11 @@ class UreaFert(Fertilizer):
 
 
 class NitroFert(Fertilizer):  # 질문 후 작성
-    def CO2_EQ(self):
-        return super().CO2_EQ()
+    def CO2_EQ(self, usage, Fert):
+        N2O = (usage + Fert) * self.질소질비료_EF * 44 / 28
+
+        ans = N2O * 310
+        return ans
 
 
 class Forest:

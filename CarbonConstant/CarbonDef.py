@@ -89,6 +89,7 @@ Refri = CarbonClass.Refri()
 # 비료 사용
 LimeFert = CarbonClass.LimeFert()
 UreaFert = CarbonClass.UreaFert()
+NitroFert = CarbonClass.NitroFert()
 
 # 산림
 HardWood = CarbonClass.HardWood()

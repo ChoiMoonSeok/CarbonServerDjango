@@ -26,9 +26,9 @@ def getStruct(RootCom, HeadCom, result):
             result["Children"].append(temp)
 
             TempScope = getStruct(RootCom, Depart.SelfCom, result["Children"][-1])
-            temp.Scope1 += TempScope[0]
-            temp.Scope2 += TempScope[1]
-            temp.Scope3 += TempScope[2]
+            temp["Scope1"] += TempScope[0]
+            temp["Scope2"] += TempScope[1]
+            temp["Scope3"] += TempScope[2]
 
             return [temp.Scope1, temp.Scope2, temp.Scope3]
 

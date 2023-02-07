@@ -135,6 +135,7 @@ class CarbonEmissionQuery(APIView):
         if (
             CarDetailType in CarbonDef.CarbonCateMap["산림에의한흡수"]
             or CarDetailType in CarbonDef.CarbonCateMap["폐기물처리시설(소각)"]
+            or CarDetailType in CarbonDef.CarbonCateMap["석회질비료"]
         ):
             CarTrans = DataKind.CO2_EQ(
                 usage,

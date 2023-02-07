@@ -151,15 +151,35 @@ class PreviewQuery(APIView):
         start = func.AddZero(start)
         end = func.AddZero(end)
 
+        # 연단위 인사이트 요청인지 월단위 인사이트 요청인지 확인
+        if (
+            func.diff_month(
+                datetime.strptime(end, "%Y-%m-%d"),
+                datetime.strptime(start, "%Y-%m-%d"),
+            )
+            >= 12
+        ):
+            MorY = 0
+        else:
+            MorY = 1
+
         Carbons = []
         for depart in Departs:
             try:
-                temp = CarModel.Carbon.objects.filter(
-                    BelongDepart=depart,
-                    CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
-                    CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
-                )
-                Carbons.append(temp)
+                if MorY == 0:
+                    temp = CarModel.Carbon.objects.filter(
+                        BelongDepart=depart,
+                        CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
+                        CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
+                    )
+                    Carbons.append(temp)
+                else:
+                    temp = CarModel.Carbon.objects.filter(
+                        BelongDepart=depart,
+                        CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
+                        CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                    )
+                    Carbons.append(temp)
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
                 return Response(
                     "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
@@ -172,12 +192,20 @@ class PreviewQuery(APIView):
 
         if IsRoot == 1:  # 요청한 데이터가 루트인 경우 depart가 아니라 데이터를 가져오지 못하므로 따로 가져옴
             try:
-                temp = CarModel.Carbon.objects.filter(
-                    BelongDepart=None,
-                    CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
-                    CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
-                )
-                Carbons.append(temp)
+                if MorY == 0:
+                    temp = CarModel.Carbon.objects.filter(
+                        BelongDepart=depart,
+                        CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
+                        CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
+                    )
+                    Carbons.append(temp)
+                else:
+                    temp = CarModel.Carbon.objects.filter(
+                        BelongDepart=depart,
+                        CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
+                        CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                    )
+                    Carbons.append(temp)
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
                 return Response(
                     "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
@@ -186,16 +214,6 @@ class PreviewQuery(APIView):
         for car in Carbons:
             for each in car:
                 TempScope = each.CarbonInfo.Scope
-                if (
-                    func.diff_month(
-                        datetime.strptime(end, "%Y-%m-%d"),
-                        datetime.strptime(start, "%Y-%m-%d"),
-                    )
-                    >= 12
-                ):
-                    MorY = 0
-                else:
-                    MorY = 1
 
                 DivideScope = func.DivideByMonthOrYear(
                     start, end, each.CarbonTrans, MorY

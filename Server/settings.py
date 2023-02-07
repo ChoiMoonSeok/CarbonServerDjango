@@ -181,19 +181,17 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=1),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=2),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "SIGNING_KEY": config.SIGNING_KEY,
+    "USER_ID_FIELD": "Email",
 }
 
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "Human.serializer.UserSerializer",
 }
 
-SIMPLE_JWT = {
-    "USER_ID_FIELD": "Email",
-}
 
 SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,

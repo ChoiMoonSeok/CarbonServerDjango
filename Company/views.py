@@ -156,8 +156,8 @@ class PreviewQuery(APIView):
             try:
                 temp = CarModel.Carbon.objects.filter(
                     BelongDepart=depart,
-                    CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
-                    CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                    CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
+                    CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
                 )
                 Carbons.append(temp)
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
@@ -174,8 +174,8 @@ class PreviewQuery(APIView):
             try:
                 temp = CarModel.Carbon.objects.filter(
                     BelongDepart=None,
-                    CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
-                    CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                    CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
+                    CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
                 )
                 Carbons.append(temp)
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
@@ -186,12 +186,26 @@ class PreviewQuery(APIView):
         for car in Carbons:
             for each in car:
                 TempScope = each.CarbonInfo.Scope
+                if (
+                    func.diff_month(
+                        datetime.strptime(end, "%Y-%m-%d"),
+                        datetime.strptime(start, "%Y-%m-%d"),
+                    )
+                    >= 12
+                ):
+                    MorY = 0
+                else:
+                    MorY = 1
+
+                DivideScope = func.DivideByMonthOrYear(
+                    start, end, each.CarbonTrans, MorY
+                )
                 if TempScope == 1:
-                    scope1 += each.CarbonTrans
+                    scope1 += DivideScope
                 elif TempScope == 2:
-                    scope2 += each.CarbonTrans
+                    scope2 += DivideScope
                 elif TempScope == 3:
-                    scope3 += each.CarbonTrans
+                    scope3 += DivideScope
 
                 TempCate = each.CarbonInfo.Category
                 categories[TempCate] += each.CarbonTrans

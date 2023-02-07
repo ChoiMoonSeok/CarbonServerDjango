@@ -96,7 +96,7 @@ class CompanyPreviewTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data["Name"], "samsung")
         self.assertEqual(data["Scopes"][0], 20.0)
-        self.assertEqual(data["Scopes"][1], 20.0)
+        self.assertEqual(data["Scopes"][1], 40.0)
         self.assertEqual(data["Scopes"][2], 0.0)
         self.assertEqual(data["EmissionList"][12]["출장"], 20.0)
 

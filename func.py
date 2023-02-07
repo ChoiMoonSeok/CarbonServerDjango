@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework_simplejwt.tokens import AccessToken
 
 from Company import models as ComModel
@@ -172,6 +174,10 @@ def DivideByMonthOrYear(Start, End, data, MorY):
             return data
         else:
             return data / divider
+
+
+def diff_month(d1, d2):
+    return (d1.year - d2.year) * 12 + d1.month - d2.month
 
 
 # 유저의 권환을 확인하는 함수

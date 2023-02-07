@@ -8,7 +8,7 @@ from CarbonConstant import CarbonDef
 
 
 # 조직 구조를 반환하는 함수
-def getStruct(RootCom, HeadCom, result):
+def getStruct(RootCom, HeadCom, result, TransData):
     data = ComModel.Department.objects.filter(RootCom=RootCom, BelongCom=HeadCom)
     if type(data) == None:
         return None
@@ -18,6 +18,7 @@ def getStruct(RootCom, HeadCom, result):
         for Depart in data:
             temp = serializer.ComStructSerializer(Depart.SelfCom)
             temp = temp.data
+            print(temp, "hi")
 
             if temp["Chief"] != None:
                 temp["Chief"] = HuModel.Employee.objects.get(id=temp["Chief"]).Name
@@ -25,12 +26,25 @@ def getStruct(RootCom, HeadCom, result):
             temp["label"] = temp["ComName"]
             result["Children"].append(temp)
 
-            TempScope = getStruct(RootCom, Depart.SelfCom, result["Children"][-1])
-            temp["Scope1"] += TempScope[0]
-            temp["Scope2"] += TempScope[1]
-            temp["Scope3"] += TempScope[2]
+            Trans = [0, 0, 0]
+            getStruct(RootCom, Depart.SelfCom, result["Children"][-1], Trans)
 
-            return [temp.Scope1, temp.Scope2, temp.Scope3]
+            temp["Scope1"] += Trans[0]
+            temp["Scope2"] += Trans[1]
+            temp["Scope3"] += Trans[2]
+
+            if HeadCom != None:
+                HeadCom.Scope1 += temp["Scope1"]
+                HeadCom.Scope2 += temp["Scope2"]
+                HeadCom.Scope3 += temp["Scope3"]
+            else:
+                RootCom.Scope1 += temp["Scope1"]
+                RootCom.Scope2 += temp["Scope2"]
+                RootCom.Scope3 += temp["Scope3"]
+
+            TransData[0] += temp["Scope1"]
+            TransData[1] += temp["Scope2"]
+            TransData[2] += temp["Scope3"]
 
 
 def getChildDepart(RootCom, HeadCom, Children):
@@ -143,6 +157,21 @@ def CreateEmployee(EmployeeData, RootCom, BelongCom):
     )
 
     return Employee
+
+
+def DivideByMonthOrYear(Start, End, data, MorY):
+    if MorY == 0:  # 월로 나누기
+        divider = int(End[5:7]) - int(Start[5:7])
+        if divider == 0:
+            return data
+        else:
+            return data / divider
+    else:
+        divider = int(End[:4]) - int(Start[:4])
+        if divider == 0:
+            return data
+        else:
+            return data / divider
 
 
 # 유저의 권환을 확인하는 함수

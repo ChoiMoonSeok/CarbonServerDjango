@@ -32,9 +32,9 @@ def CreateSamsung():
     )
     ComModel.Company.objects.create(
         ComName="삼성전자",
-        Scope1=0,
-        Scope2=0,
-        Scope3=0,
+        Scope1=1,
+        Scope2=2,
+        Scope3=3,
         Chief=HuModel.Employee.objects.get(Name="이재용"),
     )
     ComModel.Department.objects.create(
@@ -46,9 +46,9 @@ def CreateSamsung():
     )
     ComModel.Company.objects.create(
         ComName="삼성생명",
-        Scope1=0,
-        Scope2=0,
-        Scope3=0,
+        Scope1=1,
+        Scope2=2,
+        Scope3=3,
         Chief=HuModel.Employee.objects.get(Name="이재용"),
     )
     ComModel.Department.objects.create(
@@ -60,9 +60,9 @@ def CreateSamsung():
     )
     ComModel.Company.objects.create(
         ComName="삼성디스플레이",
-        Scope1=0,
-        Scope2=0,
-        Scope3=0,
+        Scope1=1,
+        Scope2=2,
+        Scope3=3,
         Chief=HuModel.Employee.objects.get(Name="이재용"),
     )
     ComModel.Department.objects.create(

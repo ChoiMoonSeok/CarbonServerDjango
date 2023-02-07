@@ -47,9 +47,15 @@ class CompanyQuery(APIView):
 
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
         if ComId.id == UserRoot.id:
-            func.getStruct(UserRoot, None, result)
+            Trans = [0, 0, 0]
+            func.getStruct(UserRoot, None, result, Trans)
         else:
-            func.getStruct(UserRoot, ComId, result)
+            Trans = [0, 0, 0]
+            func.getStruct(UserRoot, ComId, result, Trans)
+
+        result["Scope1"] = Trans[0]
+        result["Scope2"] = Trans[1]
+        result["Scope3"] = Trans[2]
 
         return Response(result, status=status.HTTP_200_OK)
 

@@ -138,9 +138,11 @@ class LogInView(APIView):
                 token = TokenObtainPairSerializer.get_token(User)
                 refresh_token = str(token)
                 access_token = str(token.access_token)
+                RootCom = func.getRootViaJWT(access_token)
                 return Response(
                     {
                         "Email": Email,
+                        "RootCom": RootCom.ComName,
                         "AccessToken": access_token,
                         "RefreshToken": refresh_token,
                     }

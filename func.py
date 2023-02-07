@@ -177,6 +177,7 @@ def DivideByMonthOrYear(Start, End, data, MorY):
 
 
 def diff_month(d1, d2):
+    print(d1.month, d2.year)
     return (d1.year - d2.year) * 12 + d1.month - d2.month
 
 

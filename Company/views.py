@@ -354,9 +354,12 @@ class PreviewInfoQuery(APIView):
         except HuModel.Employee.DoesNotExist:
             Admin = None
 
-        BelongCom = ComModel.Department.objects.get(
-            RootCom=UserRoot, DepartmentName=Depart
-        )
+        if Depart == UserRoot.ComName:
+            BelongCom = None
+        else:
+            BelongCom = ComModel.Department.objects.get(
+                RootCom=UserRoot, DepartmentName=Depart
+            )
 
         SelfCom = ComModel.Company.objects.create(
             ComName=ComData["ComName"],

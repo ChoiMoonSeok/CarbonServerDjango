@@ -187,11 +187,26 @@ class CarbonEmissionQuery(APIView):
         except KeyError:
             return Response("Wrong CarbonInfo Data", status=status.HTTP_410_GONE)
 
+        if CarInfoTemp.Scope == 1:
+            TargetCom.Scope1 += round(CarTrans, 4)
+        elif CarInfoTemp.Scope == 2:
+            TargetCom.Scope2 += round(CarTrans, 4)
+        elif CarInfoTemp.Scope == 3:
+            TargetCom.Scope3 += round(CarTrans, 4)
+        else:
+            CarInfoTemp.delete()
+            return Response(
+                "Wrong Scope Num Entered", status=status.HTTP_406_NOT_ACCEPTABLE
+            )
+
+        TargetCom.save()
+
         try:
             if type(TargetCom) == ComModel.Company:
                 func.CreateCarbon(
-                    CarbonData, CarTrans, usage, UserRoot, None, CarInfoTemp
+                    CarbonData, round(CarTrans, 4), usage, UserRoot, None, CarInfoTemp
                 )
+
             else:
                 func.CreateCarbon(
                     CarbonData,
@@ -201,6 +216,7 @@ class CarbonEmissionQuery(APIView):
                     TargetCom,
                     CarInfoTemp,
                 )
+
         except KeyError:
             return Response("Wrong Carbon Data", status=status.HTTP_410_GONE)
 

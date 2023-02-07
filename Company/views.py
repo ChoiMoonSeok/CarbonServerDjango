@@ -164,31 +164,6 @@ class PreviewQuery(APIView):
             MorY = 1
 
         Carbons = []
-        for depart in Departs:
-            try:
-                if MorY == 0:
-                    temp = CarModel.Carbon.objects.filter(
-                        BelongDepart=depart,
-                        CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
-                        CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
-                    )
-                    Carbons.append(temp)
-                else:
-                    temp = CarModel.Carbon.objects.filter(
-                        BelongDepart=depart,
-                        CarbonInfo__StartDate__gte=datetime.strptime(start, "%Y-%m-%d"),
-                        CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
-                    )
-                    Carbons.append(temp)
-            except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
-                return Response(
-                    "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
-                )
-
-        scope1 = 0
-        scope2 = 0
-        scope3 = 0
-        categories = [0] * CarbonDef.CarbonCateLen
 
         if IsRoot == 1:  # 요청한 데이터가 루트인 경우 depart가 아니라 데이터를 가져오지 못하므로 따로 가져옴
             try:
@@ -210,6 +185,37 @@ class PreviewQuery(APIView):
                 return Response(
                     "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
                 )
+
+        else:
+            for depart in Departs:
+                try:
+                    if MorY == 0:
+                        temp = CarModel.Carbon.objects.filter(
+                            BelongDepart=depart,
+                            CarbonInfo__StartDate__lte=datetime.strptime(
+                                start, "%Y-%m-%d"
+                            ),
+                            CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
+                        )
+                        Carbons.append(temp)
+                    else:
+                        temp = CarModel.Carbon.objects.filter(
+                            BelongDepart=depart,
+                            CarbonInfo__StartDate__gte=datetime.strptime(
+                                start, "%Y-%m-%d"
+                            ),
+                            CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                        )
+                        Carbons.append(temp)
+                except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
+                    return Response(
+                        "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
+                    )
+
+        scope1 = 0
+        scope2 = 0
+        scope3 = 0
+        categories = [0] * CarbonDef.CarbonCateLen
 
         for car in Carbons:
             for each in car:

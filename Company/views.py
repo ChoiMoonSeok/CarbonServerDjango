@@ -433,13 +433,22 @@ class PreviewInfoQuery(APIView):
             Location=ComData["Location"],
         )
 
-        ans = ComModel.Department.objects.create(
-            DepartmentName=ComData["DepartmentName"],
-            RootCom=UserRoot,
-            BelongCom=BelongCom.SelfCom,
-            SelfCom=SelfCom,
-            Depth=ComData["Depth"],
-        )
+        if BelongCom == None:
+            ans = ComModel.Department.objects.create(
+                DepartmentName=ComData["DepartmentName"],
+                RootCom=UserRoot,
+                BelongCom=BelongCom,
+                SelfCom=SelfCom,
+                Depth=ComData["Depth"],
+            )
+        else:
+            ans = ComModel.Department.objects.create(
+                DepartmentName=ComData["DepartmentName"],
+                RootCom=UserRoot,
+                BelongCom=BelongCom.SelfCom,
+                SelfCom=SelfCom,
+                Depth=ComData["Depth"],
+            )
 
         ans = ComSerial.DepartmentSerializer(ans)
         return Response(ans.data, status=status.HTTP_200_OK)

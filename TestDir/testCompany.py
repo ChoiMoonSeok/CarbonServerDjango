@@ -23,7 +23,6 @@ class CompanyStructTest(TestCase):
             **self.Auth,
         )
         data = json.loads(response.content)
-        print(data)
         self.assertEqual(data["Children"][0]["ComName"], "삼성전자")
         self.assertEqual(data["Children"][1]["ComName"], "삼성생명")
         self.assertEqual(data["Children"][0]["Children"][0]["ComName"], "삼성디스플레이")

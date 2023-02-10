@@ -129,6 +129,7 @@ class PreviewQuery(APIView):
         start, end 입력 예시) /2001-10-15/2002-10-15
         """
 
+        print(start, end)
         # 요청한 user의 모회사 확인
         UserRoot = func.GetUserRoot(request)
 
@@ -162,6 +163,8 @@ class PreviewQuery(APIView):
             MorY = 1
         else:
             MorY = 0
+
+        print(start, end, "aaa")
 
         Carbons = []
         for depart in Departs:
@@ -233,7 +236,6 @@ class PreviewQuery(APIView):
         for car in Carbons:
             for each in car:
                 TempScope = each.CarbonInfo.Scope
-
                 DivideScope = func.DivideByMonthOrYear(
                     each.CarbonInfo.StartDate.strftime("%Y-%m-%d"),
                     each.CarbonInfo.EndDate.strftime("%Y-%m-%d"),
@@ -248,7 +250,7 @@ class PreviewQuery(APIView):
                     scope3 += DivideScope
 
                 TempCate = each.CarbonInfo.Category
-                categories[TempCate] += each.CarbonTrans
+                categories[TempCate] += DivideScope
 
         ans = {
             "Name": Depart,

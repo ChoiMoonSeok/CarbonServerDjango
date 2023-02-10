@@ -131,7 +131,7 @@ def CreateSamsung():
         StartDate=datetime.date(2022, 1, 1),
         EndDate=datetime.date(2023, 1, 1),
         Location="진주",
-        Scope=2,
+        Scope=1,
         Category=1,
     )
     CarModel.Carbon.objects.create(
@@ -141,7 +141,7 @@ def CreateSamsung():
         CarbonUnit="kg",
         CarbonTrans=20.0,
         RootCom=ComModel.Company.objects.get(ComName="samsung"),
-        BelongDepart=ComModel.Department.objects.get(DepartmentName="삼성생명"),
+        BelongDepart=None,
         CarbonInfo=CarModel.CarbonInfo.objects.get(id=4),
     )
     CarModel.CarbonInfo.objects.create(

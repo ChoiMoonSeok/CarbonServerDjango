@@ -20,7 +20,6 @@ def getStruct(RootCom, HeadCom, result, TransData):
         for Depart in data:
             temp = serializer.ComStructSerializer(Depart.SelfCom)
             temp = temp.data
-            print(temp, "hi")
 
             if temp["Chief"] != None:
                 temp["Chief"] = HuModel.Employee.objects.get(id=temp["Chief"]).Name
@@ -163,7 +162,9 @@ def CreateEmployee(EmployeeData, RootCom, BelongCom):
 
 def DivideByMonthOrYear(Start, End, data, MorY):
     if MorY == 0:  # 월로 나누기
-        divider = int(End[5:7]) - int(Start[5:7])
+        divider = diff_month(
+            datetime.strptime(End, "%Y-%M-%d"), datetime.strptime(Start, "%Y-%M-%d")
+        )
         if divider == 0:
             return data
         else:
@@ -173,11 +174,10 @@ def DivideByMonthOrYear(Start, End, data, MorY):
         if divider == 0:
             return data
         else:
-            return data / divider
+            return data / (divider + 1)
 
 
 def diff_month(d1, d2):
-    print(d1.month, d2.year)
     return (d1.year - d2.year) * 12 + d1.month - d2.month
 
 

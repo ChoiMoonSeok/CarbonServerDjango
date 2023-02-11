@@ -140,7 +140,7 @@ class PreviewQuery(APIView):
         except ComModel.Department.DoesNotExist:
             HeadDepart = UserRoot
 
-        Departs = []
+        Departs = [HeadDepart]
         IsRoot = 0
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
         if type(HeadDepart) == ComModel.Company:
@@ -164,8 +164,6 @@ class PreviewQuery(APIView):
         else:
             MorY = 0
 
-        print(start, end, "aaa")
-
         Carbons = []
         for depart in Departs:
             try:
@@ -177,10 +175,28 @@ class PreviewQuery(APIView):
                     )
                     Carbons.append(temp)
                 else:
-                    temp = CarModel.Carbon.objects.filter(
-                        BelongDepart=depart,
-                        CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
-                        CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
+                    temp = (
+                        CarModel.Carbon.objects.filter(
+                            BelongDepart=depart,
+                            CarbonInfo__StartDate__gte=datetime.strptime(
+                                start, "%Y-%m-%d"
+                            ),
+                            CarbonInfo__EndDate__lte=datetime.strptime(end, "%Y-%m-%d"),
+                        )
+                        | CarModel.Carbon.objects.filter(
+                            BelongDepart=depart,
+                            CarbonInfo__EndDate__range=(
+                                datetime.strptime(start, "%Y-%m-%d"),
+                                datetime.strptime(end, "%Y-%m-%d"),
+                            ),
+                        )
+                        | CarModel.Carbon.objects.filter(
+                            BelongDepart=depart,
+                            CarbonInfo__StartDate__range=(
+                                datetime.strptime(start, "%Y-%m-%d"),
+                                datetime.strptime(end, "%Y-%m-%d"),
+                            ),
+                        )
                     )
                     Carbons.append(temp)
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일

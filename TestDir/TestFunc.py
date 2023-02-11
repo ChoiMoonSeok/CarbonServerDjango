@@ -111,7 +111,7 @@ def CreateSamsung():
     CarModel.CarbonInfo.objects.create(
         id=3,
         StartDate=datetime.date(2022, 12, 1),
-        EndDate=datetime.date(2023, 1, 1),
+        EndDate=datetime.date(2023, 2, 1),
         Location="진주",
         Scope=2,
         Category=11,

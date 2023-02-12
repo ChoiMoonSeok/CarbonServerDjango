@@ -129,7 +129,6 @@ class PreviewQuery(APIView):
         start, end 입력 예시) /2001-10-15/2002-10-15
         """
 
-        print(start, end)
         # 요청한 user의 모회사 확인
         UserRoot = func.GetUserRoot(request)
 
@@ -139,16 +138,17 @@ class PreviewQuery(APIView):
             )
         except ComModel.Department.DoesNotExist:
             HeadDepart = UserRoot
-        
+
         IsRoot = 0
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
         if type(HeadDepart) == ComModel.Company:
+            Departs = []
             func.getChildDepart(UserRoot, None, Departs)
             IsRoot = 1
-            Departs = []
+
         else:
-            func.getChildDepart(UserRoot, HeadDepart.SelfCom, Departs)
             Departs = [HeadDepart]
+            func.getChildDepart(UserRoot, HeadDepart.SelfCom, Departs)
 
         start = func.AddZero(start)
         end = func.AddZero(end)

@@ -168,7 +168,7 @@ def DivideByMonthOrYear(Start, End, data, MorY):
         if divider == 0:
             return data
         else:
-            return data / divider
+            return data / (divider + 1)
     else:
         divider = int(End[:4]) - int(Start[:4])
         if divider == 0:

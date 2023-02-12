@@ -139,15 +139,16 @@ class PreviewQuery(APIView):
             )
         except ComModel.Department.DoesNotExist:
             HeadDepart = UserRoot
-
-        Departs = [HeadDepart]
+        
         IsRoot = 0
         # 요청한 회사가 루트인 경우 첫번째 자회사의 BelongCom이 None이므로 달라져야 함.
         if type(HeadDepart) == ComModel.Company:
             func.getChildDepart(UserRoot, None, Departs)
             IsRoot = 1
+            Departs = []
         else:
             func.getChildDepart(UserRoot, HeadDepart.SelfCom, Departs)
+            Departs = [HeadDepart]
 
         start = func.AddZero(start)
         end = func.AddZero(end)

@@ -174,7 +174,7 @@ class PreviewQuery(APIView):
                         CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
                         CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
                     )
-                    Carbons.append(temp)
+                    Carbons.extend([i for i in temp])
                 else:
                     temp = (
                         CarModel.Carbon.objects.filter(
@@ -199,7 +199,7 @@ class PreviewQuery(APIView):
                             ),
                         )
                     )
-                    Carbons.append(temp)
+                    Carbons.extend([i for i in temp])
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
                 return Response(
                     "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
@@ -218,7 +218,7 @@ class PreviewQuery(APIView):
                         CarbonInfo__StartDate__lte=datetime.strptime(start, "%Y-%m-%d"),
                         CarbonInfo__EndDate__gte=datetime.strptime(end, "%Y-%m-%d"),
                     )
-                    Carbons.append(temp)
+                    Carbons.extend([i for i in temp])
                 else:
                     temp = (
                         CarModel.Carbon.objects.filter(
@@ -243,31 +243,32 @@ class PreviewQuery(APIView):
                             ),
                         )
                     )
-                    Carbons.append(temp)
+                    Carbons.extend([i for i in temp])
 
             except ValueError:  # 날짜가 범위를 초과한 경우 ex) 1월 35일
                 return Response(
                     "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
                 )
 
-        for car in Carbons:
-            for each in car:
-                TempScope = each.CarbonInfo.Scope
-                DivideScope = func.DivideByMonthOrYear(
-                    each.CarbonInfo.StartDate.strftime("%Y-%m-%d"),
-                    each.CarbonInfo.EndDate.strftime("%Y-%m-%d"),
-                    each.CarbonTrans,
-                    MorY,
-                )
-                if TempScope == 1:
-                    scope1 += DivideScope
-                elif TempScope == 2:
-                    scope2 += DivideScope
-                elif TempScope == 3:
-                    scope3 += DivideScope
+        print(Carbons)
 
-                TempCate = each.CarbonInfo.Category
-                categories[TempCate] += DivideScope
+        for car in Carbons:
+            TempScope = car.CarbonInfo.Scope
+            DivideScope = func.DivideByMonthOrYear(
+                car.CarbonInfo.StartDate.strftime("%Y-%m-%d"),
+                car.CarbonInfo.EndDate.strftime("%Y-%m-%d"),
+                car.CarbonTrans,
+                MorY,
+            )
+            if TempScope == 1:
+                scope1 += DivideScope
+            elif TempScope == 2:
+                scope2 += DivideScope
+            elif TempScope == 3:
+                scope3 += DivideScope
+
+            TempCate = car.CarbonInfo.Category
+            categories[TempCate] += DivideScope
 
         ans = {
             "Name": Depart,

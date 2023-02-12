@@ -250,13 +250,11 @@ class PreviewQuery(APIView):
                     "Date out of range", status=status.HTTP_406_NOT_ACCEPTABLE
                 )
 
-        print(Carbons)
-
         for car in Carbons:
             TempScope = car.CarbonInfo.Scope
             DivideScope = func.DivideByMonthOrYear(
-                car.CarbonInfo.StartDate.strftime("%Y-%m-%d"),
-                car.CarbonInfo.EndDate.strftime("%Y-%m-%d"),
+                car.CarbonInfo.StartDate,
+                car.CarbonInfo.EndDate,
                 car.CarbonTrans,
                 MorY,
             )

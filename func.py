@@ -162,15 +162,13 @@ def CreateEmployee(EmployeeData, RootCom, BelongCom):
 
 def DivideByMonthOrYear(Start, End, data, MorY):
     if MorY == 0:  # 월로 나누기
-        divider = diff_month(
-            datetime.strptime(End, "%Y-%M-%d"), datetime.strptime(Start, "%Y-%M-%d")
-        )
+        divider = diff_month(Start, End)
         if divider == 0:
             return data
         else:
             return data / (divider + 1)
     else:
-        divider = int(End[:4]) - int(Start[:4])
+        divider = diff_month(Start, End) // 12
         if divider == 0:
             return data
         else:

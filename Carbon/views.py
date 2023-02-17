@@ -199,15 +199,30 @@ class CarbonEmissionQuery(APIView):
                 if int(self.year) >= int(CarInfoTemp.EndDate[:4]):
                     if CarInfoTemp.Scope == 1:
                         TargetCom.Scope1 += func.DivideByMonthOrYear(
-                            CarInfoTemp.StartDate, CarInfoTemp.EndDate, CarTrans, 1
+                            datetime.datetime.strptime(
+                                CarInfoTemp.StartDate, "%Y-%m-%d"
+                            ),
+                            datetime.datetime.strptime(CarInfoTemp.EndDate, "%Y-%m-%d"),
+                            CarTrans,
+                            1,
                         )
                     elif CarInfoTemp.Scope == 2:
                         TargetCom.Scope2 += func.DivideByMonthOrYear(
-                            CarInfoTemp.StartDate, CarInfoTemp.EndDate, CarTrans, 1
+                            datetime.datetime.strptime(
+                                CarInfoTemp.StartDate, "%Y-%m-%d"
+                            ),
+                            datetime.datetime.strptime(CarInfoTemp.EndDate, "%Y-%m-%d"),
+                            CarTrans,
+                            1,
                         )
                     elif CarInfoTemp.Scope == 3:
                         TargetCom.Scope3 += func.DivideByMonthOrYear(
-                            CarInfoTemp.StartDate, CarInfoTemp.EndDate, CarTrans, 1
+                            datetime.datetime.strptime(
+                                CarInfoTemp.StartDate, "%Y-%m-%d"
+                            ),
+                            datetime.datetime.strptime(CarInfoTemp.EndDate, "%Y-%m-%d"),
+                            CarTrans,
+                            1,
                         )
                     else:
                         CarInfoTemp.delete()

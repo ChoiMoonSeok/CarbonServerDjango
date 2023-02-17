@@ -48,7 +48,7 @@ B_C_Oil = CarbonClass.StationCom(39.2, 77400, 10, 0.6, gas_liquid)
 
 Propane = CarbonClass.StationCom(46.3, 63100, 5, 0.1, gas_liquid)
 Butane = CarbonClass.StationCom(45.6, 63100, 5, 0.1, gas_liquid)
-# 나프탄 = ~~~
+Nafeta = CarbonClass.StationCom(30, 1, 1, 1, 1)
 Solvent = CarbonClass.StationCom(31, 73300, 10, 0.6, gas_liquid)
 AeroGasoline = CarbonClass.StationCom(34.1, 70000, 10, 0.6, gas_liquid)
 JetGasoline = CarbonClass.StationCom(34.1, 70000, 10, 0.6, gas_liquid)
@@ -186,6 +186,7 @@ CarbonCateMap = {
         "유연탄(원료용)": SoftCoalRaw,
         "아역청탄": BituminousCoal,
         "코크스": Cokes,
+        "나프타": Nafeta,
     },
     "이동연소": {
         "휘발유": GasolineMove,
@@ -241,13 +242,15 @@ CarbonCateMap = {
         "플라스틱": 플라스틱,
         "금속": 금속,
         "유리": 유리,
-        "기타비활성(불연성)": 기타비활성,
+        "기타,비활성(불연성)": 기타비활성,
         "대안": 대안,
         "음식음료및담배": 음식음료및담배,
         "섬유": 섬유,
         "나무및목제품": 나무및목제품,
         "제지": 제지,
-        "석유제품용매플라스틱": 석유제품_용매_플라스틱,
+        "석유제품": 석유제품_용매_플라스틱,
+        "용매": 석유제품_용매_플라스틱,
+        "플라스틱": 석유제품_용매_플라스틱,
         "고무": 고무,
         "건설및파쇄잔재물": 건설및파쇄잔재물,
         "기타": 기타,
